@@ -1,0 +1,12 @@
+@import "tailwindcss";
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css");
+
+// 피그마를 보니 폰트는 Pretandard Variable,
+// 주요 색상은 청록색과 연한 청록색이 있는 것 같아 우선 그것만 추가해뒀습니다!
+// 변수 이름 변경이나 추가 자유롭게 해주세요!
+@theme {
+  --font-pretendard: "Pretendard Variable", "Pretendard", system-ui;
+
+  --color-main-1: #06A194;
+  --color-bg-1: #e6f6f6;
+}
