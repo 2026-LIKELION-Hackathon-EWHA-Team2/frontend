@@ -1,6 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 
-const BottomBar = () => {
+const Bottombar = () => {
   const navigate = useNavigate();
   const location = useLocation(); 
 
@@ -43,4 +43,4 @@ const BottomBar = () => {
   );
 };
 
-export default BottomBar;
+export default Bottombar;

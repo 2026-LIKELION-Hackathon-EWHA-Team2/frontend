@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 // 하단 바 컴포넌트 불러오기
-import BottomBar from './components/navigation/BottomBar';
+import Bottombar from './components/navigation/Bottombar';
 
 // 각 페이지 컴포넌트 불러오기 (GNB바 만들기 위해 임시로 만들었습니다!! 추후 페이지명 확정지으면 수정해야 합니다)
 import HomePage from './pages/HomePage';
@@ -28,7 +28,7 @@ function App() {
           </Routes>
         </main>
 
-        <BottomBar />
+        <Bottombar />
 
       </div>
     </BrowserRouter>
