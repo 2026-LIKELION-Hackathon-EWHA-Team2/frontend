@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom';
-import BottomNav from './common/BottomNav';
+import BottomGNB from './BottomGNB';
 
 const NAV_ITEMS = [
   { path: '/patient/home', label: '홈', icon: 'gnb-home' },

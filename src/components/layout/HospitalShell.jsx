@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom';
-import BottomNav from './common/BottomNav';
+import BottomGNB from './BottomGNB';
 
 const NAV_ITEMS = [
   { path: '/hospital/home', label: '홈', icon: 'gnb-home' },
@@ -13,7 +13,7 @@ const HospitalShell = () => {
   return (
     <div className="app-shell pb-[4.875rem]">
       <Outlet />
-      <BottomNav items={NAV_ITEMS} />
+      <BottomGNB items={NAV_ITEMS} />
     </div>
   );
 }

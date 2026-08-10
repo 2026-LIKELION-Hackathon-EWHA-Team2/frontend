@@ -14,7 +14,7 @@ const Header = ({ title, showBack = false, onBellClick, rightSlot }) => {
           <button
             type="button"
             onClick={() => navigate(-1)}
-            className="flex items-center justify-center"
+            className="flex cursor-pointer items-center justify-center"
           >
             <img src="/icons/header-back.svg" alt="뒤로가기" className="w-5 h-5" />
           </button>
@@ -23,7 +23,7 @@ const Header = ({ title, showBack = false, onBellClick, rightSlot }) => {
       <h1 className="text-base font-semibold text-ink-900">{title}</h1>
       <div className="flex w-10 items-center justify-end">
         {rightSlot ?? (
-          <button type="button" onClick={onBellClick} className="flex items-center justify-center">
+          <button type="button" onClick={onBellClick} className="flex cursor-pointer items-center justify-center">
             <img src="/icons/header-bell.svg" alt="알림" className="w-6.5 h-6.5" />
           </button>
         )}
