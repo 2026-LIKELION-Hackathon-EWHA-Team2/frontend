@@ -1,4 +1,4 @@
-const HospitalPage = () => {
+const Step3Final = () => {
   return (
     <div className="p-10 text-center text-xl font-bold">
 
@@ -6,4 +6,4 @@ const HospitalPage = () => {
   );
 };
 
-export default HospitalPage;
+export default Step3Final;

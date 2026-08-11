@@ -13,7 +13,7 @@ const PatientShell = () => {
   return (
     <div className="app-shell pb-[4.875rem]">
       <Outlet />
-      <BottomNav items={NAV_ITEMS} />
+      <BottomGNB items={NAV_ITEMS} />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-const CasePage = () => {
+const Step5DoctorNote = () => {
   return (
     <div className="p-10 text-center text-xl font-bold">
 
@@ -6,4 +6,4 @@ const CasePage = () => {
   );
 };
 
-export default CasePage;
+export default Step5DoctorNote;
