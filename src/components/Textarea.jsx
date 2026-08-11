@@ -23,7 +23,7 @@ const Textarea = forwardRef(
             id={areaId}
             value={value}
             maxLength={maxLength}
-            className="min-h-[4.4375rem] w-full resize-none border-0 bg-transparent p-[0.625rem] text-[#999] font-wantedsans text-xs font-medium leading-[0.875rem] outline-none placeholder:text-[#999999]"
+            className="min-h-[4.4375rem] w-full resize-none border-0 bg-transparent p-[0.625rem] text-[#181818] font-wantedsans text-xs font-medium leading-[0.875rem] outline-none placeholder:text-[#999999]"
             {...props}
           />
           {maxLength && (
