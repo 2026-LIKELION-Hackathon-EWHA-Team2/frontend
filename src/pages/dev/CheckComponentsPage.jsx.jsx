@@ -5,6 +5,7 @@ import PageContainer from '../../components/layout/PageContainer'
 import Button from '../../components/button/Button';
 import ListButton from '../../components/button/ListButton';
 import QuickLaunch from '../../components/button/QuickLaunch';
+import SmallButton from '../../components/button/SmallButton';
 
 /* 컴포넌트 확인용 페이지 - 자유롭게 쓰시면 됩니다!
 path: /dev/components */
@@ -116,6 +117,32 @@ const CheckComponentsPage = () => (
           />
         </div>
       </section>
+
+      {/* SmallButton 테스트 영역 */}
+        <section className="flex flex-col gap-4">
+          <h2 className="text-lg font-semibold text-gray-800">4. 작은 버튼</h2>
+          
+          {/* 수정 버튼 테스트 영역 */}
+          <div className="flex items-center gap-2">
+            <SmallButton variant="edit" />
+
+          {/* variant="arrow" (기본값이라 variant 생략 가능) */}
+          <SmallButton 
+            label="상세 보기" 
+          />
+          
+          <SmallButton 
+            label="미리보기" 
+          />
+          
+          <SmallButton 
+            label="변경" 
+          />
+
+        </div>
+      </section>
+
+        
 
 
     </PageContainer>
