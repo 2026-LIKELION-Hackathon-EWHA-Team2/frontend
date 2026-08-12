@@ -6,6 +6,7 @@ import Button from '../../components/button/Button';
 import ListButton from '../../components/button/ListButton';
 import QuickLaunch from '../../components/button/QuickLaunch';
 import SmallButton from '../../components/button/SmallButton';
+import ResultActionButton from '../../components/button/ResultActionButton';
 
 /* 컴포넌트 확인용 페이지 - 자유롭게 쓰시면 됩니다!
 path: /dev/components */
@@ -138,6 +139,22 @@ const CheckComponentsPage = () => (
             <SmallButton variant="dropdown" label="협진 경험순" />
             <SmallButton variant="dropdown" label="전문 분야 일치순" />
           </div>
+        </div>
+      </section>
+
+      {/* 5. 결과 액션 버튼 테스트 영역 */}
+      <section className="flex flex-col gap-4">
+        <h2 className="text-lg font-semibold text-gray-800">5. 결과 버튼</h2>
+        
+        {/* 두 버튼이 가로로 나란히 배치되도록 flex 적용 */}
+        <div className="grid grid-cols-2 gap-3">
+          
+          {/* 공유하기 버튼 */}
+          <ResultActionButton variant="share" />
+          
+          {/* 다운로드(PDF) 버튼 */}
+          <ResultActionButton variant="download" />
+          
         </div>
       </section>
 
