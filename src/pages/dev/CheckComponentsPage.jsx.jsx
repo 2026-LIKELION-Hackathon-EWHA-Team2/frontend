@@ -16,6 +16,8 @@ import PageToggle from '../../components/toggle/PageToggle';
 import ChipToggle from '../../components/toggle/ChipToggle';
 import TextChipToggle from '../../components/toggle/TextChipToggle';
 
+import ConsultCard from '../../components/card/ConsultCard';
+
 /* 컴포넌트 확인용 페이지 - 자유롭게 쓰시면 됩니다!
 path: /dev/components */
 
@@ -48,6 +50,9 @@ const CheckComponentsPage = () => {
   const sideEffectOptions = [
     '부종', '염증', '통증', '붉어짐', '감염 의심', '색소침착'
   ];
+
+  // 상태 관리 추가
+  const [selectedCard, setSelectedCard] = useState(null);
 
 
   return (
@@ -298,6 +303,23 @@ const CheckComponentsPage = () => {
               options={sideEffectOptions}
               selectedValues={sideEffects}
               onChange={setSideEffects}
+            />
+          </div>
+        </section>
+
+        {/* 협진 카드 (ConsultCard) 테스트 영역 */}
+        <section className="flex flex-col gap-6 pb-10">
+          <h2 className="text-lg font-semibold text-gray-800">11. 협진 카드 (ConsultCard)</h2>
+          
+          <div className="flex flex-col gap-4">
+            <ConsultCard 
+            />
+
+            <ConsultCard 
+              caseId="2026-0708"
+              hospitalName="Seoul Medical"
+              date="2026.08.15"
+              status="진단서 대기중"
             />
           </div>
         </section>
