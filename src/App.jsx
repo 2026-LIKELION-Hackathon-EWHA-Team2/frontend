@@ -8,7 +8,7 @@ import PatientShell from './components/layout/PatientShell';
 import HospitalShell from './components/layout/HospitalShell';
 
 // 페이지 컴포넌트 불러오기 
-import CheckComponentsPage from './pages/dev/CheckComponentsPage';
+import CheckComponentsPage from './pages/dev/CheckComponentsPage.jsx';
 
 // [온보딩]
 import SplashPage from './pages/onboarding/SplashPage';
@@ -61,10 +61,12 @@ function App() {
         <div className="max-w-md mx-auto min-h-screen bg-white relative">
       
           <Routes>
-            <Route path="/dev/components" element={<CheckComponentsPage />} />
             
             {/* Onboarding 라우트 */}
             <Route element={<OnboardingShell />}>
+
+              <Route path="/dev/components" element={<CheckComponentsPage />} />
+
               <Route path="/" element={<SplashPage />} />
               <Route path="/select-role" element={<SelectRolePage />} />
               <Route path="/login" element={<LoginPage />} />

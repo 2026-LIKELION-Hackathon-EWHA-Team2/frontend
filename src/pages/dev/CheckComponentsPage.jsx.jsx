@@ -4,6 +4,7 @@ import PageContainer from '../../components/layout/PageContainer'
 
 import Button from '../../components/button/Button';
 import ListButton from '../../components/button/ListButton';
+import QuickLaunch from '../../components/button/QuickLaunch';
 
 /* 컴포넌트 확인용 페이지 - 자유롭게 쓰시면 됩니다!
 path: /dev/components */
@@ -71,15 +72,47 @@ const CheckComponentsPage = () => (
       </section>
 
       {/* ListButton 테스트 영역 */}
-      <section className="flex flex-col gap-8">
+      <section className="flex flex-col gap-4">
         <h2 className="text-lg font-semibold text-gray-800">2. 리스트형 버튼</h2>
         
-        <div className="flex flex-col gap-4 p-4 rounded-xl">
+        <div className="flex flex-col gap-4">
           <ListButton 
             label="동의 철회 / 공유 이력" 
           />
           <ListButton 
             label="프로필 수정" 
+          />
+        </div>
+      </section>
+
+      {/* QuickLaunch 테스트 영역 */}
+      <section className="flex flex-col gap-4">
+        <h2 className="text-lg font-semibold text-gray-800">3. 빠른 실행 버튼 (QuickLaunch)</h2>
+        
+        <div className="grid grid-cols-2 gap-3">
+          <QuickLaunch 
+            title="증상 입력" 
+            description="현재 증상을 자세히 입력하세요" 
+            iconPath="/icons/home-camera.svg" 
+          />
+          <QuickLaunch 
+            title="진단서 등록" 
+            description={
+              <>
+                진단서를<br />업로드하세요
+              </>
+            } 
+            iconPath="/icons/home-case.svg" 
+          />
+          <QuickLaunch 
+            title="협진 요청함" 
+            description="수신 케이스 확인" 
+            iconPath="/icons/home-inbox.svg" 
+          />
+          <QuickLaunch 
+            title="환자 조회" 
+            description="요청 환자 조회" 
+            iconPath="/icons/home-patient.svg" 
           />
         </div>
       </section>

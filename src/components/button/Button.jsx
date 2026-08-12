@@ -37,7 +37,7 @@ const Button = ({
     }`,
 
     // 하얀색 버튼
-    'outline': `h-12 w-full gap-2.5 rounded-[10px] border border-[#6B5DD6] bg-white p-2.5 text-4 font-medium leading-normal text-[#6B5DD6] ${
+    'outline': `h-12 w-full gap-2.5 rounded-[10px] border border-[#6B5DD6] bg-white p-2.5 text-[16px] font-medium leading-normal text-[#6B5DD6] ${
       disabled
         ? 'cursor-not-allowed border-[#DADADA] text-[#DADADA] shadow-none'
         : 'cursor-pointer hover:scale-[1.02] active:scale-[0.98] active:bg-gray-50'
