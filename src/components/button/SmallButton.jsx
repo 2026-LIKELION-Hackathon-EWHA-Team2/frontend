@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 
-// 수정 버튼, 상세 보기, 미리 보기, 변경 버튼 등 작은 버튼들이 있습니다!
+// 수정 버튼 / 상세 보기, 미리 보기, 변경 버튼 / 최신순, 거리순 등 작은 버튼들이 있습니다!
 
 const SmallButton = ({ 
-  variant = 'arrow', // 'edit' (수정) | 'arrow' (상세보기, 미리보기 등)
+  variant = 'arrow', // 'edit' (수정) | 'arrow' (상세보기 등) | 'dropdown' (최신순 등)
   label,
   onClick, 
   to, 
@@ -25,7 +25,7 @@ const SmallButton = ({
       <button
         type="button"
         onClick={handleClick}
-        className={`${baseStyles} bg-[#F7F7F7] px-2.5 py-1.5 hover:bg-gray-200 ${className}`}
+        className={`${baseStyles} bg-[#F7F7F7] px-2.5 py-1.5 hover:bg-gray-200 active:bg-gray-300! ${className}`}
       >
         <img src="/icons/edit.svg" alt="수정" className="h-4 w-4 shrink-0" />
         <span className="font-wantedsans text-xs font-medium text-[#181818]">
@@ -35,12 +35,28 @@ const SmallButton = ({
     );
   }
 
-  // 화살표 버튼
+  // 드롭다운/필터 버튼 (최신순, 거리순 등)
+  if (variant === 'dropdown') {
+    return (
+      <button
+        type="button"
+        onClick={handleClick}
+        className={`${baseStyles} bg-white py-1 pl-2 pr-1.5 hover:bg-gray-50 active:bg-gray-200! active:border-gray-400! ${className}`}
+      >
+        <span className="font-wantedsans text-[10px] font-medium leading-4 text-[#212121]">
+          {label}
+        </span>
+        <img src="/icons/arrow-down.svg" alt="펼치기" className="h-3 w-3 shrink-0" />
+      </button>
+    );
+  }
+
+  // 화살표 버튼 (상세 보기, 미리보기 등)
   return (
     <button
       type="button"
       onClick={handleClick}
-      className={`${baseStyles} bg-white py-1 pl-2 pr-1.5 hover:bg-gray-50 active:bg-[#EEE7FF]! active:border-[#6B5DD6]! ${className}`}
+      className={`${baseStyles} bg-white py-1 pl-2 pr-1.5 hover:bg-gray-50 active:bg-[#F4F2FF]! active:border-[#6B5DD6]! ${className}`}
     >
       <span className="font-wantedsans text-[10px] font-medium leading-4 text-[#212121]">
         {label}

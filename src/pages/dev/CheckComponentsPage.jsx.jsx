@@ -119,26 +119,25 @@ const CheckComponentsPage = () => (
       </section>
 
       {/* SmallButton 테스트 영역 */}
-        <section className="flex flex-col gap-4">
-          <h2 className="text-lg font-semibold text-gray-800">4. 작은 버튼</h2>
-          
-          {/* 수정 버튼 테스트 영역 */}
-          <div className="flex items-center gap-2">
-            <SmallButton variant="edit" />
+      <section className="flex flex-col gap-6">
+      <h2 className="text-lg font-semibold text-gray-800">4. 작은 기능 버튼</h2>
+        
+        <div className="flex flex-col gap-4">
+          {/* 수정 버튼, 화살표 버튼 */}
+          <div className="flex flex-wrap gap-3 items-center">
+            <SmallButton variant="edit" label="수정" />
+            <SmallButton label="상세 보기"/>
+            <SmallButton label="미리보기" />
+            <SmallButton label="변경" />
+          </div>
 
-          {/* variant="arrow" (기본값이라 variant 생략 가능) */}
-          <SmallButton 
-            label="상세 보기" 
-          />
-          
-          <SmallButton 
-            label="미리보기" 
-          />
-          
-          <SmallButton 
-            label="변경" 
-          />
-
+          {/* 드롭다운(필터) 버튼 테스트 영역 */}
+          <div className="flex flex-wrap gap-2 items-center">
+            <SmallButton variant="dropdown" label="최신순" />
+            <SmallButton variant="dropdown" label="거리순" />
+            <SmallButton variant="dropdown" label="협진 경험순" />
+            <SmallButton variant="dropdown" label="전문 분야 일치순" />
+          </div>
         </div>
       </section>
 
