@@ -1,4 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+
 import Header from '../../components/layout/Header'
 import PageContainer from '../../components/layout/PageContainer'
 
@@ -8,10 +10,25 @@ import QuickLaunch from '../../components/button/QuickLaunch';
 import SmallButton from '../../components/button/SmallButton';
 import ResultActionButton from '../../components/button/ResultActionButton';
 
+import PillToggle from '../../components/toggle/PillToggle';
+import DotToggle from '../../components/toggle/DotToggle';
+import PageToggle from '../../components/toggle/PageToggle';
+
 /* 컴포넌트 확인용 페이지 - 자유롭게 쓰시면 됩니다!
 path: /dev/components */
 
-const CheckComponentsPage = () => (
+const CheckComponentsPage = () => {
+  const [gender, setGender] = useState('여성');
+  const [treatmentTime, setTreatmentTime] = useState('시술직후');
+
+  const [painLevel, setPainLevel] = useState('보통');
+
+  const [docMethod, setDocMethod] = useState('진단서 불러오기');
+
+  const [historyType, setHistoryType] = useState('동의 철회 이력');
+
+
+  return (
     <>
     <Header title="확인" showBack />
     <PageContainer className='px-6 py-6 flex flex-col gap-8'>
@@ -142,7 +159,7 @@ const CheckComponentsPage = () => (
         </div>
       </section>
 
-      {/* 5. 결과 액션 버튼 테스트 영역 */}
+      {/* 결과 액션 버튼 테스트 영역 */}
       <section className="flex flex-col gap-4">
         <h2 className="text-lg font-semibold text-gray-800">5. 결과 버튼</h2>
         
@@ -157,13 +174,85 @@ const CheckComponentsPage = () => (
           
         </div>
       </section>
+  
+      {/* PillToggle 테스트 영역 */}
+        <section className="flex flex-col gap-6">
+          <h2 className="text-lg font-semibold text-gray-800">6. 토글 버튼 (PillToggle)</h2>
+          
+          <div className="flex flex-col gap-6">
+            
+            {/* 남성/여성 선택 토글 */}
+            <div className="flex flex-col gap-3">
+              <span className="font-wantedsans text-sm font-bold text-gray-800">성별 (선택)</span>
+              <PillToggle 
+                options={['여성', '남성']} 
+                selectedValue={gender} 
+                onChange={setGender} 
+              />
+            </div>
 
+            {/* 시술 시기 선택 토글 */}
+            <div className="flex flex-col gap-3">
+              <span className="font-wantedsans text-sm font-bold text-gray-800">시술 시기</span>
+              <PillToggle 
+                options={['시술 직후', '시술 후 며칠 뒤']} 
+                selectedValue={treatmentTime} 
+                onChange={setTreatmentTime} 
+              />
+            </div>
+            
+          </div>
+        </section>
+
+        {/* 통증 정도 토글 테스트 영역 */}
+        <section className="flex flex-col gap-6">
+          <h2 className="text-lg font-semibold text-gray-800">7. 통증 정도 토글 (DotToggle)</h2>
+          
+          <div className="flex flex-col gap-4">
+            <span className="font-wantedsans text-sm font-bold text-gray-800">통증 정도</span>
+            
+            <DotToggle 
+              options={['없음', '약간', '보통', '심함', '매우 심함']} 
+              selectedValue={painLevel} 
+              onChange={setPainLevel} 
+            />
+          </div>
+        </section>
+
+        {/* 페이지 전환 토글 테스트 영역 */}
+        <section className="flex flex-col gap-6">
+          <h2 className="text-lg font-semibold text-gray-800">8. 페이지 탭 토글 (PageToggle)</h2>
+          
+          <div className="flex flex-col gap-6">
+            
+            {/* 진단서 첨부 방식 토글 */}
+            <div className="flex flex-col gap-3">
+              <span className="font-wantedsans text-sm font-bold text-gray-800">진단서 첨부 방식</span>
+              <PageToggle 
+                options={['진단서 불러오기', '직접 업로드']} 
+                selectedValue={docMethod} 
+                onChange={setDocMethod} 
+              />
+            </div>
+
+            {/* 이력 조회 탭 토글  */}
+            <div className="flex flex-col gap-3">
+              <span className="font-wantedsans text-sm font-bold text-gray-800">이력 조회</span>
+              <PageToggle 
+                variant="underline" 
+                options={['동의 철회 이력', '공유 이력']} 
+                selectedValue={historyType} 
+                onChange={setHistoryType} 
+              />
+            </div>
+          </div>
+        </section>
         
 
 
     </PageContainer>
     </>
-      
-)
+);
+};
 
 export default CheckComponentsPage;
