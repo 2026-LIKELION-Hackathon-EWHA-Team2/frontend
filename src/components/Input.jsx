@@ -53,8 +53,8 @@ const Input = forwardRef(
               className="absolute right-3.5 top-1/2 -translate-y-1/2 flex items-center justify-center"
             >
               <img
-                src={visible ? '/icons/pw-eyes-close.svg' : '/icons/pw-eyes-close.svg'}
-                className="w-[1.34688rem] h-[1.18438rem]"
+                src={visible ? '/icons/pw-eyes-close.svg' : '/icons/pw-eyes-open.svg'}
+                className={visible ? "w-[1.45rem] h-[1.6rem]" : "w-[1.5rem] h-[1.5rem]"}
               />
             </button>
           )}
