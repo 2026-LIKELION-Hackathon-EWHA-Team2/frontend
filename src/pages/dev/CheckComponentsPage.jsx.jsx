@@ -13,6 +13,8 @@ import ResultActionButton from '../../components/button/ResultActionButton';
 import PillToggle from '../../components/toggle/PillToggle';
 import DotToggle from '../../components/toggle/DotToggle';
 import PageToggle from '../../components/toggle/PageToggle';
+import ChipToggle from '../../components/toggle/ChipToggle';
+import TextChipToggle from '../../components/toggle/TextChipToggle';
 
 /* 컴포넌트 확인용 페이지 - 자유롭게 쓰시면 됩니다!
 path: /dev/components */
@@ -24,8 +26,28 @@ const CheckComponentsPage = () => {
   const [painLevel, setPainLevel] = useState('보통');
 
   const [docMethod, setDocMethod] = useState('진단서 불러오기');
-
   const [historyType, setHistoryType] = useState('동의 철회 이력');
+
+  const [selectedAreas, setSelectedAreas] = useState(['face']); // 기본값으로 얼굴 선택
+  const [customArea, setCustomArea] = useState(''); // 직접 추가 텍스트 상태
+
+  // 증상 부위 옵션 데이터 (총 6개)
+  const symptomOptions = [
+    { id: 'face', label: '얼굴', icon: '/icons/symptom-area-face.svg' },
+    { id: 'chest', label: '가슴', icon: '/icons/symptom-area-chest.svg' },
+    { id: 'eyes', label: '눈', icon: '/icons/symptom-area-eyes.svg' },
+    { id: 'lips', label: '입술', icon: '/icons/symptom-area-lips.svg' },
+    { id: 'nose', label: '코', icon: '/icons/symptom-area-nose.svg' },
+    { id: 'custom', label: '직접 추가', icon: '/icons/symptom-area-plus.svg', isInput: true },
+  ];
+
+  // 부작용 다중 선택용 상태 추가 (배열)
+  const [sideEffects, setSideEffects] = useState(['부종']); 
+
+  // 부작용 옵션 리스트
+  const sideEffectOptions = [
+    '부종', '염증', '통증', '붉어짐', '감염 의심', '색소침착'
+  ];
 
 
   return (
@@ -245,6 +267,38 @@ const CheckComponentsPage = () => {
                 onChange={setHistoryType} 
               />
             </div>
+          </div>
+        </section>
+
+        {/* 다중 선택 칩 토글 (ChipToggle) 테스트 영역 */}
+        <section className="flex flex-col gap-6 pb-10">
+          <h2 className="text-lg font-semibold text-gray-800">9. 다중 선택 칩 (ChipToggle)</h2>
+          
+          <div className="flex flex-col gap-4">
+            <span className="font-wantedsans text-sm font-bold text-gray-800">증상 부위</span>
+            
+            <ChipToggle 
+              options={symptomOptions}
+              selectedValues={selectedAreas}
+              onChange={setSelectedAreas}
+              customValue={customArea}
+              onCustomChange={setCustomArea}
+            />
+          </div>
+        </section>
+
+        {/* 텍스트 다중 선택 칩 (TextChipToggle) 테스트 영역 */}
+        <section className="flex flex-col gap-6 pb-10">
+          <h2 className="text-lg font-semibold text-gray-800">10. 텍스트 다중 선택 (TextChipToggle)</h2>
+          
+          <div className="flex flex-col gap-4">
+            <span className="font-wantedsans text-sm font-bold text-gray-800">부작용 유형</span>
+            
+            <TextChipToggle 
+              options={sideEffectOptions}
+              selectedValues={sideEffects}
+              onChange={setSideEffects}
+            />
           </div>
         </section>
         
