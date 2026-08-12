@@ -11,7 +11,7 @@ const NAV_ITEMS = [
 
 const HospitalShell = () => {
   return (
-    <div className="app-shell pb-[4.875rem]">
+    <div className="app-shell pb-19.5">
       <Outlet />
       <BottomGNB items={NAV_ITEMS} />
     </div>
