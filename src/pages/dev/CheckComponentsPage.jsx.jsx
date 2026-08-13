@@ -6,6 +6,7 @@ import PageContainer from '../../components/layout/PageContainer'
 import MultiSelectToggle from '../../components/toggle/MultiSelectToggle';
 import Button from '../../components/button/Button';
 import SmallButton from '../../components/button/SmallButton';
+import CheckCardToggle from '../../components/button/CheckCardToggle';
 
 
 /* 컴포넌트 확인용 페이지 - 자유롭게 쓰시면 됩니다!
@@ -21,6 +22,17 @@ const CheckComponentsPage = () => {
     { label: '영어', value: '영어' },
     { label: '중국어', value: '중국어' },
     { label: '일본어', value: '일본어' },
+  ];
+
+  // 전송 항목 선택 카드 상태 관리
+  const [selectedItems, setSelectedItems] = useState(['patient', 'procedure', 'symptom', 'opinion']);
+
+  // 카드에 들어갈 옵션 데이터
+  const sendItemOptions = [
+    { label: '환자 정보', value: 'patient' },
+    { label: '시술 정보', value: 'procedure' },
+    { label: '부작용 유형', value: 'symptom' },
+    { label: '의료진 소견', value: 'opinion' },
   ];
 
   return (
@@ -82,6 +94,20 @@ const CheckComponentsPage = () => {
           </div>
         </section>
 
+        {/* 4. 전송 항목 선택 카드 (CheckCardToggle) */}
+        <section className="flex flex-col mt-5">
+          <h2 className="font-wantedsans text-lg font-bold text-gray-800">
+            4. 전송 항목 선택 카드 (CheckCardToggle)
+          </h2>
+
+          <div className="flex flex-col gap-3 p-4">
+            <CheckCardToggle
+              options={sendItemOptions}
+              selectedValues={selectedItems}
+              onChange={setSelectedItems}
+            />
+          </div>
+        </section>
 
     </PageContainer>
     </>
