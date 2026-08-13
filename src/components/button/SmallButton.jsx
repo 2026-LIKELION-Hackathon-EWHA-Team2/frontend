@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 // 수정 버튼 / 상세 보기, 미리 보기, 변경 버튼 / 최신순, 거리순 등 작은 버튼들이 있습니다!
 
 const SmallButton = ({ 
-  variant = 'arrow', // 'edit' (수정) | 'arrow' (상세보기 등) | 'dropdown' (최신순 등)
+  variant = 'arrow', // 'edit' (수정) | 'arrow' (상세보기 등) | 'dropdown' (최신순 등) | 'text' (아이콘 없이 글씨만)
   label,
   onClick, 
   to, 
@@ -17,7 +17,7 @@ const SmallButton = ({
   };
 
   // 공통 스타일
-  const baseStyles = 'flex items-center justify-center gap-1 rounded-lg border border-[#DADADA] cursor-pointer transition-colors';
+  const baseStyles = 'flex w-fit items-center justify-center gap-1 rounded-lg border border-[#DADADA] cursor-pointer transition-colors';
 
   // 수정 버튼 
   if (variant === 'edit') {
@@ -47,6 +47,21 @@ const SmallButton = ({
           {label}
         </span>
         <img src="/icons/arrow-down.svg" alt="펼치기" className="h-3 w-3 shrink-0" />
+      </button>
+    );
+  }
+
+  // 글씨만 있는 버튼 (아이콘 없이 텍스트만)
+  if (variant === 'text') {
+    return (
+      <button
+        type="button"
+        onClick={handleClick}
+        className={`${baseStyles} bg-white py-1 pl-2 pr-2 hover:bg-gray-50 active:bg-[#F4F2FF]! active:border-[#6B5DD6]! ${className}`}
+      >
+        <span className="font-wantedsans text-[10px] font-medium leading-4 text-[#212121]">
+          {label}
+        </span>
       </button>
     );
   }

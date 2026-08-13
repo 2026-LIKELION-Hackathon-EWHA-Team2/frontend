@@ -5,6 +5,7 @@ import PageContainer from '../../components/layout/PageContainer'
 
 import MultiSelectToggle from '../../components/toggle/MultiSelectToggle';
 import Button from '../../components/button/Button';
+import SmallButton from '../../components/button/SmallButton';
 
 
 /* 컴포넌트 확인용 페이지 - 자유롭게 쓰시면 됩니다!
@@ -67,6 +68,17 @@ const CheckComponentsPage = () => {
               새 케이스 시작하기
             </Button>
 
+          </div>
+        </section>
+
+        {/* 3. 글씨만 있는 작은 버튼 (SmallButton variant="text") */}
+        <section className="flex flex-col mt-5">
+          <h2 className="font-wantedsans text-lg font-bold text-gray-800">
+            3. 글씨만 있는 작은 버튼 (화살표 아이콘 x)
+          </h2>
+
+          <div className="flex flex-col gap-3 p-4">
+            <SmallButton variant="text" label="변경" />
           </div>
         </section>
 
