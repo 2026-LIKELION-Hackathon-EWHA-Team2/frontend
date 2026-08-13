@@ -1,4 +1,6 @@
-const CaseDetailPage = () => {
+// 개인 정보 제공 동의
+
+const Step4Consent = () => {
   return (
     <div className="p-10 text-center text-xl font-bold">
 
@@ -6,4 +8,4 @@ const CaseDetailPage = () => {
   );
 };
 
-export default CaseDetailPage;
+export default Step4Consent;

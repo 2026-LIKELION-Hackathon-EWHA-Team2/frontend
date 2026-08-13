@@ -7,7 +7,7 @@ const SimpleCheckbox = ({ label, checked, onChange }) => {
   return (
     <label className="flex items-center gap-3 p-4 rounded-[0.625rem] border border-[#DBDBDB]">
       <CheckSquare checked={checked} onChange={onChange} size="md" borderColor="border-[#181818]" />
-      <span className="text-[#181818] font-wantedsans text-xs font-medium leading-[1.125rem]">
+      <span className="text-[#181818] font-wantedsans text-xs font-medium leading-4.5">
         {label}
       </span>
     </label>

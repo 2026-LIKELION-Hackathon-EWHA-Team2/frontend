@@ -1,4 +1,4 @@
-// 2-4 인계 서류 (협진 결과 인계서)
+// 2-4-1-1 협진이력서
 
 const ConsultHistoryPage = () => {
   return (

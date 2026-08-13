@@ -1,3 +1,5 @@
+// 내용 수정 폼
+
 const Step2Edit = () => {
   return (
     <div className="p-10 text-center text-xl font-bold">

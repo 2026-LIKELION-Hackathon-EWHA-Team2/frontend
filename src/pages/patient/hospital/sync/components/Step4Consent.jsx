@@ -1,4 +1,6 @@
-const ProfileEditPage = () => {
+// 전송 동의 체크
+
+const Step4Consent = () => {
   return (
     <div className="p-10 text-center text-xl font-bold">
 
@@ -6,4 +8,4 @@ const ProfileEditPage = () => {
   );
 };
 
-export default ProfileEditPage;
+export default Step4Consent;

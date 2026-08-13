@@ -1,3 +1,5 @@
+// (부모) 합의서 상태 관리
+
 import { useState } from 'react';
 import Step1AiDraft from './components/Step1AiDraft';
 import Step2Edit from './components/Step2Edit';

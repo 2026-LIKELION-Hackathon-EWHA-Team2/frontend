@@ -1,4 +1,6 @@
-const ConsentModal = () => {
+// 전송 완료
+
+const Step5Complete = () => {
   return (
     <div className="p-10 text-center text-xl font-bold">
 
@@ -6,4 +8,4 @@ const ConsentModal = () => {
   );
 };
 
-export default ConsentModal;
+export default Step5Complete;

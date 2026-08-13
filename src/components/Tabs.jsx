@@ -13,7 +13,7 @@ const Tabs = ({ tabs, activeKey, onChange, className = '' }) => {
             key={tab.key}
             aria-selected={active}
             onClick={() => onChange(tab.key)}
-            className={`relative -mb-0.5 flex flex-1 items-center justify-center gap-1.5 border-b-2 py-[0.375rem] text-center font-wantedsans text-sm font-medium leading-[1.125rem] transition-colors ${
+            className={`relative -mb-0.5 flex flex-1 items-center justify-center gap-1.5 border-b-2 py-1.5 text-center font-wantedsans text-sm font-medium leading-4.5 transition-colors ${
               active
                 ? 'border-[#6B5DD6] text-[#6B5DD6]'
                 : 'border-[#E8E8E8] text-[#686868]'
@@ -22,7 +22,7 @@ const Tabs = ({ tabs, activeKey, onChange, className = '' }) => {
             <span>{tab.label}</span>
             {typeof tab.count === 'number' && (
               <span
-                className={`rounded-full w-[1.125rem] h-[1.125rem] text-[#686868] text-center font-wantedsans text-xs font-medium leading-normal ${
+                className={`rounded-full w-4.5 h-4.5 text-[#686868] text-center font-wantedsans text-xs font-medium leading-normal ${
                   active ? 'bg-[#6B5DD6] text-white' : 'bg-[#E8E8E8] text-[#686868]'
                 }`}
               >

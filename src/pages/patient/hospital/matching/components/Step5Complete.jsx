@@ -1,4 +1,6 @@
-const Step2Loading = () => {
+// 매칭 완료 화면
+
+const Step5Complete = () => {
   return (
     <div className="p-10 text-center text-xl font-bold">
 
@@ -6,4 +8,4 @@ const Step2Loading = () => {
   );
 };
 
-export default Step2Loading;
+export default Step5Complete;

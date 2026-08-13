@@ -40,7 +40,7 @@ const ProgressSteps = ({ steps, currentIndex, showLabel = true, showCheck = fals
                 />
               </div>
               {showLabel && (
-                <span className={`mt-[0.25rem] font-wantedsans text-[0.625rem] font-medium leading-normal 
+                <span className={`mt-1 font-wantedsans text-[0.625rem] font-medium leading-normal 
                 ${filled ? 'text-[#6B5DD6]' : 'text-[#C7C7CC]'}`}>
                   {step}
                 </span>

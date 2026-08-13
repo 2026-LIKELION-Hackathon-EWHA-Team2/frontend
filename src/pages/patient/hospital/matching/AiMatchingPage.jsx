@@ -1,10 +1,11 @@
+//  (부모) 매칭 Step과 설정 데이터를 관리하는 병원 매칭 페이지
+
 import { useState } from 'react';
 import Step1Setting from './components/Step1Setting';
-import step2Loading from './components/Step2Loading';
-import Step3List from './components/Step3List';
-import Step4Detail from './components/Step4Detail';
-import Step5Consent from './components/Step5Consent';
-import Step6Complete from './components/Step6Complete';
+import Step2List from './components/Step2List';
+import Step3Detail from './components/Step3Detail';
+import Step4Consent from './components/Step4Consent';
+import Step5Complete from './components/Step5Complete';
 
 const AiMatchingPage = () => {
   const [step, setStep] = useState(1);
