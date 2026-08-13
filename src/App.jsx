@@ -1,14 +1,9 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-// 하단 바 컴포넌트 불러오기
-import Bottombar from './components/navigation/Bottombar';
 // Shell 컴포넌트 불러오기
 import OnboardingShell from './components/layout/OnboardingShell';
 import PatientShell from './components/layout/PatientShell';
 import HospitalShell from './components/layout/HospitalShell';
-
-// 페이지 컴포넌트 불러오기 
-import CheckComponentsPage from './pages/dev/CheckComponentsPage.jsx';
 
 // [온보딩]
 import SplashPage from './pages/onboarding/SplashPage';
@@ -20,11 +15,8 @@ import SignupPage from './pages/onboarding/signup/SignupPage'; // 회원가입 �
 import PatientHomePage from './pages/patient/home/PatientHomePage';
 // 환자 - 케이스 등록
 import CaseUploadPage from './pages/patient/case/CaseUploadPage'; // 케이스 등록 퍼널
-import CaseDetailPage from './pages/patient/case/CaseDetailPage';
 // 환자 - 마이페이지
 import PatientMyPage from './pages/patient/my/PatientMyPage';
-import ProfileEditPage from './pages/patient/my/ProfileEditPage';
-import ConsentHistoryPage from './pages/patient/my/history/ConsentHistoryPage';
 import MedicalPassportPage from './pages/patient/my/passport/MedicalPassportPage';
 import ProcedureDetailPage from './pages/patient/my/passport/ProcedureDetailPage';
 import PatientConsultHistoryPage from './pages/patient/my/passport/ConsultHistoryPage';
@@ -61,11 +53,9 @@ function App() {
         <div className="max-w-md mx-auto min-h-screen bg-white relative">
       
           <Routes>
-            
+
             {/* Onboarding 라우트 */}
             <Route element={<OnboardingShell />}>
-
-              <Route path="/dev/components" element={<CheckComponentsPage />} />
 
               <Route path="/" element={<SplashPage />} />
               <Route path="/select-role" element={<SelectRolePage />} />
@@ -79,7 +69,6 @@ function App() {
               
               {/* 케이스 */}
               <Route path="case/upload" element={<CaseUploadPage />} />
-              <Route path="case/:id" element={<CaseDetailPage />} />
               
               {/* 병원 탭 */}
               <Route path="hospital" element={<HospitalMainPage />} />
@@ -90,8 +79,6 @@ function App() {
 
               {/* 마이페이지 탭 */}
               <Route path="my" element={<PatientMyPage />} />
-              <Route path="my/edit" element={<ProfileEditPage />} />
-              <Route path="my/history" element={<ConsentHistoryPage />} />
               <Route path="my/passport" element={<MedicalPassportPage />} />
               <Route path="my/passport/:id" element={<ProcedureDetailPage />} />
               <Route path="my/passport/:id/consult" element={<PatientConsultHistoryPage />} />

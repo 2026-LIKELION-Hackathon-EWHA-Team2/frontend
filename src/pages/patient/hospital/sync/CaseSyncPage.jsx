@@ -5,9 +5,8 @@ import Step0Intro from './components/Step0Intro';
 import Step1Identify from './components/Step1Identify';
 import Step2Select from './components/Step2Select';
 import Step3AiReview from './components/Step3AiReview';
-import Step4SideEffect from './components/Step4SideEffect';
-import Step5Consent from './components/Step5Consent';
-import Step6Complete from './components/Step6Complete';
+import Step4Consent from './components/Step4Consent';
+import Step5Complete from './components/Step5Complete';
 
 const CaseSyncPage = () => {
   const [step, setStep] = useState(1);
