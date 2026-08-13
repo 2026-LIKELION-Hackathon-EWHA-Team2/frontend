@@ -1,7 +1,7 @@
 /*
- * 협진이력서 화면의 케이스 진행 이력 세로 타임라인 컴포넌트! 
- * title: 상단 제목 (진행 이력처럼요!)
- * items: [{ title, date, done }]의 배열로 전달하는 구조입니당! — done=true인 항목은 보라색 체크 원으로 표시(확인 서명처럼)
+ * 케이스 동기화 입력 단계 안내 화면의 케이스 진행 이력 세로 타임라인 컴포넌트! 
+ * title: 상단 제목 (입력 단계처럼요!)
+ * items: [{ icon, label, description }]의 배열로 전달하는 구조입니당!
  */
 const CircleVerticalTimeline = ({ title, items }) => {
     return (
@@ -40,8 +40,8 @@ const CircleVerticalTimeline = ({ title, items }) => {
                 </div>
   
                 <div>
-                  <p className="text-[#181818] font-wantedsans text-[0.6875rem] font-medium leading-[1.125rem]">{item.title}</p>
-                  <p className="text-[#626262] font-wantedsans text-[0.5625rem] font-normal leading-[1.125rem]">{item.date}</p>
+                  <p className="text-[#181818] font-wantedsans text-[0.6875rem] font-medium leading-[1.125rem]">{item.label}</p>
+                  <p className="text-[#626262] font-wantedsans text-[0.5625rem] font-normal leading-[1.125rem]">{item.description}</p>
                 </div>
               </li>
             );
