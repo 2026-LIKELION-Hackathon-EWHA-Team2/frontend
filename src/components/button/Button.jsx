@@ -36,6 +36,13 @@ const Button = ({
         : 'cursor-pointer bg-[#6B5DD6] hover:scale-[1.02] active:scale-[0.98] active:brightness-90'
     }`,
 
+    // 왼쪽에 + 아이콘이 붙은 보라색 버튼 (새 케이스 시작하기 등)
+    'primary-plus': `h-12 w-full gap-2.5 rounded-[10px] px-3.5 py-3 text-[18px] font-medium leading-normal text-white ${
+      disabled
+        ? 'cursor-not-allowed bg-[#DADADA]'
+        : 'cursor-pointer bg-[#6B5DD6] hover:scale-[1.02] active:scale-[0.98] active:brightness-90'
+    }`,
+
     // 하얀색 버튼
     'outline': `h-12 w-full gap-2.5 rounded-[10px] border border-[#6B5DD6] bg-white p-2.5 text-[16px] font-medium leading-normal text-[#6B5DD6] ${
       disabled
@@ -67,6 +74,9 @@ const Button = ({
       disabled={disabled}
       className={`${baseStyles} ${variants[variant]} ${className}`}
     >
+      {variant === 'primary-plus' && (
+        <img src="/icons/plus-white.svg" alt="" className="h-4 w-4" />
+      )}
       {children}
     </button>
   );

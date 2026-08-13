@@ -4,6 +4,7 @@ import Header from '../../components/layout/Header'
 import PageContainer from '../../components/layout/PageContainer'
 
 import MultiSelectToggle from '../../components/toggle/MultiSelectToggle';
+import Button from '../../components/button/Button';
 
 
 /* 컴포넌트 확인용 페이지 - 자유롭게 쓰시면 됩니다!
@@ -30,7 +31,7 @@ const CheckComponentsPage = () => {
         <section className="flex flex-col gap-4">
           
           {/* 테스트 번호 제목 */}
-          <h2 className="font-wantedsans text-lg font-bold text-gray-800">
+          <h2 className="font-wantedsans text-lg mt-5 font-bold text-gray-800">
             1. 복수 선택 토글 (MultiSelectToggle)
           </h2>
           
@@ -55,9 +56,21 @@ const CheckComponentsPage = () => {
           </div>
         </section>
 
+        {/* 2. + 아이콘이 붙은 보라색 버튼 */}
+        <section className="flex flex-col gap-4 mt-5">
+          <h2 className="font-wantedsans text-lg font-bold p text-gray-800">
+            2. 왼쪽에 +가 붙은 버튼
+          </h2>
+
+          <div className="flex flex-col gap-3 p-4">
+            <Button variant="primary-plus">
+              새 케이스 시작하기
+            </Button>
+
+          </div>
+        </section>
 
 
-    
     </PageContainer>
     </>
       

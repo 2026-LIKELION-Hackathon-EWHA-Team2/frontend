@@ -23,7 +23,7 @@ const ConsultCard = ({
     <div
       onClick={onClick}
       className={`
-        relative flex w-full cursor-pointer items-center justify-between rounded-[10px] border border-[#EDEDF1] bg-white px-4 py-[8px] transition-all duration-150 ease-in-out hover:bg-gray-50 active:border-[#6B5DD6] active:bg-[#f7f4fd]
+        relative flex w-full cursor-pointer items-center justify-between rounded-[10px] border border-[#EDEDF1] bg-white px-4 py-2 transition-all duration-150 ease-in-out hover:bg-gray-50 active:border-[#6B5DD6] active:bg-[#f7f4fd]
         ${className}
       `}
     >
