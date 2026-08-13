@@ -1,5 +1,9 @@
 import { useRef } from 'react';
 
+/**
+ * steps 는 총 몇 단계인지 설정하는 거고, value는 현재 단계 위치 입니다! 
+ */
+
 const LevelBar = ({ value, onChange, steps = 4, disabled = false }) => {
   const trackRef = useRef(null);
 
