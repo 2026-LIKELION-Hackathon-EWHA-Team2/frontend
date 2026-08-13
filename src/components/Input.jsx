@@ -54,15 +54,15 @@ const Input = forwardRef(
             >
               <img
                 src={visible ? '/icons/pw-eyes-close.svg' : '/icons/pw-eyes-open.svg'}
-                className={visible ? "w-[1.45rem] h-[1.6rem]" : "w-[1.5rem] h-[1.5rem]"}
+                className={visible ? "w-[1.45rem] h-[1.6rem]" : "w-6 h-6"}
               />
             </button>
           )}
         </div>
         {error ? (
-          <p className="text-[#F80A0A] px-0.5 font-wantedsans text-[0.8125rem] font-normal leading-[1.875rem]">{error}</p>
+          <p className="text-[#F80A0A] px-0.5 font-wantedsans text-[0.8125rem] font-normal leading-7.5">{error}</p>
         ) : helperText ? (
-          <p className="text-[#F80A0A] px-0.5 font-wantedsans text-[0.8125rem] font-normal leading-[1.875rem]">{helperText}</p>
+          <p className="text-[#F80A0A] px-0.5 font-wantedsans text-[0.8125rem] font-normal leading-7.5">{helperText}</p>
         ) : null}
       </div>
     );

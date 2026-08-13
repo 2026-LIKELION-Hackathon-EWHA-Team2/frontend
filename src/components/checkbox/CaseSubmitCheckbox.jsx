@@ -11,17 +11,17 @@ const CaseSubmitCheckbox = ({ title, items, checkedList, onChangeList }) => {
     return (
       <div>
         {title && (
-          <p className="mb-2 text-[#181818] font-wantedsans text-sm font-medium leading-[1.125rem]">
+          <p className="mb-2 text-[#181818] font-wantedsans text-sm font-medium leading-4.5">
             {title}
           </p>
         )}
-        <div className="rounded-[0.625rem] border border-[#EDEDF1] px-3 py-[0.1875rem]">
+        <div className="rounded-[0.625rem] border border-[#EDEDF1] px-3 py-0.75">
           <ul>
             {items.map((item, idx) => {
               const isLast = idx === items.length - 1;
               return (
                 <li key={idx}>
-                  <label className="flex cursor-pointer items-center gap-2 py-[0.375rem]">
+                  <label className="flex cursor-pointer items-center gap-2 py-1.5">
                     <CheckSquare
                       checked={checkedList[idx]}
                       onChange={(next) => {
@@ -30,7 +30,7 @@ const CaseSubmitCheckbox = ({ title, items, checkedList, onChangeList }) => {
                         onChangeList(updated);
                       }}
                     />
-                    <span className="text-[#181818] font-wantedsans text-[0.6875rem] font-medium leading-[1.125rem]">
+                    <span className="text-[#181818] font-wantedsans text-[0.6875rem] font-medium leading-4.5">
                       {item.label}
                     </span>
                   </label>

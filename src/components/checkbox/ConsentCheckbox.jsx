@@ -17,7 +17,7 @@ const ConsentCheckbox = ({
       <div className="flex items-center justify-between gap-3 py-4">
         <label className="flex flex-1 items-center gap-2">
           <CheckSquare checked={checked} onChange={onChange} size="md" borderColor="border-[#626262]" />
-          <span className="text-[#626262] font-wantedsans text-xs font-medium leading-[1.125rem]">{label}</span>
+          <span className="text-[#626262] font-wantedsans text-xs font-medium leading-4.5">{label}</span>
         </label>
         {expandable && (
           <button type="button" onClick={onToggleExpand} className="rounded pl-1">

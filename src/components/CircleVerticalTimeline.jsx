@@ -19,13 +19,13 @@ const CircleVerticalTimeline = ({ title, items }) => {
               <li key={idx} className="flex gap-3 pb-3 last:pb-0">
                 <div className="relative flex w-6 shrink-0 flex-col items-center justify-center">
                   {!isFirst && (
-                    <span className="absolute left-1/2 top-0 h-1/2 w-[0.0625rem] -translate-x-1/2 border-l border-dashed border-[#DADADA]" />
+                    <span className="absolute left-1/2 top-0 h-1/2 w-px -translate-x-1/2 border-l border-dashed border-[#DADADA]" />
                   )}
                   {!isLast && (
-                    <span className="absolute left-1/2 top-1/2 -bottom-3 w-[0.0625rem] -translate-x-1/2 border-l border-dashed border-[#DADADA]" />
+                    <span className="absolute left-1/2 top-1/2 -bottom-3 w-px -translate-x-1/2 border-l border-dashed border-[#DADADA]" />
                   )}
                   <div
-                    className={`z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full font-wantedsans text-[0.625rem] font-medium leading-[1.125rem] ${
+                    className={`z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full font-wantedsans text-[0.625rem] font-medium leading-4.5 ${
                       item.done
                         ? 'bg-[#6B5DD6] text-white'
                         : 'border border-[#DADADA] bg-white text-[#181818]'
@@ -40,8 +40,8 @@ const CircleVerticalTimeline = ({ title, items }) => {
                 </div>
   
                 <div>
-                  <p className="text-[#181818] font-wantedsans text-[0.6875rem] font-medium leading-[1.125rem]">{item.label}</p>
-                  <p className="text-[#626262] font-wantedsans text-[0.5625rem] font-normal leading-[1.125rem]">{item.description}</p>
+                  <p className="text-[#181818] font-wantedsans text-[0.6875rem] font-medium leading-4.5">{item.label}</p>
+                  <p className="text-[#626262] font-wantedsans text-[0.5625rem] font-normal leading-4.5">{item.description}</p>
                 </div>
               </li>
             );
