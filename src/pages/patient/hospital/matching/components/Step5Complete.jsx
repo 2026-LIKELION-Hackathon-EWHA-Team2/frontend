@@ -1,4 +1,6 @@
-const Step4Detail = () => {
+// 매칭 완료 화면
+
+const Step5Complete = () => {
   return (
     <div className="p-10 text-center text-xl font-bold">
 
@@ -6,4 +8,4 @@ const Step4Detail = () => {
   );
 };
 
-export default Step4Detail;
+export default Step5Complete;

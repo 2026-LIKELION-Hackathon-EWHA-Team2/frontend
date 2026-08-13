@@ -1,3 +1,5 @@
+// 3. 증상 입력 단계의 부모 페이지
+
 import { useState } from 'react';
 import Step0Intro from './components/Step0Intro';
 import Step1Photo from './components/Step1Photo';

@@ -1,3 +1,5 @@
+//  (부모) 매칭 Step과 설정 데이터를 관리하는 병원 매칭 페이지
+
 import { useState } from 'react';
 import Step1Setting from './components/Step1Setting';
 import step2Loading from './components/Step2Loading';

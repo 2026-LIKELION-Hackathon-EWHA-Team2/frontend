@@ -1,3 +1,5 @@
+// 없어진 페이지. 아직 병원측 프로토타입 확정이 아니라서 일단 남겼다가 이후에 지우겠씁니다
+
 import { useState } from 'react';
 import Step1PatientSelect from './components/Step1PatientSelect';
 import Step2Intro from './components/Step2Intro';

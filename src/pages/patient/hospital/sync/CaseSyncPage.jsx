@@ -1,3 +1,5 @@
+// # 케이스 동기화 전체 Step과 전송 데이터를 관리하는 페이지
+
 import { useState } from 'react';
 import Step0Intro from './components/Step0Intro';
 import Step1Identify from './components/Step1Identify';
