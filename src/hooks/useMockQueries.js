@@ -11,7 +11,7 @@ import {
   MOCK_CONSULT_REQUEST_DETAIL,
   MOCK_QUICK_CONSULT,
   MOCK_AGREEMENT,
-} from '../mock/mockData';
+} from '../mock/mockdata';
 
 // ============================================================
 // 백엔드 연동 시에는 이 파일의 각 queryFn 안쪽만 실제 fetch로 교체!! 
