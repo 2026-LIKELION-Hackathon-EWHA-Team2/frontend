@@ -1,0 +1,409 @@
+// 전체 프로토타입 화면에서 사용하는 mock data 모음
+// 추후 API 연동 시 이 파일의 형태를 참고해서 queryFn 결과로 대체하면 됩니다.
+
+export const MOCK_PATIENT = {
+  name: 'Anna Kim',
+  firstName: 'Anna',
+  passportNumber: 'M12345678',
+  medicalPassportNo: 'MP-2025-0001',
+  birth: '1992.05.20',
+  address: '123, Tokyo',
+  phone: '010-0000-0000',
+  lastUpdated: '2025.07.28',
+};
+
+export const SYMPTOM_AREA_OPTIONS = [
+  { id: 'forehead', label: '이마', icon: '/icons/symptom-area-forehead.svg' },
+  { id: 'cheek', label: '볼', icon: '/icons/symptom-area-cheek.svg' },
+  { id: 'nose', label: '코', icon: '/icons/symptom-area-nose.svg' },
+  { id: 'lip', label: '입술', icon: '/icons/symptom-area-lip.svg' },
+  { id: 'chin', label: '턱', icon: '/icons/symptom-area-chin.svg' },
+  { id: 'custom', label: '직접 입력', icon: '/icons/symptom-area-edit.svg', isInput: true },
+];
+
+// icon은 아이콘 경로 문자열만 저장하고, 실제 <img> 렌더링은 사용하는 페이지(SymptomSelect.jsx)에서 처리합니다.
+// (이 파일은 .js 파일이라 JSX를 직접 담지 않습니다)
+export const SYMPTOM_CHECK_OPTIONS = [
+  { id: 'redness', label: '붓기', description: '시술 부위에 붓기가 발생했어요.', icon: '/icons/symptom-swelling.svg' },
+  { id: 'itch', label: '가려움', description: '피부가 붉게 부어오르고 열감이 있어요.', icon: '/icons/symptom-redness.svg' },
+  { id: 'pain', label: '통증', description: '부위에 통증이 느껴져요.', icon: '/icons/symptom-pain.svg' },
+  { id: 'bruise', label: '멍/출혈', description: '멍이 들거나 출혈이 발생했어요.', icon: '/icons/symptom-bruise.svg' },
+  { id: 'discharge', label: '분비물', description: '진물이나 갈은 분비물이 발생해요.', icon: '/icons/symptom-discharge.svg' },
+  { id: 'distortion', label: '비대칭', description: '좌우 비대칭이나 처짐이 느껴져요.', icon: '/icons/symptom-distortion.svg' },
+];
+
+export const PAIN_LEVEL_OPTIONS = ['없음', '약함', '보통', '심함', '매우 심함'];
+
+// 3-3 사진증상입력 - 케이스 목록 (AI 추천 병원 매칭 - 케이스 선택 단계에서 사용)
+export const MOCK_CASES = [
+  {
+    id: 'case01',
+    title: 'Case 01',
+    thumbnails: ['/icons/case-thumb-1.svg', '/icons/case-thumb-2.svg', '/icons/case-thumb-3.svg'],
+    recordedAt: '2025.07.09',
+    symptoms: '붓음, 붓기',
+    symptomStartedAt: '시술 직후',
+    diagnosisAttached: true,
+    diagnosisName: '눈썹 문신 - ABC Beauty Clinic - 2025. 06. 10',
+    procedureName: '보톡스',
+    procedureArea: '이마',
+    procedureDate: '2025.08.01',
+    ingredients: ['Botulimun Toxin Type A', 'Lidocaine HCl', 'Hyaluronic Acid'],
+    doctorNote: '시술 후 예상 범위 내의 붓기 홍반이 있으며, 2~3일 경과 관찰이 필요합니다.',
+  },
+  {
+    id: 'case02',
+    title: 'Case 02',
+    thumbnails: ['/icons/case-thumb-2.svg', '/icons/case-thumb-3.svg'],
+    recordedAt: '2025.07.05',
+    symptoms: '붓음, 가려움',
+    symptomStartedAt: '2025.07.08',
+    diagnosisAttached: false,
+  },
+  {
+    id: 'case03',
+    title: 'Case 03',
+    thumbnails: ['/icons/case-thumb-3.svg', '/icons/case-thumb-1.svg'],
+    recordedAt: '2025.06.28',
+    symptoms: '붓음, 통증',
+    symptomStartedAt: '2025.06.27',
+    diagnosisAttached: false,
+  },
+];
+
+// 자국(일본) 네트워크 병원 목록
+export const MOCK_HOSPITALS = [
+  {
+    id: 'tokyo-medical',
+    name: 'Tokyo Medical',
+    department: '피부과 · 성형외과',
+    distance: '1.2 km',
+    avgTime: '35분',
+    languages: ['EN', 'JP'],
+    hasConsultExperience: true,
+    address: '1-2-3- Shibuya, Hibuya-ku, Tokyo 150-0002, Japan',
+    hours: '월-금 09:00~18:00 / 토 09:00~13:00 (일, 공휴일 휴진)',
+    phone: '+81 3-1234-5678',
+    website: 'https://www.tokyomedical.jp.com',
+    fields: ['피부과', '성형외과', '레이저 치료', '보톡스', '필러'],
+    intro: '도쿄 중심부에 위치한 피부과 성형외과 전문 병원입니다. 최신 장비와 풍부한 상담 경험을 바탕으로 맞춤 진료를 제공합니다.',
+  },
+  {
+    id: 'dr-smith',
+    name: 'Dr. Smith Clinic',
+    department: '피부과',
+    distance: '2.9 km',
+    avgTime: '40분',
+    languages: ['EN'],
+    hasConsultExperience: false,
+    address: '4-5-6 Ebisu, Shibuya-ku, Tokyo 150-0013, Japan',
+    hours: '월-토 10:00~19:00 (일 휴진)',
+    phone: '+81 3-2345-6789',
+    website: 'https://www.drsmithclinic.jp',
+    fields: ['피부과', '레이저 치료'],
+    intro: 'Dr. Smith Clinic은 피부 트러블 및 레이저 치료 전문 클리닉입니다.',
+  },
+  {
+    id: 'abc-skin-1',
+    name: 'ABC Skin Center',
+    department: '피부과 · 레이저 클리닉',
+    distance: '3.1 km',
+    avgTime: '35분',
+    languages: ['EN', 'JP'],
+    hasConsultExperience: true,
+    address: '7-8-9 Daikanyama, Shibuya-ku, Tokyo 150-0034, Japan',
+    hours: '월-금 09:00~18:00 (토, 일 휴진)',
+    phone: '+81 3-3456-7890',
+    website: 'https://www.abcskincenter.jp',
+    fields: ['피부과', '레이저 클리닉', '보톡스', '필러'],
+    intro: 'ABC Skin Center는 외국인 환자 협진 경험이 풍부한 클리닉입니다.',
+  },
+];
+
+// 환자 시술 이력 (여권)
+export const MOCK_PROCEDURE_HISTORY = [
+  {
+    id: 'proc-1',
+    name: '눈썹 문신',
+    tone: 'med',
+    tag: '반영구',
+    hospital: 'ABC Beauty Clinic',
+    location: '서울, 대한민국',
+    date: '2025.06.10',
+    image: '/icons/procedure-eyebrow.svg',
+    relatedCaseId: '2026-0708',
+  },
+  {
+    id: 'proc-2',
+    name: '입술 필러',
+    tone: 'med',
+    tag: '주사',
+    hospital: 'Seoul Aesthetic Clinic',
+    location: '서울, 대한민국',
+    date: '2025.03.15',
+    image: '/icons/procedure-lip.svg',
+    relatedCaseId: null,
+  },
+  {
+    id: 'proc-3',
+    name: '이마 보톡스',
+    tone: 'med',
+    tag: '주사',
+    hospital: 'Clean Skin Clinic',
+    location: '부산, 대한민국',
+    date: '2024.11.20',
+    image: '/icons/procedure-forehead.svg',
+    relatedCaseId: null,
+  },
+  {
+    id: 'proc-4',
+    name: '얼굴 울쎄라',
+    tone: 'med',
+    tag: '레이저',
+    hospital: 'Beauty Skin Clinic',
+    location: '서울, 대한민국',
+    date: '2024.10.20',
+    image: '/icons/procedure-face.svg',
+    relatedCaseId: null,
+  },
+];
+
+// 마이페이지 최근 케이스
+export const MOCK_RECENT_CASES = [
+  { id: '2026-0718', status: '진단서 대기중', tone: 'orange', date: '2026.07.18' },
+  { id: '2026-0708', status: '신속 협진 진행중', tone: 'purple', date: '2026.07.08' },
+  { id: '2026-0708', status: 'AI 분석 완료', tone: 'blue', date: '2026.07.08' },
+];
+
+// 협진 인계서 (2-4-1 상세수술이력 - 상세보기 클릭 시)
+export const MOCK_HANDOVER_DOCUMENT = {
+  fromHospital: 'Tokyo Medical',
+  toHospital: 'ABC Beauty Clinic',
+  reason: '눈썹 문신(2025.06.10) 시술 부위의 부작용(붉음, 경미한 부기)에 대한 자국 병원 확인 요청',
+  transferType: '확인 서명',
+  doctorNote:
+    '시술 부위에 경미한 발적과 부기가 관찰되나, 문신 시술 후 흔히 나타나는 정상적인 초기 반응으로 판단됨. 냉찜질과 자외선 차단 권장. 5일 이상 붉음 지속 또는 통증·삼출액 동반 시 추가 확인 필요.',
+  registeredBy: 'ABC Beauty Clinic 담당의',
+  registeredAt: '2026. 07. 28',
+  confirmedAt: '2026. 07. 31',
+};
+
+// 병원측 - 협진 요청함 / 환자 조회 목록
+export const MOCK_CONSULT_PATIENTS = [
+  {
+    id: 'p1',
+    caseId: '2026-0708',
+    name: 'Anna Kim',
+    age: 32,
+    consultType: '이마 보톡스 상담',
+    hospital: 'Seoul Beauty Clinic',
+    requestedAt: '2026.08.03 09:20',
+    status: 'new',
+    photos: ['/icons/case-thumb-1.svg', '/icons/case-thumb-2.svg', '/icons/case-thumb-3.svg', '/icons/case-thumb-4.svg'],
+    symptomTags: ['붓기', '가려움'],
+    symptomArea: '이마 중앙 및 좌측',
+    symptomDate: '2026.08.13 (시술 다음날)',
+    symptomLevel: '보통',
+    symptomDesc: '아침에 일어나면 더 부은 느낌이에요. 만지면 약간 아프고 뻐근합니다.',
+    sideEffects: ['붓기', '가려움'],
+    aiSummary:
+      '환자는 이마 보톡스 시술 다음날부터 이마 중앙과 좌측 부위에 붓기와 가려움을 경험하고 있습니다. 아침에 심하며, 만지면 약간의 통증과 뻐근함이 있다고 보고했습니다. 현재 발열이나 심한 통증은 아직 없다고 합니다.',
+  },
+  {
+    id: 'p2',
+    caseId: '2026-0625',
+    name: 'Brian Lee',
+    age: 28,
+    consultType: '색소 치료 상담',
+    hospital: 'Tokyo Medical',
+    requestedAt: '2026.08.14 15:42',
+    status: 'new',
+    photos: ['/icons/case-thumb-2.svg', '/icons/case-thumb-3.svg'],
+    symptomTags: ['붓기'],
+    symptomArea: '왼쪽 볼',
+    symptomDate: '2026.08.14',
+    symptomLevel: '약함',
+    symptomDesc: '레이저 시술 이후 약간의 붓기가 있습니다.',
+    sideEffects: ['붓기'],
+    aiSummary: '환자는 색소 레이저 치료 이후 왼쪽 볼 부위에 경미한 붓기를 호소하고 있습니다.',
+  },
+  {
+    id: 'p3',
+    caseId: '2026-0420',
+    name: '김민수',
+    age: 39,
+    consultType: '여드름 흉터 치료상담',
+    hospital: 'Busan Skin Center',
+    requestedAt: '2026.04.24 18:30',
+    status: 'reviewing',
+    photos: ['/icons/case-thumb-1.svg'],
+    symptomTags: ['가려움'],
+    symptomArea: '양쪽 볼',
+    symptomDate: '2026.04.22',
+    symptomLevel: '보통',
+    symptomDesc: '흉터 부위가 간지럽고 살짝 붉습니다.',
+    sideEffects: ['가려움'],
+    aiSummary: '환자는 여드름 흉터 레이저 치료 후 양쪽 볼에 가려움과 경미한 홍조를 호소합니다.',
+  },
+  {
+    id: 'p4',
+    caseId: '2026-0720',
+    name: 'David Park',
+    age: 45,
+    consultType: '리프팅 상담',
+    hospital: 'Gangnam Dermatology',
+    requestedAt: '2026.07.20 11:10',
+    status: 'reviewing',
+    photos: ['/icons/case-thumb-3.svg'],
+    symptomTags: ['통증'],
+    symptomArea: '턱선',
+    symptomDate: '2026.07.21',
+    symptomLevel: '심함',
+    symptomDesc: '리프팅 시술 부위 통증이 지속됩니다.',
+    sideEffects: ['통증'],
+    aiSummary: '환자는 리프팅 시술 후 턱선 부위 통증을 호소하며 강도는 심한 편입니다.',
+  },
+  {
+    id: 'p5',
+    caseId: '2026-0706',
+    name: 'Jane Lee',
+    age: 30,
+    consultType: '필러(입술) 상담',
+    hospital: 'Miso Aesthetic clinic',
+    requestedAt: '2026.07.06 10:00',
+    status: 'done',
+    photos: ['/icons/case-thumb-2.svg'],
+    symptomTags: ['붓기'],
+    symptomArea: '입술',
+    symptomDate: '2026.07.06',
+    symptomLevel: '약함',
+    symptomDesc: '필러 시술 직후 자연스러운 붓기입니다.',
+    sideEffects: ['붓기'],
+    aiSummary: '환자는 입술 필러 시술 직후의 정상적인 붓기 범위 내 증상을 보고했습니다.',
+  },
+  {
+    id: 'p6',
+    caseId: '2026-0605',
+    name: 'Chris Jung',
+    age: 33,
+    consultType: '울쎄라 상담',
+    hospital: 'Cheongdam Clinic',
+    requestedAt: '2026.06.05 09:30',
+    status: 'reviewing',
+    photos: ['/icons/case-thumb-1.svg', '/icons/case-thumb-2.svg'],
+    symptomTags: ['통증', '붓기'],
+    symptomArea: '얼굴 전체',
+    symptomDate: '2026.06.06',
+    symptomLevel: '보통',
+    symptomDesc: '울쎄라 시술 후 근육통과 같은 통증이 있습니다.',
+    sideEffects: ['통증', '붓기'],
+    aiSummary: '환자는 울쎄라 시술 후 얼굴 전체에 근육통 형태의 통증과 경미한 붓기를 보고했습니다.',
+  },
+  {
+    id: 'p7',
+    caseId: '2026-0405',
+    name: 'Lusis Freeman',
+    age: 41,
+    consultType: '색소치료 상담',
+    hospital: 'Cheongdam Clinic',
+    requestedAt: '2026.04.05 13:20',
+    status: 'reviewing',
+    photos: ['/icons/case-thumb-3.svg'],
+    symptomTags: ['가려움'],
+    symptomArea: '오른쪽 뺨',
+    symptomDate: '2026.04.06',
+    symptomLevel: '약함',
+    symptomDesc: '가벼운 가려움이 있습니다.',
+    sideEffects: ['가려움'],
+    aiSummary: '환자는 색소 치료 후 오른쪽 뺨 부위 경미한 가려움을 보고했습니다.',
+  },
+  {
+    id: 'p8',
+    caseId: '2026-0516',
+    name: 'Sato Aoi',
+    age: 27,
+    consultType: '턱 보톡스 상담',
+    hospital: 'Osaka Aesthetic Clinic',
+    requestedAt: '2026.07.14 11:41',
+    status: 'done',
+    photos: ['/icons/case-thumb-2.svg'],
+    symptomTags: [],
+    symptomArea: '턱',
+    symptomDate: '2026.07.15',
+    symptomLevel: '없음',
+    symptomDesc: '특이 증상 없이 경과 관찰 중입니다.',
+    sideEffects: [],
+    aiSummary: '환자는 특이 부작용 없이 정상 경과를 보이고 있습니다.',
+  },
+];
+
+export const MOCK_HOSPITAL_HOME = {
+  hospitalName: 'Tokyo Medical',
+  doctorName: 'Dr. tokyo',
+  stats: { total: 3, reviewing: 1, doneToday: 2 },
+  ongoingConsults: [
+    { caseId: '2026-0708', status: '신속 협진 진행중', tone: 'purple', date: '2026.07.08', desc: '이마 보톡스' },
+    { caseId: '2026-0708', status: '답변 완료', tone: 'mint', date: '2026.07.08', desc: '스킨보톡스' },
+    { caseId: '2026-0708', status: '자국 병원 검토중', tone: 'blue', date: '2026.07.08', desc: '스킨보톡스' },
+  ],
+};
+
+// 협진 요청 상세 (2-3 환자케이스보기 -> 화살표로 이어지는 협진 요청 상세 화면)
+export const MOCK_CONSULT_REQUEST_DETAIL = {
+  patientName: 'Anna Kim',
+  caseId: '2026-0708',
+  consultType: '이마 보톡스 상담',
+  hospital: 'Seoul Beauty Clinic',
+  requestedAt: '2026.08.03 09:20',
+  fromHospital: 'Tokyo Medical',
+  toHospital: 'ABC Beauty Clinic',
+  transferType: '확인 서명',
+  reason: '눈썹 문신(2025.06.10) 시술 부위의 부작용(붉음, 경한 부기)에 대한 자국 병원 확인 요청',
+  doctorNote:
+    '시술 부위에 경미한 발적과 부기가 관찰되나, 문신 시술 후 흔히 나타나는 정상적인 초기 반응으로 판단됨. 냉찜질과 자외선 차단 권장. 5일 이상 붉음 지속 또는 통증·삼출액 동반 시 추가 확인 필요.',
+  registeredBy: 'ABC Beauty Clinic 담당의',
+  registeredAt: '2026. 07. 28',
+  confirmedAt: '2026. 07. 31',
+};
+
+// 병원 신속 협진 - 메시지 목록
+export const MOCK_QUICK_CONSULT = {
+  requestHospital: 'Tokyo Medical',
+  reviewTarget: '시술 정보 / 부작용 유형 / 의료진 소견',
+  responseDeadline: '4시간 이내',
+  status: '검토중',
+  messages: [
+    { from: 'Tokyo Medical', text: '시술 기록과 증상 설명에 일부 불일치가 있어 확인 부탁드립니다.', time: '10:12', mine: false },
+    { from: 'Seoul Beauty Clinic', text: '부종과 홍반은 확인되며, 현재로서는 경증 반응으로 보입니다.', time: '10:28', mine: true },
+    { from: 'Tokyo Medical', text: '시술 후 2일차 발생 여부 다시 확인 부탁드립니다.', time: '10:12', mine: false },
+    { from: 'Seoul Beauty Clinic', text: '확인 결과 2일차 발생으로 판단되며 추가 사진 검토 중입니다.', time: '10:28', mine: true },
+    { from: '자국 의사', text: '확인 결과 2일차 발생으로 판단되어 추가 사진 검토 중입니다.', time: '10:52', mine: false },
+    { from: 'Tokyo Medical', text: '넵 확인했습니다!', time: '10:12', mine: false },
+  ],
+};
+
+// 협진 합의 - AI 정리 초안
+export const MOCK_AGREEMENT = {
+  requestHospital: 'Tokyo Medical',
+  reviewTarget: '시술 정보 / 부작용 유형 / 의료진 소견',
+  responseDeadline: '4시간 이내',
+  aiDraftLabel: 'AI 정리 초안',
+  aiDraftDesc: '병원 간 대화를 바탕으로 AI가 작성한 초안입니다.\n양측 의료진의 검토와 승인이 필요합니다.',
+  participants: [
+    { name: 'Tokyo Medical', status: '검토 대기' },
+    { name: '자국 병원', status: '검토 대기' },
+  ],
+  finalJudgement: '경증 시술 후 반응으로 판단됩니다.',
+  reasons: [
+    { id: 1, label: '부종 및 홍반', tone: '경미' },
+    { id: 2, label: '괴사 / 감염 징후', tone: '없음' },
+    { id: 3, label: '추가 경과 관찰', tone: '권장' },
+  ],
+  followUps: [
+    { icon: '/icons/followup-observe.svg', label: '증상 관찰', date: '3일' },
+    { icon: '/icons/followup-photo.svg', label: '사진 재업로드', date: '5/17' },
+    { icon: '/icons/followup-check.svg', label: '추가 확인', date: '5/24' },
+  ],
+};
+
+export const AI_SUMMARY_NOTE = 'AI는 초안 정리만 수행하며, 최종 의료 판단과 후속 조치는 양측 의료진이 직접 확인합니다.';
