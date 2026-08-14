@@ -11,7 +11,7 @@ const NAV_ITEMS = [
 /* 환자 측 화면 GNB shell */
 const PatientShell = () => {
   return (
-    <div className="app-shell pb-[4.875rem]">
+    <div className="app-shell pb-19.5">
       <Outlet />
       <BottomGNB items={NAV_ITEMS} />
     </div>
