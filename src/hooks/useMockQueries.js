@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   MOCK_CONSULT_PATIENTS,
   MOCK_HOSPITALS,
@@ -61,6 +61,13 @@ export const useRecentCasesQuery = () =>
     queryKey: ['recentCases'],
     queryFn: () => wait(MOCK_RECENT_CASES),
   });
+
+// 홈 - 새 케이스 등록 완료 시 '최근 케이스' 목록 캐시에 바로 추가
+export const useAddRecentCase = () => {
+  const queryClient = useQueryClient();
+  return (newCase) =>
+    queryClient.setQueryData(['recentCases'], (old = []) => [...old, newCase]);
+};
 
 // 협진 인계서
 export const useHandoverDocumentQuery = () =>
