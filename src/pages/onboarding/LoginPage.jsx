@@ -88,7 +88,7 @@ const LoginPage = () => {
         로그인
       </Button>
 
-      <Button variant="underline" to="/signup" className="mx-auto mt-4">
+      <Button variant="underline" to="/select-role" className="mx-auto mt-4">
         회원가입
       </Button>
     </PageContainer>

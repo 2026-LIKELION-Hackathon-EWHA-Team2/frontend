@@ -5,7 +5,7 @@ const Button = ({
   onClick, 
   to, // 라우팅(페이지 이동)을 위한 prop
   disabled = false, 
-  variant = 'primary', // 버튼 종류 선택 (primary, primary-shadow, outline, outline-shadow,underline)
+  variant = 'primary', // 버튼 종류 선택 (primary, primary-shadow, primary-plus, outline, outline-shadow, outline-white, underline)
   className = '' 
 }) => {
   const navigate = useNavigate();
@@ -56,6 +56,13 @@ const Button = ({
       disabled
         ? 'cursor-not-allowed border-[#DADADA] text-[#DADADA] shadow-none'
         : 'cursor-pointer hover:scale-[1.02] active:scale-[0.98] active:bg-gray-50'
+    }`,
+
+    // 보라색 배경 위에서 쓰는 흰 테두리 버튼 (역할 선택 화면 등)
+    'outline-white': `h-12 w-full gap-2.5 rounded-[10px] border border-white bg-transparent p-2.5 text-[16px] font-medium leading-normal text-white ${
+      disabled
+        ? 'cursor-not-allowed border-white/40 text-white/40'
+        : 'cursor-pointer hover:scale-[1.02] active:scale-[0.98] active:bg-white/10'
     }`,
 
 
