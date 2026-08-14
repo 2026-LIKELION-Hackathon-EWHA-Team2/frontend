@@ -96,3 +96,25 @@ export const useAgreementDraftQuery = () =>
     queryKey: ['agreementDraft'],
     queryFn: () => wait(MOCK_AGREEMENT),
   });
+
+// 1-1 로그인 페이지에서 role을 로그인 응답에서 받기 위한 mutation 추가!!
+// 백엔드 연동 시에는 서버에서 응답 같이 받음...~
+// 지금은 흐름 확인용으로 아이디에 'hosp'가 들어가면 병원 계정으로 판단하는 mockdata에 따른 임시 상태
+// -> mockdata에 role 부여하셨다면 코드 변경해서 사용하시면 됩니다!! 나중에 이 코드도 변경 예정
+export const useLoginMutation = () =>
+  useMutation({
+    mutationFn: ({ userId }) =>
+      wait({ userId: userId || 'aftor123', role: userId?.includes('hosp') ? 'hospital' : 'patient' }),
+
+    // 나중에 아래처럼 연동해서 쓰면 될 것 같습니다!! 혹시 몰라서 이해를 위해 덧붙입니당!! ~.~
+    // mutationFn: async ({ userId, password }) => {
+    //   const res = await fetch(`${API_BASE_URL}/login`, {
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify({ userId, password }),
+    //   });
+    //   if (!res.ok) throw new Error('login failed');
+    //   return res.json(); // { userId, role }
+    // },
+  });
+ 
