@@ -8,7 +8,7 @@ const Header = ({ title, showBack = false, onBellClick, rightSlot }) => {
   const navigate = useNavigate();
 
   return (
-    <header className="sticky top-0 z-50 flex w-full items-center justify-between bg-[#FEFEFE] px-4 py-2.5">
+    <header className="sticky top-0 z-50 flex w-full items-center justify-between bg-[#FEFEFE] px-4 py-3 pt-5">
       <div className="flex w-10 items-center">
         {showBack && (
           <button
