@@ -55,6 +55,29 @@ export const useProcedureHistoryQuery = () =>
     queryFn: () => wait(MOCK_PROCEDURE_HISTORY),
   });
 
+// 케이스 등록 완료 mutation
+// 지금은 API가 없어서 mutationFn 안에서 응답을 mock으로 만들어 바로 반환하지만,,,
+// 백엔드 연동 시에는 이 mutationFn 하나만 실제 fetch로 바꾸면 될 거 같아요!
+export const useCreateCaseMutation = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: (formData) =>
+      wait({
+        id: `case-${Date.now()}`,
+        status: '저장 완료',
+        tone: 'orange',
+        date: new Date().toISOString().slice(0, 10).replaceAll('-', '.'),
+        symptomCount: formData.checkedSymptoms.length,
+        symptomArea: formData.symptomArea,
+        }),
+  
+      onSuccess: (newCase) => {
+        queryClient.setQueryData(['recentCases'], (old = []) => [...old, newCase]);
+      },
+    });
+  };
+
 // 홈 - 최근 케이스 목록
 export const useRecentCasesQuery = () =>
   useQuery({

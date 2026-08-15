@@ -9,7 +9,7 @@ const PillToggle = ({
   className = '' 
 }) => {
   return (
-    <div className={`flex w-full gap-2 ${className}`}>
+    <div className={`flex w-full ${className}`}>
       {options.map((option) => {
         const isSelected = selectedValue === option;
         
@@ -19,7 +19,7 @@ const PillToggle = ({
             type="button"
             onClick={() => onChange(option)}
             className={`
-              flex h-11 flex-1 items-center justify-center gap-2.5 rounded-[10px] border px-3.5 py-3 transition-colors
+              flex h-8 flex-1 items-center justify-center gap-2.5 rounded-[10px] border px-3.5 py-3 transition-colors
               cursor-pointer duration-200 ease-in-out
               ${isSelected 
                 ? 'border-[#6B5DD6] bg-[rgba(167,138,244,0.10)]'
@@ -28,7 +28,7 @@ const PillToggle = ({
             `}
           >
             {/* 글씨 스타일 */}
-            <span className="font-wantedsans text-sm font-medium leading-4.5 text-[#212121]">
+            <span className="text-[#181818] font-wantedsans text-[0.75rem] font-medium leading-normal">
               {option}
             </span>
           </button>
