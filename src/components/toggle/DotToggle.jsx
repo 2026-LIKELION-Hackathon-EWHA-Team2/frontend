@@ -33,7 +33,7 @@ const DotToggle = ({
             </div>
 
             {/* 텍스트 영역 */}
-            <span className="whitespace-nowrap font-wantedsans text-xs font-medium leading-normal text-[#181818] transition-colors duration-200 group-hover:text-gray-600">
+            <span className="whitespace-nowrap text-[#181818] font-wantedsans text-[0.5625rem] font-medium leading-normal transition-colors duration-200 group-hover:text-gray-600">
               {option}
             </span>
           </button>

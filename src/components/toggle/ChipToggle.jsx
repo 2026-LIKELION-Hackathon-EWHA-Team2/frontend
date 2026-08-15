@@ -18,7 +18,7 @@ const ChipToggle = ({
   };
 
   return (
-    <div className={`justify-center flex w-full flex-wrap items-center gap-2 ${className}`}>
+    <div className={`justify-between flex w-full flex-wrap items-center gap-2 ${className}`}>
       {options.map((option) => {
         const isSelected = selectedValues.includes(option.id);
 
@@ -33,7 +33,7 @@ const ChipToggle = ({
             }}
             // button 태그 대신 div를 사용해 input 중첩 오류 방지
             className={`
-              relative flex h-18 w-15 shrink-0 cursor-pointer flex-col items-center justify-center gap-0.5 rounded-lg border transition-all duration-200 ease-in-out
+              relative flex h-14 w-14 shrink-0 cursor-pointer flex-col items-center justify-center gap-0.5 rounded-lg border transition-all duration-200 ease-in-out
               ${isSelected
                 ? 'border-[#6B5DD6] bg-[#A78AF4]/10'
                 : 'border-[#DADADA] bg-white hover:bg-gray-50'
@@ -50,13 +50,13 @@ const ChipToggle = ({
             )}
 
             {/* 메인 아이콘 */}
-            <div className="flex h-8 items-center justify-center">
+            <div className="flex h-5 items-center justify-center">
               <img 
                 src={option.icon} 
                 alt={option.label} 
                 className={`
                   object-contain 
-                  ${option.isInput ? 'h-5 w-5' : 'h-8 w-8'} 
+                  ${option.isInput ? 'h-5 w-5' : 'h-6 w-6'} 
                 `} 
               />
             </div>
@@ -84,7 +84,7 @@ const ChipToggle = ({
                 `}
               />
             ) : (
-              <span className={`font-wantedsans text-xs font-medium leading-4 ${isSelected ? 'text-[#6B5DD6]' : 'text-[#181818]'}`}>
+              <span className={`text-center font-wantedsans text-[0.5625rem] font-medium leading-[0.875rem] ${isSelected ? 'text-[#6B5DD6]' : 'text-[#737373]'}`}>
                 {option.label}
               </span>
             )}
