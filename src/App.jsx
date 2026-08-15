@@ -22,6 +22,7 @@ import ProcedureDetailPage from './pages/patient/my/passport/ProcedureDetailPage
 import PatientConsultHistoryPage from './pages/patient/my/passport/ConsultHistoryPage';
 // 환자 - 병원 매칭 및 네트워크
 import HospitalMainPage from './pages/patient/hospital/HospitalMainPage';
+import HospitalSelectCase from './pages/patient/hospital/HospitalSelectCase'; // 케이스 선택 - AI 추천/네트워크 둘러보기 분기점
 import AiMatchingPage from './pages/patient/hospital/matching/AiMatchingPage'; // AI 매칭 퍼널
 import NetworkListPage from './pages/patient/hospital/network/NetworkListPage';
 import NetworkDetailPage from './pages/patient/hospital/network/NetworkDetailPage';
@@ -72,6 +73,7 @@ function App() {
               
               {/* 병원 탭 */}
               <Route path="hospital" element={<HospitalMainPage />} />
+              <Route path="hospital/select-case" element={<HospitalSelectCase />} />
               <Route path="hospital/matching" element={<AiMatchingPage />} />
               <Route path="hospital/network" element={<NetworkListPage />} />
               <Route path="hospital/network/:id" element={<NetworkDetailPage />} />
