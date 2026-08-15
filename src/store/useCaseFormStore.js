@@ -5,7 +5,7 @@ const useCaseFormStore = create((set, get) => ({
   photos: [], // 업로드한 사진 (미리보기용 dataURL 배열)
   symptomArea: [], // 증상 부위 (복수선택, ChipToggle)
   customArea: '', // 증상 부위 직접 입력 시
-  symptomStartDate: '2026.07.19',
+  symptomStartDate: '',
   symptomTiming: '', // '시술 직후' | '시술 후 며칠 뒤'
   symptomDetail: '', // 증상 상세 입력
   painLevel: '보통', // DotToggle 정도...
@@ -30,7 +30,7 @@ const useCaseFormStore = create((set, get) => ({
       photos: [],
       symptomArea: [],
       customArea: '',
-      symptomStartDate: '2026.07.19',
+      symptomStartDate: '',
       symptomTiming: '',
       symptomDetail: '',
       painLevel: '보통',

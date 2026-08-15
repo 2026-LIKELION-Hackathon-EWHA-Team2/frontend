@@ -4,8 +4,19 @@
 
 import { useNavigate } from 'react-router-dom';
 
-const Header = ({ title, showBack = false, onBellClick, rightSlot }) => {
+// onBack: 추가된 prop! 별도로 넘기지 않으면 기존처럼 navigate(-1) 로 동작하고,
+// 넘기면 그 함수가 대신 실행됨 (케이스 등록처럼 한 페이지 안에서 step 상태로만 화면을 전환하는 경우,
+// 브라우저 히스토리가 아니라 이전 step으로 되돌리고 싶을 때 사용)
+
+const Header = ({ title, showBack = false, onBack, onBellClick, rightSlot }) => {
   const navigate = useNavigate();
+  const handleBack = () => {
+    if (onBack) {
+      onBack();
+    } else {
+      navigate(-1);
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 flex w-full items-center justify-between bg-[#FEFEFE] px-4 py-3 pt-5 print:hidden">
@@ -13,7 +24,7 @@ const Header = ({ title, showBack = false, onBellClick, rightSlot }) => {
         {showBack && (
           <button
             type="button"
-            onClick={() => navigate(-1)}
+            onClick={handleBack}
             className="flex cursor-pointer items-center justify-center"
           >
             <img src="/icons/header-back.svg" alt="뒤로가기" className="w-5 h-5" />

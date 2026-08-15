@@ -1,4 +1,4 @@
-import CheckSquare from './CheckSquare';
+import CheckSquare from '../Checksquare';
 
 const SymptomCheckbox = ({ label, description, icon, checked, onChange }) => {
   const toggle = () => onChange?.(!checked);
