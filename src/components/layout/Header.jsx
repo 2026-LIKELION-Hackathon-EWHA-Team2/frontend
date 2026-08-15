@@ -20,7 +20,9 @@ const Header = ({ title, showBack = false, onBellClick, rightSlot }) => {
           </button>
         )}
       </div>
-      <h1 className="text-base font-semibold text-ink-900">{title}</h1>
+      <h1 className="text-center font-wantedsans text-lg font-medium leading-normal text-[#181818] [font-feature-settings:'liga'_off,'clig'_off]">
+        {title}
+      </h1>
       <div className="flex w-10 items-center justify-end">
         {rightSlot ?? (
           <button type="button" onClick={onBellClick} className="flex cursor-pointer items-center justify-center">
