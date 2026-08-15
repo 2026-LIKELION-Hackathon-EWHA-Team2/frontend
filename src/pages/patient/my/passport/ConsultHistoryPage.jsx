@@ -79,11 +79,11 @@ const ConsultHistoryPage = () => {
                 </div>
               </div>
 
-              <p className="text-center font-wantedsans text-xs font-normal text-[#626262]">
+              <p className="mt-3 text-center font-wantedsans text-xs font-normal text-[#626262]">
                 {handover.fromHospital} 등록 · {handover.toHospital} 확인
               </p>
 
-              <div className="flex gap-3">
+              <div className="-mt-3 flex gap-3">
                 <div className="flex-1">
                   <ResultActionButton variant="share" />
                 </div>
