@@ -97,7 +97,7 @@ const CaseUploadPage = () => {
       content: <Step1Photo />,
       buttonLabel: '다음 단계',
       buttonSub:'',
-      disabled: false,
+      disabled: photos.length === 0,
       onClick: nextStep,
     },
     2: {
