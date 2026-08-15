@@ -37,6 +37,20 @@ const HOSPITAL_SUB_STEPS = [
   ['department', 'countryCity', 'hospitalAddress', 'phone', 'website'],
 ];
 
+// 비밀번호 규칙: 8자 이상 + 영문/숫자/특수문자 중 2가지 이상 조합
+const getPasswordError = (password) => {
+  if (!password) return null;
+  if (password.length < 8) return '최소 8자 이상 입력해주세요.';
+
+  const hasLetter = /[a-zA-Z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
+  const hasSpecial = /[^a-zA-Z0-9]/.test(password);
+  const comboCount = [hasLetter, hasNumber, hasSpecial].filter(Boolean).length;
+
+  if (comboCount < 2) return '영문, 숫자, 특수문자 중 2가지 이상을 조합해주세요.';
+  return null;
+};
+
 const Step1Info = ({ onNext }) => {
   const isHospital = useAuthStore((state) => state.role === 'hospital');
   const info = useSignupStore((state) => (isHospital ? state.hospitalInfo : state.patientInfo));
@@ -52,7 +66,8 @@ const Step1Info = ({ onNext }) => {
     ? allFields.filter((field) => HOSPITAL_SUB_STEPS[subStep].includes(field.name))
     : allFields;
 
-  const isFilled = visibleFields.every((field) => info[field.name]?.trim());
+  const passwordError = getPasswordError(info.password);
+  const isFilled = visibleFields.every((field) => info[field.name]?.trim()) && !passwordError;
 
   const handleChange = (name) => (e) => setInfo({ [name]: e.target.value });
 
@@ -77,6 +92,7 @@ const Step1Info = ({ onNext }) => {
             value={info[field.name]}
             onChange={handleChange(field.name)}
             icon={field.icon}
+            error={field.name === 'password' ? passwordError : undefined}
           />
         ))}
       </div>
