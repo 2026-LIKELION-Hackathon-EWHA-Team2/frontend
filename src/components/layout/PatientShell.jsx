@@ -3,8 +3,8 @@ import BottomGNB from './BottomGNB';
 
 const NAV_ITEMS = [
   { path: '/patient/home', label: '홈', icon: 'gnb-home' },
-  { path: '/patient/case/new/upload', label: '케이스', icon: 'gnb-case' },
-  { path: '/patient/hospital-match', label: '병원', icon: 'gnb-hospital' },
+  { path: '/patient/case/upload', label: '케이스', icon: 'gnb-case' },
+  { path: '/patient/hospital', label: '병원', icon: 'gnb-hospital' },
   { path: '/patient/my', label: '마이', icon: 'gnb-my' },
 ];
 
