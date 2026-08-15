@@ -18,7 +18,7 @@ const ChipToggle = ({
   };
 
   return (
-    <div className={`justify-between flex w-full flex-wrap items-center gap-2 ${className}`}>
+    <div className={`justify-between flex w-full flex-wrap items-center ${className}`}>
       {options.map((option) => {
         const isSelected = selectedValues.includes(option.id);
 
