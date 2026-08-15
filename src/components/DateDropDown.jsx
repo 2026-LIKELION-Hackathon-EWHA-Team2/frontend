@@ -54,8 +54,10 @@ const DateDropdown = ({ label, value, onChange, className = '' }) => {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex h-8 w-full items-center justify-between rounded-[0.375rem] border border-[#DADADA] bg-white px-2 py-2
-        text-[#181818] font-wantedsans text-[0.625rem] font-medium leading-normal hover:border-[#6B5DD6]"
+        className={`flex h-8 w-full items-center justify-between rounded-[0.375rem] border bg-white px-2 py-2
+          text-[#181818] font-wantedsans text-[0.625rem] font-medium leading-normal hover:border-[#6B5DD6] ${
+            open ? 'border-[#6B5DD6]' : 'border-[#DADADA]'
+          }`}
       >
         <span className='flex gap-2 items-center'>
           <img src="/icons/calendar-icon.svg" alt="" className="h-4 w-4" />
