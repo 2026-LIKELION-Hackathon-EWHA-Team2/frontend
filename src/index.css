@@ -22,3 +22,7 @@
   --color-purple-3: #EDE8FB;
 
 }
+
+html {
+  scrollbar-gutter: stable;
+}
