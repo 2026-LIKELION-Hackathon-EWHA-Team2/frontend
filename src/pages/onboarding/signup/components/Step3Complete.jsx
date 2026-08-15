@@ -8,14 +8,15 @@ const Step3Complete = () => {
 
   return (
     <div className="flex flex-1 flex-col px-6 pb-10">
-      <div className="mt-40 flex flex-col items-center gap-3 text-center">
-        <p className="font-wantedsans text-xl font-semibold text-[#181818]">
+      <div className="mx-auto mt-40 flex flex-col items-center gap-6.75">
+        <p className="whitespace-nowrap text-center font-wantedsans text-2xl font-medium leading-7.5 text-[#181818]">
           회원가입이 완료되었습니다!
         </p>
-        <p className="font-wantedsans text-sm font-medium leading-[1.6] text-[#626262]">
-          <span className="text-[#6B5DD6]">aftor</span>와 함께
+        <p className="text-center font-wantedsans text-base font-medium leading-5 tracking-[0.48px]">
+          <span className="text-[#6B5DD6]">aftor</span>
+          <span className="text-[#181818]">와 함께</span>
           <br />
-          안전한 회복 여정을 시작해보세요.
+          <span className="text-[#181818]">안전한 회복 여정을 시작해보세요.</span>
         </p>
       </div>
 
