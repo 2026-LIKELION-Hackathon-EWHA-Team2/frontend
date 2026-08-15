@@ -58,7 +58,7 @@ const DateDropdown = ({ label, value, onChange, className = '' }) => {
         text-[#181818] font-wantedsans text-[0.625rem] font-medium leading-normal hover:border-[#6B5DD6]"
       >
         <span className='flex gap-2 items-center'>
-          <img src="/icons/calendar.svg" alt="" className="h-4 w-4" />
+          <img src="/icons/calendar-icon.svg" alt="" className="h-4 w-4" />
         {value}
         </span>
         <img src="/icons/calendar-down.svg" alt="" className="h-4 w-4" />
