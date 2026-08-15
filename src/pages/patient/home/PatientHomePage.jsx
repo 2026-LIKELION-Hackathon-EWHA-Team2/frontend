@@ -5,12 +5,13 @@ import PageContainer from '../../../components/layout/PageContainer';
 import Button from '../../../components/button/Button';
 import QuickLaunch from '../../../components/button/QuickLaunch';
 import Badge from '../../../components/Badge';
-import useCaseStore from '../../../store/useCaseStore';
-import { MOCK_PATIENT } from '../../../mock/mockdata';
+import QueryState from '../../../components/state/QueryState';
+import { usePatientProfileQuery, useRecentCasesQuery } from '../../../hooks/useMockQueries';
 
 const PatientHomePage = () => {
   const navigate = useNavigate();
-  const cases = useCaseStore((state) => state.cases);
+  const { data: patient } = usePatientProfileQuery();
+  const { data: cases, isLoading, isError } = useRecentCasesQuery();
 
   return (
     <>
@@ -31,7 +32,7 @@ const PatientHomePage = () => {
               <h1 className="w-50 font-wantedsans text-2xl font-medium leading-7.5 text-[#181818]">
                 안녕하세요,
                 <br />
-                {MOCK_PATIENT.firstName} 님
+                {patient?.firstName} 님
               </h1>
               <p className="font-wantedsans text-sm font-normal text-[#626262]">
                 귀국 후 건강 상태를 관리해보세요.
@@ -69,30 +70,37 @@ const PatientHomePage = () => {
         <section className="flex flex-col gap-4">
           <h2 className="font-wantedsans text-sm font-bold text-[#181818]">최근 케이스</h2>
 
-          <div className="flex flex-col items-start rounded-[10px] border border-[#EDEDF1] bg-white py-5">
-            {cases.map((c, index) => (
-              <div
-                key={`${c.id}-${index}`}
-                className="flex w-full items-center justify-between gap-3 px-5 pb-7 last:pb-0"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10.5 w-10.5 shrink-0 items-center justify-center rounded-full bg-[#F1F0F3]">
-                    <img src="/icons/home-case.svg" alt="" className="h-5 w-5" />
+          <QueryState
+            isLoading={isLoading}
+            isError={isError}
+            isEmpty={!cases?.length}
+            emptyProps={{ title: '아직 등록된 케이스가 없어요' }}
+          >
+            <div className="flex flex-col items-start rounded-[10px] border border-[#EDEDF1] bg-white py-5">
+              {cases?.map((c, index) => (
+                <div
+                  key={`${c.id}-${index}`}
+                  className="flex w-full items-center justify-between gap-3 px-5 pb-7 last:pb-0"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10.5 w-10.5 shrink-0 items-center justify-center rounded-full bg-[#F1F0F3]">
+                      <img src="/icons/home-case.svg" alt="" className="h-5 w-5" />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <span className="font-wantedsans text-sm font-medium text-[#181818]">
+                        Case #{c.id}
+                      </span>
+                      <span className="font-wantedsans text-[10px] font-normal leading-3.5 text-[#737373]">
+                        {c.date}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-1.5">
-                    <span className="font-wantedsans text-sm font-medium text-[#181818]">
-                      Case #{c.id}
-                    </span>
-                    <span className="font-wantedsans text-[10px] font-normal leading-3.5 text-[#737373]">
-                      {c.date}
-                    </span>
-                  </div>
-                </div>
 
-                <Badge tone={c.tone}>{c.status}</Badge>
-              </div>
-            ))}
-          </div>
+                  <Badge tone={c.tone}>{c.status}</Badge>
+                </div>
+              ))}
+            </div>
+          </QueryState>
         </section>
       </PageContainer>
     </>

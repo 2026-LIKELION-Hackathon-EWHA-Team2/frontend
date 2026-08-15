@@ -23,7 +23,7 @@ const VARIANT_STYLES = {
 
 const Input = forwardRef(
   (
-    { label, id, error, helperText, variant = 'auth', className = '', type = 'text', ...inputProps },
+    { label, id, error, helperText, variant = 'auth', className = '', type = 'text', icon, onIconClick, ...inputProps },
     ref
   ) => {
     const inputId = id ?? inputProps.name;
@@ -43,7 +43,7 @@ const Input = forwardRef(
             ref={ref}
             id={inputId}
             type={isPassword ? (visible ? 'text' : 'password') : type}
-            className={`${styles.input} ${isPassword ? 'pr-11' : ''}`}
+            className={`${styles.input} ${isPassword || icon ? 'pr-11' : ''}`}
             {...inputProps}
           />
           {isPassword && (
@@ -56,6 +56,15 @@ const Input = forwardRef(
                 src={visible ? '/icons/pw-eyes-close.svg' : '/icons/pw-eyes-open.svg'}
                 className={visible ? "w-[1.45rem] h-[1.6rem]" : "w-6 h-6"}
               />
+            </button>
+          )}
+          {!isPassword && icon && (
+            <button
+              type="button"
+              onClick={onIconClick}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 flex items-center justify-center"
+            >
+              <img src={icon} className="w-5 h-5" alt="" />
             </button>
           )}
         </div>

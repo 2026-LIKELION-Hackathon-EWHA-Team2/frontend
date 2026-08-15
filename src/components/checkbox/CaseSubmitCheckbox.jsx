@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import CheckSquare from './CheckSquare';
+import CheckSquare from '../Checksquare';
 
 /*
  * 케이스 전송 화면의 동의 항목 카드 컴포넌트!

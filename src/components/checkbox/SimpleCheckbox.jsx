@@ -1,4 +1,4 @@
-import CheckSquare from './CheckSquare';
+import CheckSquare from '../Checksquare';
 
 /* useState로 checked 상태 관리 해주면 됩니다!
  * 일반적인 동의용 checkbox 컴포넌트 */

@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import {
   MOCK_CONSULT_PATIENTS,
   MOCK_HOSPITALS,
@@ -11,7 +11,7 @@ import {
   MOCK_CONSULT_REQUEST_DETAIL,
   MOCK_QUICK_CONSULT,
   MOCK_AGREEMENT,
-} from '../mock/mockData';
+} from '../mock/mockdata';
 
 // ============================================================
 // 백엔드 연동 시에는 이 파일의 각 queryFn 안쪽만 실제 fetch로 교체!! 
@@ -61,6 +61,13 @@ export const useRecentCasesQuery = () =>
     queryKey: ['recentCases'],
     queryFn: () => wait(MOCK_RECENT_CASES),
   });
+
+// 홈 - 새 케이스 등록 완료 시 '최근 케이스' 목록 캐시에 바로 추가
+export const useAddRecentCase = () => {
+  const queryClient = useQueryClient();
+  return (newCase) =>
+    queryClient.setQueryData(['recentCases'], (old = []) => [...old, newCase]);
+};
 
 // 협진 인계서
 export const useHandoverDocumentQuery = () =>
