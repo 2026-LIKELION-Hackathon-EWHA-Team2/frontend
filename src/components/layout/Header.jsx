@@ -8,7 +8,7 @@ const Header = ({ title, showBack = false, onBellClick, rightSlot }) => {
   const navigate = useNavigate();
 
   return (
-    <header className="sticky top-0 z-50 flex w-full items-center justify-between bg-[#FEFEFE] px-4 py-3 pt-5">
+    <header className="sticky top-0 z-50 flex w-full items-center justify-between bg-[#FEFEFE] px-4 py-3 pt-5 print:hidden">
       <div className="flex w-10 items-center">
         {showBack && (
           <button
@@ -20,7 +20,7 @@ const Header = ({ title, showBack = false, onBellClick, rightSlot }) => {
           </button>
         )}
       </div>
-      <h1 className="text-center font-wantedsans text-lg font-medium leading-normal text-[#181818] [font-feature-settings:'liga'_off,'clig'_off]">
+      <h1 className="text-center font-wantedsans text-lg font-medium leading-normal text-[#181818] font-features-['liga'_off,'clig'_off]">
         {title}
       </h1>
       <div className="flex w-10 items-center justify-end">

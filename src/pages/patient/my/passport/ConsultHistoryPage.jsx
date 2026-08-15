@@ -79,7 +79,7 @@ const ConsultHistoryPage = () => {
                 </div>
               </div>
 
-              <p className="text-center font-wantedsans text-xs font-normal text-[#181818]">
+              <p className="text-center font-wantedsans text-xs font-normal text-[#626262]">
                 {handover.fromHospital} 등록 · {handover.toHospital} 확인
               </p>
 
