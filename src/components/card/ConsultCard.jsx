@@ -8,6 +8,7 @@ const ConsultCard = ({
   date = '2026.07.31',
   status = '확인 서명 완료',
   isSelected = false,
+  showBadge = true,
   onClick,
   className = ''
 }) => {
@@ -68,12 +69,14 @@ const ConsultCard = ({
       </div>
 
       {/* 우측 상단 뱃지 */}
-      <div className="absolute right-[15.162px] top-2.25">
-        {/* status에 따라 tone이 자동으로 바뀜 */}
-        <Badge tone={getBadgeTone(status)} rounded="md" size="lg">
-          {status}
-        </Badge>
-      </div>
+      {showBadge && (
+        <div className="absolute right-[15.162px] top-2.25">
+          {/* status에 따라 tone이 자동으로 바뀜 */}
+          <Badge tone={getBadgeTone(status)} rounded="md" size="lg">
+            {status}
+          </Badge>
+        </div>
+      )}
     </div>
   );
 };
