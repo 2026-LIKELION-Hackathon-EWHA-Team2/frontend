@@ -19,9 +19,11 @@ const SignupPage = () => {
     <div className="flex min-h-screen flex-col bg-white">
       <Header title="회원가입" showBack rightSlot={<></>} />
 
-      <div className="px-6 pt-6">
-        <ProgressSteps steps={STEP_LABELS} currentIndex={step - 1} />
-      </div>
+      {step < 3 && (
+        <div className="px-6 pt-6">
+          <ProgressSteps steps={STEP_LABELS} currentIndex={step - 1} />
+        </div>
+      )}
 
       {step === 1 && <Step1Info onNext={nextStep} />}
       {step === 2 && <Step2Terms onNext={nextStep} onPrev={prevStep} />}

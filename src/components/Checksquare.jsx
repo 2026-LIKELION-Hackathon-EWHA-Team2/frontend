@@ -18,7 +18,7 @@ const CheckSquare = ({
         e.stopPropagation();
         onChange?.(!checked);
       }}
-      className={`flex ${sizeClass} shrink-0 items-center justify-center ${rounded} border transition-colors ${
+      className={`flex ${sizeClass} shrink-0 cursor-pointer items-center justify-center ${rounded} border transition-colors ${
         checked ? `${activeClass} text-white` : `${borderColor} bg-white text-transparent`
       }`}
     >
