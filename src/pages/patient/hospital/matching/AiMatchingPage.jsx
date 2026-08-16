@@ -15,11 +15,20 @@ const AiMatchingPage = () => {
   // 이전 단계로 돌아가는 함수
   const prevStep = () => setStep((prev) => prev - 1);
 
-  return (
-    <div className="p-10 text-center text-xl font-bold">
-
-    </div>
-  );
+  switch (step) {
+    case 1:
+      return <Step1Setting nextStep={nextStep} />;
+    case 2:
+      return <Step2List nextStep={nextStep} prevStep={prevStep} />;
+    case 3:
+      return <Step3Detail nextStep={nextStep} prevStep={prevStep} />;
+    case 4:
+      return <Step4Consent nextStep={nextStep} prevStep={prevStep} />;
+    case 5:
+      return <Step5Complete />;
+    default:
+      return <Step1Setting nextStep={nextStep} />;
+  }
 };
 
 export default AiMatchingPage;

@@ -1,4 +1,4 @@
-import LevelBar from './LevelBar';
+import LevelBar from '../LevelBar';
 
 /*
  * 선호 기준 선택 등에 쓰이는 bar card 컴포넌트!
