@@ -19,32 +19,38 @@ const ProgressSteps = ({ steps, currentIndex, showLabel = true, showCheck = fals
           const rightLineDone = idx < currentIndex; 
   
           return (
-            <li key={step} className="flex flex-1 flex-col items-center">
+            <li key={step} className="flex flex-1 flex-col">
               <div className="flex w-full items-center">
-                <div className={`h-[0.05rem] flex-1 ${idx === 0 ? 'invisible' : leftLineDone ? 'bg-[#6B5DD6]' : 'bg-[#DFDFE4]'}`} />
-                <div
-                  className={`flex ${circleSize} shrink-0 items-center justify-center rounded-full font-medium font-wantedsans ${
-                    filled ? 'bg-[#6B5DD6] text-white' : 'border border-[#C7C7CC] bg-[#FFFEFE] text-[#C7C7CC]'
-                  }`}
-                >
-                  {done && showCheck ? (
-                    <img src="/icons/check-mark.svg" alt="완료" className="h-4 w-4" />
-                  ) : (
-                    <span className="text-sm">{idx + 1}</span>
+                {idx !== 0 && (
+                  <div className={`h-[0.05rem] flex-1 ${leftLineDone ? 'bg-[#6B5DD6]' : 'bg-[#DFDFE4]'}`} />
+                )}
+                {/* 원+라벨을 같은 부모(items-center)로 묶어서 라벨 텍스트 중심이 항상 원 중심과 일치하도록 함 */}
+                <div className="flex shrink-0 flex-col items-center">
+                  <div
+                    className={`flex ${circleSize} shrink-0 items-center justify-center rounded-full font-medium font-wantedsans ${
+                      filled ? 'bg-[#6B5DD6] text-white' : 'border border-[#C7C7CC] bg-[#FFFEFE] text-[#C7C7CC]'
+                    }`}
+                  >
+                    {done && showCheck ? (
+                      <img src="/icons/check-mark.svg" alt="완료" className="h-4 w-4" />
+                    ) : (
+                      <span className="text-sm">{idx + 1}</span>
+                    )}
+                  </div>
+                  {showLabel && (
+                    <span
+                      className={`mt-1 whitespace-nowrap font-wantedsans text-[0.625rem] font-medium leading-normal ${
+                        filled ? 'text-[#6B5DD6]' : 'text-[#C7C7CC]'
+                      }`}
+                    >
+                      {step}
+                    </span>
                   )}
                 </div>
-                <div
-                  className={`h-[0.05rem] flex-1 ${
-                    idx === steps.length - 1 ? 'invisible' : rightLineDone ? 'bg-[#6B5DD6]' : 'bg-[#DFDFE4]'
-                  }`}
-                />
+                {idx !== steps.length - 1 && (
+                  <div className={`h-[0.05rem] flex-1 ${rightLineDone ? 'bg-[#6B5DD6]' : 'bg-[#DFDFE4]'}`} />
+                )}
               </div>
-              {showLabel && (
-                <span className={`mt-1 font-wantedsans text-[0.625rem] font-medium leading-normal 
-                ${filled ? 'text-[#6B5DD6]' : 'text-[#C7C7CC]'}`}>
-                  {step}
-                </span>
-              )}
             </li>
           );
         })}
