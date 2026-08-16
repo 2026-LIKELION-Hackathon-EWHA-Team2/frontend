@@ -133,7 +133,7 @@ const CaseSyncPage = () => {
           </p>
         )}
         {current.progressIndex !== null && (
-          <div className='px-[0.2rem] mb-10'>
+          <div className='px-[0.2rem] mb-7'>
             <ProgressSteps steps={PROGRESS_STEPS} currentIndex={current.progressIndex} showCheck />
           </div>
         )}
