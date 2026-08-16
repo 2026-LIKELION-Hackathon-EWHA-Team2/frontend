@@ -4,7 +4,7 @@ import BottomGNB from './BottomGNB';
 const NAV_ITEMS = [
   { path: '/hospital/home', label: '홈', icon: 'gnb-home' },
   { path: '/hospital/case', label: '케이스', icon: 'gnb-case' },
-  { path: '/hospital/chat', label: '채팅', icon: 'gnb-consult' },
+  { path: '/hospital/chat', label: '채팅', icon: 'gnb-patient' },
 ];
 
 /* 병원 측 화면 GNB shell */
