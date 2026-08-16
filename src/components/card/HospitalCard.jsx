@@ -19,7 +19,7 @@ const HospitalCard = ({ image, name, department, distance, onDetailClick }) => {
             {department}
           </p>
           <div className="flex items-center gap-1">
-            <img src="/icons/location-gray.svg" alt="" className="h-2.5 w-2.5" />
+            <img src="/icons/location-black.svg" alt="" className="h-2.5 w-2.5" />
             <span className="font-wantedsans text-[10px] font-medium leading-normal text-[#626262]">
               {distance}
             </span>
