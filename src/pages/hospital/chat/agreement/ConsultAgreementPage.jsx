@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Step1AiDraft from './components/Step1AiDraft';
 import Step2Edit from './components/Step2Edit';
-import Step3Final from './components/Step3Final';
+import Step3EditComplete from './components/Step3EditComplete';
+import Step4Final from './components/Step4Final';
 
 const ConsultAgreementPage = () => {
   const [step, setStep] = useState(1);

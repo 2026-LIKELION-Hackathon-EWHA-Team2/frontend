@@ -30,16 +30,14 @@ import PatientCaseSyncPage from './pages/patient/hospital/sync/CaseSyncPage'; //
 
 // [병원]
 import HospitalHomePage from './pages/hospital/home/HospitalHomePage';
-// 병원 - 환자 조회
-import PatientListPage from './pages/hospital/patients/PatientListPage';
-import HospitalPatientDetailPage from './pages/hospital/patients/PatientDetailPage';
-// 병원 - 협진
-import ConsultRequestListPage from './pages/hospital/consult/ConsultRequestListPage';
-import ConsultRoomPage from './pages/hospital/consult/ConsultRoomPage';
-import ConsultAgreementPage from './pages/hospital/consult/agreement/ConsultAgreementPage'; // AI 합의서 퍼널
-import ConsultRequestDetail from './pages/hospital/consult/ConsultRequestDetail';
-// 병원 - 케이스 동기화
-import HospitalCaseSyncPage from './pages/hospital/sync/HospitalCaseSyncPage'; // 동기화 퍼널
+// 병원 - 케이스 (환자 조회 + 협진 요청)
+import ConsultRequestListPage from './pages/hospital/case/ConsultRequestListPage';
+import HospitalPatientDetailPage from './pages/hospital/case/PatientDetailPage';
+import ConsultRequestDetail from './pages/hospital/case/ConsultRequestDetail';
+// 병원 - 채팅
+import ChatListPage from './pages/hospital/chat/ChatListPage';
+import ChatRoomPage from './pages/hospital/chat/ChatRoomPage';
+import ConsultAgreementPage from './pages/hospital/chat/agreement/ConsultAgreementPage'; // AI 합의서 퍼널
 
 
 
@@ -89,16 +87,16 @@ function App() {
             {/* Hospital 라우트 */}
             <Route path="/hospital" element={<HospitalShell />}>
               <Route path="home" element={<HospitalHomePage />} />
-              
-              {/* 환자 탭 */}
-              <Route path="patients" element={<PatientListPage />} />
-              <Route path="patients/:id" element={<HospitalPatientDetailPage />} />
-              <Route path="patients/request/:id" element={<ConsultRequestDetail />} />
-              
-              {/* 협진 탭 */}
-              <Route path="consult" element={<ConsultRequestListPage />} />
-              <Route path="consult/room/:id" element={<ConsultRoomPage />} />
-              <Route path="consult/agreement/:id" element={<ConsultAgreementPage />} />
+
+              {/* 케이스 탭 */}
+              <Route path="case" element={<ConsultRequestListPage />} />
+              <Route path="case/:id" element={<HospitalPatientDetailPage />} />
+              <Route path="case/request/:id" element={<ConsultRequestDetail />} />
+
+              {/* 채팅 탭 */}
+              <Route path="chat" element={<ChatListPage />} />
+              <Route path="chat/room/:id" element={<ChatRoomPage />} />
+              <Route path="chat/agreement/:id" element={<ConsultAgreementPage />} />
 
               {/* 동기화 플로우 */}
               <Route path="sync" element={<HospitalCaseSyncPage />} />

@@ -1,4 +1,4 @@
-// 신속 협진 메인 화면 (실시간 채팅 UI)
+// 신속 협진 화면 (실시간 채팅 UI)
 
 const ConsultRoomPage = () => {
   return (
