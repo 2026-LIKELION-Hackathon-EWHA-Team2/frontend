@@ -125,7 +125,7 @@ const CaseSyncPage = () => {
 
   return (
     <div className="flex h-[calc(100dvh-4.875rem)] flex-col bg-white">
-      <Header title="케이스 동기화" showBack onBack={step > 0 ? prevStep : undefined} rightSlot={<></>} />
+      <Header title="케이스 동기화" showBack onBack={step > 0 ? prevStep : () => navigate(-1)} rightSlot={<></>} />
 
       <PageContainer className={current.containerClassName}>
         {current.subtitle && (
