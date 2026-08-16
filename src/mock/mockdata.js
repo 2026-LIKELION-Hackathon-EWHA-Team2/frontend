@@ -268,6 +268,7 @@ export const MOCK_CONSULT_PATIENTS = [
     caseId: '2026-0708',
     name: 'Anna Kim',
     age: 32,
+    gender: '여',
     consultType: '이마 보톡스 상담',
     hospital: 'Seoul Beauty Clinic',
     requestedAt: '2026.08.03 09:20',
@@ -287,6 +288,7 @@ export const MOCK_CONSULT_PATIENTS = [
     caseId: '2026-0625',
     name: 'Brian Lee',
     age: 28,
+    gender: '남',
     consultType: '색소 치료 상담',
     hospital: 'Tokyo Medical',
     requestedAt: '2026.08.14 15:42',
@@ -305,6 +307,7 @@ export const MOCK_CONSULT_PATIENTS = [
     caseId: '2026-0420',
     name: '김민수',
     age: 39,
+    gender: '남',
     consultType: '여드름 흉터 치료상담',
     hospital: 'Busan Skin Center',
     requestedAt: '2026.04.24 18:30',
@@ -323,6 +326,7 @@ export const MOCK_CONSULT_PATIENTS = [
     caseId: '2026-0720',
     name: 'David Park',
     age: 45,
+    gender: '남',
     consultType: '리프팅 상담',
     hospital: 'Gangnam Dermatology',
     requestedAt: '2026.07.20 11:10',
@@ -341,6 +345,7 @@ export const MOCK_CONSULT_PATIENTS = [
     caseId: '2026-0706',
     name: 'Jane Lee',
     age: 30,
+    gender: '여',
     consultType: '필러(입술) 상담',
     hospital: 'Miso Aesthetic clinic',
     requestedAt: '2026.07.06 10:00',
@@ -359,6 +364,7 @@ export const MOCK_CONSULT_PATIENTS = [
     caseId: '2026-0605',
     name: 'Chris Jung',
     age: 33,
+    gender: '남',
     consultType: '울쎄라 상담',
     hospital: 'Cheongdam Clinic',
     requestedAt: '2026.06.05 09:30',
@@ -377,6 +383,7 @@ export const MOCK_CONSULT_PATIENTS = [
     caseId: '2026-0405',
     name: 'Lusis Freeman',
     age: 41,
+    gender: '남',
     consultType: '색소치료 상담',
     hospital: 'Cheongdam Clinic',
     requestedAt: '2026.04.05 13:20',
@@ -395,6 +402,7 @@ export const MOCK_CONSULT_PATIENTS = [
     caseId: '2026-0516',
     name: 'Sato Aoi',
     age: 27,
+    gender: '여',
     consultType: '턱 보톡스 상담',
     hospital: 'Osaka Aesthetic Clinic',
     requestedAt: '2026.07.14 11:41',
@@ -410,15 +418,10 @@ export const MOCK_CONSULT_PATIENTS = [
   },
 ];
 
+// 병원 홈 - 통계(전체 수신/검토중/완료)와 진행 중 협진 목록은 MOCK_CONSULT_PATIENTS에서 직접 집계해서 사용 (데이터 이중관리로 인한 불일치 방지)
 export const MOCK_HOSPITAL_HOME = {
   hospitalName: 'Tokyo Medical',
   doctorName: 'Dr. tokyo',
-  stats: { total: 3, reviewing: 1, doneToday: 2 },
-  ongoingConsults: [
-    { caseId: '2026-0708', status: '신속 협진 진행중', tone: 'purple', date: '2026.07.08', desc: '이마 보톡스' },
-    { caseId: '2026-0708', status: '답변 완료', tone: 'mint', date: '2026.07.08', desc: '스킨보톡스' },
-    { caseId: '2026-0708', status: '자국 병원 검토중', tone: 'blue', date: '2026.07.08', desc: '스킨보톡스' },
-  ],
 };
 
 // 협진 요청 상세 (2-3 환자케이스보기 -> 화살표로 이어지는 협진 요청 상세 화면)

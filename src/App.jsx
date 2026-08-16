@@ -97,9 +97,6 @@ function App() {
               <Route path="chat" element={<ChatListPage />} />
               <Route path="chat/room/:id" element={<ChatRoomPage />} />
               <Route path="chat/agreement/:id" element={<ConsultAgreementPage />} />
-
-              {/* 동기화 플로우 */}
-              <Route path="sync" element={<HospitalCaseSyncPage />} />
             </Route>
             
           </Routes>
