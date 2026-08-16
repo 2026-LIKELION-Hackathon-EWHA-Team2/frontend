@@ -127,7 +127,7 @@ const CaseUploadPage = () => {
       content: <Step4Certificate />,
       buttonLabel: isSubmitting ? '등록중' : '완료',
       buttonSub:'',
-      disabled: isSubmitting,
+      disabled: isSubmitting || !hospital || !diagnosisFile,
       onClick: handleComplete,
     },
   };
@@ -136,7 +136,7 @@ const CaseUploadPage = () => {
 
   return (
     <div className="flex h-[calc(100dvh-4.875rem)] flex-col bg-white">
-      <Header title="케이스 등록" showBack onBack={step > 0 ? prevStep : undefined} />
+      <Header title="케이스 등록" showBack onBack={step > 0 ? prevStep : undefined} rightSlot={<></>}/>
 
       <PageContainer className={current.containerClassName}>
         {current.subtitle && (
@@ -145,7 +145,7 @@ const CaseUploadPage = () => {
           </p>
         )}
         {current.progressIndex !== null && (
-          <div className='-mx-14 mb-10'>
+          <div className='px-[0.2rem] mb-10'>
             <ProgressSteps steps={PROGRESS_STEPS} currentIndex={current.progressIndex} showCheck />
           </div>
         )}
