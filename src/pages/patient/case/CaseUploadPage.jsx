@@ -27,7 +27,7 @@ const CaseUploadPage = () => {
   const { mutate: createCase, isPending: isSubmitting } = useCreateCaseMutation();
 
   // 다른 페이지에서 navigate('/patient/case/upload', { state: { initialStep: 1 } }) 형태로 넘기면
-  // 인트로를 건너뛰고 원하는 step 부터 바로 시작할 수 있더라구요!!
+  // 인트로를 건너뛰고 원하는 step 부터 바로 시작할 수 있더라구요!! -> 굿 짱이에요
   const [step, setStep] = useState(location.state?.initialStep ?? 0);
 
   // 하단 버튼의 활성화(disabled) 조건, 완료 처리 로직에 store 값이 필요해서 부모에서 직접 구독하도록
@@ -136,7 +136,7 @@ const CaseUploadPage = () => {
 
   return (
     <div className="flex h-[calc(100dvh-4.875rem)] flex-col bg-white">
-      <Header title="케이스 등록" showBack onBack={step > 0 ? prevStep : undefined} rightSlot={<></>}/>
+      <Header title="케이스 등록" showBack onBack={step > 0 ? prevStep : undefined} rightSlot={<></>} />
 
       <PageContainer className={current.containerClassName}>
         {current.subtitle && (

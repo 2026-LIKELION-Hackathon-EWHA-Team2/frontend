@@ -43,21 +43,21 @@ const LevelBar = ({ value, onChange, steps = 4, disabled = false }) => {
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
     >
-      <div
-        className="absolute left-0 top-0 h-full rounded-full bg-[#6B5DD6]"
-        style={{ width: `${percent}%` }}
-      />
       {Array.from({ length: steps }, (_, i) => i + 1).map((step) => {
-        if (step <= value) return null;
+        if (step === 1) return null;
         const dotPercent = ((step - 1) / (steps - 1)) * 100;
         return (
           <div
             key={step}
-            className="absolute top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#EDEDF1]"
+            className="absolute top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#D9D9DF]"
             style={{ left: `${dotPercent}%` }}
           />
         );
       })}
+      <div
+        className="absolute left-0 top-0 h-full rounded-full bg-[#6B5DD6]"
+        style={{ width: `${percent}%` }}
+      />
       <div
         className="absolute top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#6B5DD6]"
         style={{ left: `${percent}%` }}
