@@ -113,7 +113,7 @@ const CaseSyncPage = () => {
     5: {
       subtitle: 'AI가 의료 정보를 번역하고 구조화합니다.',
       progressIndex: null,
-      containerClassName: 'flex flex-1 flex-col',
+      containerClassName: '',
       content: <Step5Complete />,
       buttonLabel: '확인',
       disabled: false,
