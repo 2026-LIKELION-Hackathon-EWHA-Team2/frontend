@@ -25,7 +25,7 @@ const AiMatchingPage = () => {
     case 4:
       return <Step4Consent nextStep={nextStep} prevStep={prevStep} />;
     case 5:
-      return <Step5Complete />;
+      return <Step5Complete prevStep={prevStep} />;
     default:
       return <Step1Setting nextStep={nextStep} />;
   }
