@@ -51,7 +51,8 @@ const Step1Photo = () => {
         {photos.length > 0 ? (
           <div className="flex flex-wrap justify-center gap-2 px-4">
             {photos.map((p, idx) => (
-              <img key={idx} src={p} alt={`업로드 사진 ${idx + 1}`} className="h-16 w-16 rounded-lg object-cover" />
+              <img key={idx} src={p} alt={`업로드 사진 ${idx + 1}`} 
+              className={`rounded-lg object-cover ${photos.length >= 4 ? 'h-12 w-12' : 'h-16 w-16'}`}/>
             ))}
           </div>
         ) : (
