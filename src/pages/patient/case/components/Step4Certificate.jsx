@@ -5,7 +5,7 @@ import useCaseFormStore from '../../../../store/useCaseFormStore';
 import { useHospitalListQuery } from '../../../../hooks/useMockQueries'; // 일단은 네트워크 병원 리스트 받아오는 걸로
 
 const Step4Certificate = () => {
-  const { data: hospitals } = useHospitalListQuery();
+  const { data: hospitals, isLoading, isError } = useHospitalListQuery(); // ✅ isLoading, isError 추가로 꺼내옴
   const { setHospital, diagnosisFile, setDiagnosisFile } = useCaseFormStore();
 
   const [hospitalQuery, setHospitalQuery] = useState('');
@@ -57,20 +57,37 @@ const Step4Certificate = () => {
           />
         </div>
 
-        {showHospitalList && hospitalQuery && filteredHospitals.length > 0 && (
+        {showHospitalList && hospitalQuery && (
           <ul className="absolute mt-[0.1rem] z-10 max-h-48 w-full overflow-y-auto rounded-[0.625rem] border border-[#EDEDF1] bg-white shadow-md">
-            {filteredHospitals.map((h) => (
-              <li key={h.id}>
-                <button
-                  type="button"
-                  onClick={() => handleSelectHospital(h)}
-                  className="flex w-full flex-col items-start gap-0.5 px-3 py-2 text-left hover:bg-[#FAFAFA]"
-                >
-                  <span className="font-wantedsans text-xs font-medium text-[#181818]">{h.name}</span>
-                  <span className="font-wantedsans text-[0.625rem] font-normal text-[#9F9F9F]">{h.department}</span>
-                </button>
+            {isLoading && (
+              <li className="px-3 py-2.5 font-wantedsans text-[0.625rem] font-normal text-[#9F9F9F]">
+                병원 목록 불러오는 중...
               </li>
-            ))}
+            )}
+            {!isLoading && isError && (
+              <li className="px-3 py-2.5 font-wantedsans text-[0.625rem] font-normal text-[#9F9F9F]">
+                병원 목록을 불러오지 못했습니다
+              </li>
+            )}
+            {!isLoading && !isError && filteredHospitals.length === 0 && (
+              <li className="px-3 py-2.5 font-wantedsans text-[0.625rem] font-normal text-[#9F9F9F]">
+                검색 결과가 없습니다
+              </li>
+            )}
+            {!isLoading &&
+              !isError &&
+              filteredHospitals.map((h) => (
+                <li key={h.id}>
+                  <button
+                    type="button"
+                    onClick={() => handleSelectHospital(h)}
+                    className="flex w-full flex-col items-start gap-0.5 px-3 py-2 text-left hover:bg-[#FAFAFA]"
+                  >
+                    <span className="font-wantedsans text-xs font-medium text-[#181818]">{h.name}</span>
+                    <span className="font-wantedsans text-[0.625rem] font-normal text-[#9F9F9F]">{h.department}</span>
+                  </button>
+                </li>
+              ))}
           </ul>
         )}
       </div>
