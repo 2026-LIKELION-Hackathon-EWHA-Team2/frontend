@@ -24,6 +24,7 @@ const CaseSubmitCheckbox = ({ title, items, checkedList, onChangeList }) => {
                   <label className="flex cursor-pointer items-center gap-2 py-1.5">
                     <CheckSquare
                       checked={checkedList[idx]}
+                      size='md'
                       onChange={(next) => {
                         const updated = [...checkedList];
                         updated[idx] = next;

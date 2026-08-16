@@ -39,7 +39,7 @@ const Step5Complete = ({ prevStep }) => {
           <p className="text-center font-wantedsans text-[11px] font-normal text-[#8C8C8C]">
             동의한 개인 정보가 병원 진료에 활용될 수 있습니다.
           </p>
-          <Button variant="primary" to="/patient/hospital/sync" onClick={reset}>
+          <Button variant="primary" to="/patient/hospital/sync">
             병원과 동기화하기
           </Button>
         </div>
