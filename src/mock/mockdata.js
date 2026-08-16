@@ -39,7 +39,13 @@ export const MOCK_CASES = [
   {
     id: 'case01',
     title: 'Case 01',
-    thumbnails: [],
+    thumbnails: [
+      '/icons/photo-none.svg',
+      '/icons/photo-none.svg',
+      '/icons/photo-none.svg',
+      '/icons/photo-none.svg',
+      '/icons/photo-none.svg',
+      '/icons/photo-none.svg',],
     recordedAt: '2025.07.09',
     symptoms: '붉음, 붓기',
     symptomStartedAt: '2025.07.18',

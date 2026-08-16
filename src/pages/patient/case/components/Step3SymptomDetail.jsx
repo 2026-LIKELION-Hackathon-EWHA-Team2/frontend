@@ -51,7 +51,7 @@ const Step3SymptomDetail = () => {
       <DateDropdown label="증상 시작일" value={symptomStartDate} onChange={setSymptomStartDate} />
 
       <p className="mt-5 mb-2 text-[#181818] font-wantedsans text-[0.75rem] font-bold leading-normal">증상 발생 시점</p>
-      <PillToggle options={TIMING_OPTIONS} selectedValue={symptomTiming} onChange={setSymptomTiming} />
+      <PillToggle options={TIMING_OPTIONS} selectedValue={symptomTiming} onChange={setSymptomTiming} className='h-8'/>
       
       <Textarea
           label="증상 상세 설명"

@@ -7,16 +7,23 @@ import QueryState from '../../../components/state/QueryState';
 import Button from '../../../components/button/Button';
 import CaseSelectCard from '../../../components/card/CaseSelectCard';
 import { useCaseListQuery } from '../../../hooks/useMockQueries';
+import useHospitalMatchStore from '../../../store/useHospitalMatchStore';
 
 const HospitalSelectCase = () => {
   const { data: cases, isLoading, isError } = useCaseListQuery();
   const [selectedId, setSelectedId] = useState(null);
+  const setSelectedCaseId = useHospitalMatchStore((state) => state.setSelectedCaseId);
 
   useEffect(() => {
     if (cases?.length && !selectedId) {
       setSelectedId(cases[0].id);
     }
   }, [cases, selectedId]);
+
+  // 선택한 케이스를 매칭 store에도 그대로 반영 (이후 단계에서 계속 참조 필요해서요 ㅠ)
+  useEffect(() => {
+    if (selectedId) setSelectedCaseId(selectedId);
+  }, [selectedId, setSelectedCaseId]);
 
   return (
     <div className="flex min-h-screen flex-col">

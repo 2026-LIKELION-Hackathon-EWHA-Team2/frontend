@@ -19,7 +19,7 @@ const PillToggle = ({
             type="button"
             onClick={() => onChange(option)}
             className={`
-              flex h-8 flex-1 items-center justify-center gap-2.5 rounded-[10px] border px-3.5 py-3 transition-colors
+              flex flex-1 items-center justify-center gap-2.5 rounded-[10px] border px-3.5 py-3 transition-colors
               cursor-pointer duration-200 ease-in-out
               ${isSelected 
                 ? 'border-[#6B5DD6] bg-[rgba(167,138,244,0.10)]'
