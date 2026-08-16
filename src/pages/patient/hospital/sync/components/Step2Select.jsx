@@ -18,7 +18,6 @@ const Step2Select = () => {
   } = useCaseSyncStore();
 
   const selectedCase = cases.find((c) => c.id === selectedCaseId);
-  console.log('selectedCaseId:', selectedCaseId, 'cases:', cases, 'selectedCase:', selectedCase);
 
   // 케이스 데이터를 '케이스 검토(Step3)'에서 쓸 store 필드로 동기화
   // (실제 연동 시엔 이 자리에서 AI 구조화 API를 호출해 응답으로 set 하면 될 것 같아요!!)
