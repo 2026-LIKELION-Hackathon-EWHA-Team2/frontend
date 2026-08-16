@@ -32,7 +32,7 @@ const CaseSyncPage = () => {
   const { patientName, agreements, setSelectedCaseId, setTargetHospital, setIsSent, reset } = useCaseSyncStore();
 
   // '병원과 동기화하기' 버튼으로 이 페이지에 진입할 때 매칭 store 값을 그대로 승계받기!
-  const { selectedCaseId: matchedCaseId, selectedHospitalId } = useHospitalMatchStore();
+  const { selectedCaseId: matchedCaseId, selectedHospitalId, reset: resetHospitalMatch } = useHospitalMatchStore();
   const { data: hospitals = [] } = useHospitalListQuery();
 
   const nextStep = () => setStep((prev) => prev + 1);
@@ -66,10 +66,11 @@ const CaseSyncPage = () => {
         reset(); // 이전에 입력하다 만 값이 남아있지 않도록 진입 시 초기화
         // 매칭 완료 단계에서 넘어온 케이스/병원 정보 승계
         if (matchedCaseId) setSelectedCaseId(matchedCaseId);
-        const matchedHospital = hospitals.find((h) => h.id === selectedHospitalId);
+        const matchedHospital = hospitals.find((h) => h.id === (selectedHospitalId ?? 'tokyo-medical'));
         if (matchedHospital) {
           setTargetHospital({ name: matchedHospital.name, info: `일본 · ${matchedHospital.department}` });
         }
+        resetHospitalMatch(); // 값 다 승계받았으니 매칭 store는 다음 매칭을 위해 초기화
         nextStep();
       },
     },
