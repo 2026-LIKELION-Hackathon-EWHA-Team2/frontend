@@ -5,7 +5,7 @@ const CheckSquare = ({
   onChange,
   size = 'sm',
   borderColor = 'border-[#626262]',
-  activeClass = 'border-[#6429FF] bg-[#6429FF]',
+  activeClass = 'border-[#6B5DD6] bg-[#6B5DD6]',
   rounded = 'rounded-sm',
 }) => {
   const sizeClass = size === 'md' ? 'h-[1.25rem] w-[1.25rem]' : 'h-[0.875rem] w-[0.875rem]';
