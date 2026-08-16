@@ -1,6 +1,6 @@
-// 최종 협진 합의 완료
+// 내용 수정 폼
 
-const Step3Final = () => {
+const Step3EditComplete = () => {
   return (
     <div className="p-10 text-center text-xl font-bold">
 
@@ -8,4 +8,4 @@ const Step3Final = () => {
   );
 };
 
-export default Step3Final;
+export default Step3EditComplete;
