@@ -55,7 +55,7 @@ const ConsultRequestListPage = () => {
 
         <div className="flex flex-col gap-2">
           {isLoading && (
-            <p className="py-10 text-center font-wantedsans text-sm text-[#9F9F9F]">불러오는 중...</p>
+            <QueryState isLoading={true}></QueryState>
           )}
 
           {!isLoading && visiblePatients.length === 0 && (
