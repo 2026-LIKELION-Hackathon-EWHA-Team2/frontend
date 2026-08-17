@@ -521,4 +521,4 @@ export const MOCK_AGREEMENT = {
   ],
 };
 
-export const AI_SUMMARY_NOTE = 'AI는 초안 정리만 수행하며, 최종 의료 판단과 후속 조치는 양측 의료진이 직접 확인합니다.';
+export const AI_SUMMARY_NOTE = 'AI는 초안 정리만 수행하며,\n최종 의료 판단과 후속 조치는 양측 의료진이 직접 확인합니다.';

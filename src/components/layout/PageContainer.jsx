@@ -15,7 +15,7 @@ const PageContainer = ({ children, className = '' }) => {
   }, [pathname]);
 
   return (
-    <main ref={mainRef} className={`pb-10 flex-1 overflow-y-auto scrollbar-none px-[1.375rem] ${className}`}>
+    <main ref={mainRef} className={`pb-10 flex-1 overflow-y-auto scrollbar-none px-5.5 ${className}`}>
       {children}
     </main>
   );
