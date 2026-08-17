@@ -120,6 +120,22 @@ export const useQuickConsultQuery = () =>
     queryFn: () => wait(MOCK_QUICK_CONSULT),
   });
 
+// 병원 신속 협진 - 새 메시지 전송 (mock, 캐시에 바로 append)
+export const useSendQuickConsultMessage = () => {
+  const queryClient = useQueryClient();
+  return (text) =>
+    queryClient.setQueryData(['quickConsult'], (old) => {
+      if (!old) return old;
+      const myName = old.messages.find((m) => m.mine)?.from ?? old.messages[0]?.from;
+      const now = new Date();
+      const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      return {
+        ...old,
+        messages: [...old.messages, { from: myName, text, textJa: text, time, mine: true }],
+      };
+    });
+};
+
 // 협진 합의 - AI 정리 초안 (useAgreementStore 초기화에 사용하는 형식으로 구현 생각중...)
 export const useAgreementDraftQuery = () =>
   useQuery({

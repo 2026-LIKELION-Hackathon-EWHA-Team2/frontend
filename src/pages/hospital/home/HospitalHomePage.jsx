@@ -30,22 +30,22 @@ const HospitalHomePage = () => {
             <img
               src="/icons/hospital-gradient.svg"
               alt=""
-              className="pointer-events-none absolute right-4 top-9 h-35 w-35"
+              className="pointer-events-none absolute right-2 top-11 h-37 w-37"
             />
 
             <div className="relative z-10 flex flex-col gap-5 px-5 pt-11 pb-5">
               <div className="flex flex-col gap-2">
-                <h1 className="w-50 font-wantedsans text-2xl font-medium leading-7.5 text-[#181818]">
+                <h1 className="w-full whitespace-nowrap font-wantedsans text-[22px] font-medium leading-7.5 text-[#181818]">
                   안녕하세요,
                   <br />
                   {home.hospitalName} 님
                 </h1>
-                <p className="font-wantedsans text-sm font-normal text-[#626262]">
+                <p className="font-wantedsans text-sm font-normal pt-4 text-[#626262]">
                   {home.doctorName}님 오늘의 협진 현황이에요
                 </p>
               </div>
 
-              <div className="flex justify-center gap-2">
+              <div className=" flex justify-center gap-2">
                 {[
                   ['전체 수신', totalCount],
                   ['검토중', reviewingCount],

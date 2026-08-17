@@ -261,7 +261,7 @@ export const MOCK_HANDOVER_DOCUMENT = {
   confirmedAt: '2026. 07. 31',
 };
 
-// 병원측 - 협진 요청함 / 환자 조회 목록
+// 병원측 - 협진 요청함 / 환자 조회 / 채팅 목록 (환자 케이스 하나당 협진 상대 병원과의 채팅방 1개)
 export const MOCK_CONSULT_PATIENTS = [
   {
     id: 'p1',
@@ -270,8 +270,9 @@ export const MOCK_CONSULT_PATIENTS = [
     age: 32,
     gender: '여',
     consultType: '이마 보톡스 상담',
-    hospital: 'Seoul Beauty Clinic',
+    hospital: 'Tokyo Medical',
     requestedAt: '2026.08.03 09:20',
+    unreadCount: 1,
     status: 'new',
     photos: ['/icons/case-thumb-1.svg', '/icons/case-thumb-2.svg', '/icons/case-thumb-3.svg', '/icons/case-thumb-4.svg'],
     symptomTags: ['붓기', '가려움'],
@@ -292,6 +293,7 @@ export const MOCK_CONSULT_PATIENTS = [
     consultType: '색소 치료 상담',
     hospital: 'Tokyo Medical',
     requestedAt: '2026.08.14 15:42',
+    unreadCount: 3,
     status: 'new',
     photos: ['/icons/case-thumb-2.svg', '/icons/case-thumb-3.svg'],
     symptomTags: ['붓기'],
@@ -311,6 +313,7 @@ export const MOCK_CONSULT_PATIENTS = [
     consultType: '여드름 흉터 치료상담',
     hospital: 'Busan Skin Center',
     requestedAt: '2026.04.24 18:30',
+    unreadCount: 3,
     status: 'reviewing',
     photos: ['/icons/case-thumb-1.svg'],
     symptomTags: ['가려움'],
@@ -330,6 +333,7 @@ export const MOCK_CONSULT_PATIENTS = [
     consultType: '리프팅 상담',
     hospital: 'Gangnam Dermatology',
     requestedAt: '2026.07.20 11:10',
+    unreadCount: 2,
     status: 'reviewing',
     photos: ['/icons/case-thumb-3.svg'],
     symptomTags: ['통증'],
@@ -349,6 +353,7 @@ export const MOCK_CONSULT_PATIENTS = [
     consultType: '필러(입술) 상담',
     hospital: 'Miso Aesthetic clinic',
     requestedAt: '2026.07.06 10:00',
+    unreadCount: 1,
     status: 'done',
     photos: ['/icons/case-thumb-2.svg'],
     symptomTags: ['붓기'],
@@ -368,6 +373,7 @@ export const MOCK_CONSULT_PATIENTS = [
     consultType: '울쎄라 상담',
     hospital: 'Cheongdam Clinic',
     requestedAt: '2026.06.05 09:30',
+    unreadCount: 4,
     status: 'reviewing',
     photos: ['/icons/case-thumb-1.svg', '/icons/case-thumb-2.svg'],
     symptomTags: ['통증', '붓기'],
@@ -387,6 +393,7 @@ export const MOCK_CONSULT_PATIENTS = [
     consultType: '색소치료 상담',
     hospital: 'Cheongdam Clinic',
     requestedAt: '2026.04.05 13:20',
+    unreadCount: 2,
     status: 'reviewing',
     photos: ['/icons/case-thumb-3.svg'],
     symptomTags: ['가려움'],
@@ -406,6 +413,7 @@ export const MOCK_CONSULT_PATIENTS = [
     consultType: '턱 보톡스 상담',
     hospital: 'Osaka Aesthetic Clinic',
     requestedAt: '2026.07.14 11:41',
+    unreadCount: 2,
     status: 'done',
     photos: ['/icons/case-thumb-2.svg'],
     symptomTags: [],
@@ -420,8 +428,8 @@ export const MOCK_CONSULT_PATIENTS = [
 
 // 병원 홈 - 통계(전체 수신/검토중/완료)와 진행 중 협진 목록은 MOCK_CONSULT_PATIENTS에서 직접 집계해서 사용 (데이터 이중관리로 인한 불일치 방지)
 export const MOCK_HOSPITAL_HOME = {
-  hospitalName: 'Tokyo Medical',
-  doctorName: 'Dr. tokyo',
+  hospitalName: 'Seoul Beauty Clinic',
+  doctorName: 'Dr. Kim',
 };
 
 // 협진 요청 상세 (2-3 환자케이스보기 -> 화살표로 이어지는 협진 요청 상세 화면)
@@ -443,18 +451,49 @@ export const MOCK_CONSULT_REQUEST_DETAIL = {
 };
 
 // 병원 신속 협진 - 메시지 목록
+// 로그인 계정(Seoul Beauty Clinic) 기준: 내가 보낸 메시지(mine: true, 보라색)는 Seoul Beauty Clinic, 요청 병원(회색)은 Tokyo Medical
 export const MOCK_QUICK_CONSULT = {
   requestHospital: 'Tokyo Medical',
   reviewTarget: '시술 정보 / 부작용 유형 / 의료진 소견',
   responseDeadline: '4시간 이내',
   status: '검토중',
+  // textJa: 원문보기/번역보기 버튼을 눌렀을 때 보여줄 일본어 버전
   messages: [
-    { from: 'Tokyo Medical', text: '시술 기록과 증상 설명에 일부 불일치가 있어 확인 부탁드립니다.', time: '10:12', mine: false },
-    { from: 'Seoul Beauty Clinic', text: '부종과 홍반은 확인되며, 현재로서는 경증 반응으로 보입니다.', time: '10:28', mine: true },
-    { from: 'Tokyo Medical', text: '시술 후 2일차 발생 여부 다시 확인 부탁드립니다.', time: '10:12', mine: false },
-    { from: 'Seoul Beauty Clinic', text: '확인 결과 2일차 발생으로 판단되며 추가 사진 검토 중입니다.', time: '10:28', mine: true },
-    { from: '자국 의사', text: '확인 결과 2일차 발생으로 판단되어 추가 사진 검토 중입니다.', time: '10:52', mine: false },
-    { from: 'Tokyo Medical', text: '넵 확인했습니다!', time: '10:12', mine: false },
+    {
+      from: 'Tokyo Medical',
+      text: '시술 기록과 증상 설명에 일부 불일치가 있어 확인 부탁드립니다.',
+      textJa: '施術記録と症状説明に一部不一致があり、確認をお願いいたします。',
+      time: '10:12',
+      mine: false,
+    },
+    {
+      from: 'Seoul Beauty Clinic',
+      text: '부종과 홍반은 확인되며, 현재로서는 경증 반응으로 보입니다.',
+      textJa: '浮腫と紅斑を確認しており、現時点では軽症の反応と見られます。',
+      time: '10:28',
+      mine: true,
+    },
+    {
+      from: 'Tokyo Medical',
+      text: '시술 후 2일차 발생 여부 다시 확인 부탁드립니다.',
+      textJa: '施術後2日目の発生有無を再度ご確認お願いいたします。',
+      time: '10:12',
+      mine: false,
+    },
+    {
+      from: 'Seoul Beauty Clinic',
+      text: '확인 결과 2일차 발생으로 판단되며 추가 사진 검토 중입니다.',
+      textJa: '確認の結果、2日目の発生と判断され、追加写真を検討中です。',
+      time: '10:28',
+      mine: true,
+    },
+    {
+      from: 'Tokyo Medical',
+      text: '넵 확인했습니다!',
+      textJa: 'はい、確認しました！',
+      time: '10:12',
+      mine: false,
+    },
   ],
 };
 
@@ -482,4 +521,4 @@ export const MOCK_AGREEMENT = {
   ],
 };
 
-export const AI_SUMMARY_NOTE = 'AI는 초안 정리만 수행하며, 최종 의료 판단과 후속 조치는 양측 의료진이 직접 확인합니다.';
+export const AI_SUMMARY_NOTE = 'AI는 초안 정리만 수행하며,\n최종 의료 판단과 후속 조치는 양측 의료진이 직접 확인합니다.';

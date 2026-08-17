@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { MOCK_AGREEMENT } from '../mock/mockData';
+import { MOCK_AGREEMENT } from '../mock/mockdata';
 
 // 다른 store와 달리 AI가 정리한 초안(mock)을 초기값으로 받아와야 해서 넣었습니다!
 
