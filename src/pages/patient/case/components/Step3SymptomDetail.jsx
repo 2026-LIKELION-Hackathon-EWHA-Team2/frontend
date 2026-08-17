@@ -35,7 +35,7 @@ const Step3SymptomDetail = () => {
     <>
     <div className="rounded-[0.625rem] border border-solid border-[#EDEDF1] p-4">
       <p className="mb-3 text-[#6B5DD6] font-wantedsans text-[0.875rem] font-bold leading-normal">증상 입력</p>
-      <p className="mb-5 text-[#626262] font-wantedsans text-[0.625rem] font-medium leading-[0.875rem]">
+      <p className="mb-5 text-[#626262] font-wantedsans text-[0.625rem] font-medium leading-3.5">
         선택한 증상에 대해 자세한 정보를 입력해주세요.
       </p>
 
@@ -51,7 +51,7 @@ const Step3SymptomDetail = () => {
       <DateDropdown label="증상 시작일" value={symptomStartDate} onChange={setSymptomStartDate} />
 
       <p className="mt-5 mb-2 text-[#181818] font-wantedsans text-[0.75rem] font-bold leading-normal">증상 발생 시점</p>
-      <PillToggle options={TIMING_OPTIONS} selectedValue={symptomTiming} onChange={setSymptomTiming} className='h-8'/>
+      <PillToggle options={TIMING_OPTIONS} selectedValue={symptomTiming} onChange={setSymptomTiming} />
       
       <Textarea
           label="증상 상세 설명"

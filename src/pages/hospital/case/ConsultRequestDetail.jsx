@@ -19,7 +19,7 @@ import { useConsultPatientDetailQuery } from '../../../hooks/useMockQueries';
 const SectionTitle = ({ icon, children }) => (
   <div className="mb-2 flex items-center gap-1">
     <img src={icon} alt="" className="h-4.75 w-4.75" />
-    <h2 className="text-[#181818] font-wantedsans text-sm font-medium leading-[1.125rem]">{children}</h2>
+    <h2 className="text-[#181818] font-wantedsans text-sm font-medium leading-4.5">{children}</h2>
   </div>
 );
 
@@ -90,8 +90,8 @@ const ConsultRequestDetail = () => {
                 i !== arr.length - 1 ? 'border-b border-[#EDEDF1]' : ''
               }`}
             >
-              <span className="w-24 shrink-0 text-[#181818] font-wantedsans text-[0.6875rem] font-medium leading-[1.125rem]">{label}</span>
-              <span className="text-[#626262] font-wantedsans text-[0.6875rem] font-medium leading-[1.125rem]">{value}</span>
+              <span className="w-24 shrink-0 text-[#181818] font-wantedsans text-[0.6875rem] font-medium leading-4.5">{label}</span>
+              <span className="text-[#626262] font-wantedsans text-[0.6875rem] font-medium leading-4.5">{value}</span>
             </div>
           ))}
         </div>
@@ -101,7 +101,7 @@ const ConsultRequestDetail = () => {
           {detail.ingredients.map((ingredient) => (
             <div
               key={ingredient}
-              className="rounded-[0.625rem] border border-[#EDEDF1] bg-white px-3 py-1 text-[#181818] font-wantedsans text-[0.6875rem] font-medium leading-[1.125rem]"
+              className="rounded-[0.625rem] border border-[#EDEDF1] bg-white px-3 py-1 text-[#181818] font-wantedsans text-[0.6875rem] font-medium leading-4.5"
             >
               {ingredient}
             </div>
@@ -109,12 +109,12 @@ const ConsultRequestDetail = () => {
         </div>
 
         <SectionTitle icon="/icons/chat-check.svg">의료진 소견</SectionTitle>
-        <div className="rounded-[0.625rem] border border-[#EDEDF1] px-3 py-1 text-[#181818] font-wantedsans text-[0.6875rem] font-medium leading-[1.125rem]">
+        <div className="rounded-[0.625rem] border border-[#EDEDF1] px-3 py-1 text-[#181818] font-wantedsans text-[0.6875rem] font-medium leading-4.5">
           {detail.doctorNote}
         </div>
         </PageContainer>
 
-        <div className="flex flex-col px-[1.375rem] pb-[0.83rem] pt-1.5">
+        <div className="flex flex-col px-5.5 pb-[0.83rem] pt-1.5">
         <Button variant="primary" onClick={handleStartConsult}>
           협진 시작하기
         </Button>

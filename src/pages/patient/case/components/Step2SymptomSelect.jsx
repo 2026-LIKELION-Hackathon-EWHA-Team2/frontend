@@ -44,13 +44,13 @@ const Step2SymptomSelect = () => {
     <>
     <div className="rounded-[0.625rem] border border-solid border-[#EDEDF1] p-4">
       <p className="mb-3 text-[#6B5DD6] font-wantedsans text-[0.875rem] font-bold leading-normal">증상 제시</p>
-      <p className="mb-4 text-[#626262] font-wantedsans text-[0.625rem] font-medium leading-[0.875rem]">
+      <p className="mb-4 text-[#626262] font-wantedsans text-[0.625rem] font-medium leading-3.5">
         현재 느끼고 있는 증상을 선택해주세요.
         <br />
         여러 가지 증상을 선택할 수 있습니다.
       </p>
 
-      <div className="mb-[0.375rem] flex flex-col gap-[0.375rem]">
+      <div className="mb-1.5 flex flex-col gap-1.5">
         {SYMPTOM_OPTIONS.map((opt) => (
           <SymptomCheckbox
             key={opt.id}
