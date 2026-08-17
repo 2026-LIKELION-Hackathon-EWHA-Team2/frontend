@@ -275,7 +275,7 @@ export const MOCK_CONSULT_PATIENTS = [
     requestedAt: '2026.08.03 09:20',
     unreadCount: 1,
     status: 'new',
-    photos: ['/icons/case-thumb-1.svg', '/icons/case-thumb-2.svg', '/icons/case-thumb-3.svg', '/icons/case-thumb-4.svg'],
+    photos: ['/icons/photo-none.svg', '/icons/photo-none.svg', '/icons/photo-none.svg', '/icons/photo-none.svg','/icons/photo-none.svg'],
     symptomTags: ['붓기', '가려움'],
     symptomArea: '이마 중앙 및 좌측',
     symptomDate: '2026.08.13 (시술 다음날)',
