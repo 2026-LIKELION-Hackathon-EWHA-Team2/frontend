@@ -261,7 +261,7 @@ export const MOCK_HANDOVER_DOCUMENT = {
   confirmedAt: '2026. 07. 31',
 };
 
-// 병원측 - 협진 요청함 / 환자 조회 목록
+// 병원측 - 협진 요청함 / 환자 조회 / 채팅 목록 (환자 케이스 하나당 협진 상대 병원과의 채팅방 1개)
 export const MOCK_CONSULT_PATIENTS = [
   {
     id: 'p1',
@@ -272,6 +272,7 @@ export const MOCK_CONSULT_PATIENTS = [
     consultType: '이마 보톡스 상담',
     hospital: 'Seoul Beauty Clinic',
     requestedAt: '2026.08.03 09:20',
+    unreadCount: 1,
     status: 'new',
     photos: ['/icons/case-thumb-1.svg', '/icons/case-thumb-2.svg', '/icons/case-thumb-3.svg', '/icons/case-thumb-4.svg'],
     symptomTags: ['붓기', '가려움'],
@@ -292,6 +293,7 @@ export const MOCK_CONSULT_PATIENTS = [
     consultType: '색소 치료 상담',
     hospital: 'Tokyo Medical',
     requestedAt: '2026.08.14 15:42',
+    unreadCount: 3,
     status: 'new',
     photos: ['/icons/case-thumb-2.svg', '/icons/case-thumb-3.svg'],
     symptomTags: ['붓기'],
@@ -311,6 +313,7 @@ export const MOCK_CONSULT_PATIENTS = [
     consultType: '여드름 흉터 치료상담',
     hospital: 'Busan Skin Center',
     requestedAt: '2026.04.24 18:30',
+    unreadCount: 3,
     status: 'reviewing',
     photos: ['/icons/case-thumb-1.svg'],
     symptomTags: ['가려움'],
@@ -330,6 +333,7 @@ export const MOCK_CONSULT_PATIENTS = [
     consultType: '리프팅 상담',
     hospital: 'Gangnam Dermatology',
     requestedAt: '2026.07.20 11:10',
+    unreadCount: 2,
     status: 'reviewing',
     photos: ['/icons/case-thumb-3.svg'],
     symptomTags: ['통증'],
@@ -349,6 +353,7 @@ export const MOCK_CONSULT_PATIENTS = [
     consultType: '필러(입술) 상담',
     hospital: 'Miso Aesthetic clinic',
     requestedAt: '2026.07.06 10:00',
+    unreadCount: 1,
     status: 'done',
     photos: ['/icons/case-thumb-2.svg'],
     symptomTags: ['붓기'],
@@ -368,6 +373,7 @@ export const MOCK_CONSULT_PATIENTS = [
     consultType: '울쎄라 상담',
     hospital: 'Cheongdam Clinic',
     requestedAt: '2026.06.05 09:30',
+    unreadCount: 4,
     status: 'reviewing',
     photos: ['/icons/case-thumb-1.svg', '/icons/case-thumb-2.svg'],
     symptomTags: ['통증', '붓기'],
@@ -387,6 +393,7 @@ export const MOCK_CONSULT_PATIENTS = [
     consultType: '색소치료 상담',
     hospital: 'Cheongdam Clinic',
     requestedAt: '2026.04.05 13:20',
+    unreadCount: 2,
     status: 'reviewing',
     photos: ['/icons/case-thumb-3.svg'],
     symptomTags: ['가려움'],
@@ -406,6 +413,7 @@ export const MOCK_CONSULT_PATIENTS = [
     consultType: '턱 보톡스 상담',
     hospital: 'Osaka Aesthetic Clinic',
     requestedAt: '2026.07.14 11:41',
+    unreadCount: 2,
     status: 'done',
     photos: ['/icons/case-thumb-2.svg'],
     symptomTags: [],
