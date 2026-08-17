@@ -1,6 +1,5 @@
 // AI 초안 검토
 
-import { useState } from 'react';
 import Header from '../../../../../components/layout/Header';
 import PageContainer from '../../../../../components/layout/PageContainer';
 import Badge from '../../../../../components/Badge';
@@ -18,8 +17,8 @@ const Step1AiDraft = ({ aiDraftLabel, aiDraftDesc, onEdit, onComplete }) => {
   const finalJudgement = useAgreementStore((s) => s.finalJudgement);
   const reasons = useAgreementStore((s) => s.reasons);
   const complete = useAgreementStore((s) => s.complete);
-
-  const [opinion, setOpinion] = useState('');
+  const opinion = useAgreementStore((s) => s.opinion);
+  const setOpinion = useAgreementStore((s) => s.setOpinion);
 
   const handleComplete = () => {
     complete();
