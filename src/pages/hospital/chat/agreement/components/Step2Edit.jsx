@@ -6,7 +6,7 @@ import PageContainer from '../../../../../components/layout/PageContainer';
 import Button from '../../../../../components/button/Button';
 import Textarea from '../../../../../components/Textarea';
 import HospitalReviewCard from '../../../../../components/card/HospitalReviewCard';
-import useAgreementStore, { REASON_TONE_OPTIONS } from '../../../../../store/useAgreementStore';
+import useAgreementStore from '../../../../../store/useAgreementStore';
 
 const Step2Edit = ({ nextStep, prevStep }) => {
   const participants = useAgreementStore((s) => s.participants);
@@ -102,7 +102,7 @@ const Step2Edit = ({ nextStep, prevStep }) => {
 
             <button
               type="button"
-              onClick={() => addReason('새 근거', REASON_TONE_OPTIONS[0])}
+              onClick={() => addReason('새 근거', '')}
               className="flex cursor-pointer items-center justify-center gap-1.5 border-t border-[#EDEDF1] py-2.5"
             >
               <img src="/icons/add.svg" alt="" className="h-5 w-5" />
