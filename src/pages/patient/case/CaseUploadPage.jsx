@@ -11,6 +11,7 @@ import PageContainer from '../../../components/layout/PageContainer';
 import ProgressSteps from '../../../components/ProgressSteps';
 import Button from '../../../components/button/Button';
 import useCaseFormStore from '../../../store/useCaseFormStore';
+import useToastStore from '../../../store/useToastStore';
 import { useCreateCaseMutation } from '../../../hooks/useMockQueries';
 
 import Step0Intro from './components/Step0Intro';
@@ -25,6 +26,7 @@ const CaseUploadPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { mutate: createCase, isPending: isSubmitting } = useCreateCaseMutation();
+  const showToast = useToastStore((state) => state.showToast);
 
   // 다른 페이지에서 navigate('/patient/case/upload', { state: { initialStep: 1 } }) 형태로 넘기면
   // 인트로를 건너뛰고 원하는 step 부터 바로 시작할 수 있더라구요!! -> 굿 짱이에요
@@ -69,6 +71,7 @@ const CaseUploadPage = () => {
         onSuccess: () => {
           reset();
           navigate('/patient/home');
+          showToast('케이스 등록이 완료되었습니다!');
         },
       }
     );
@@ -152,12 +155,12 @@ const CaseUploadPage = () => {
         {current.content}
       </PageContainer>
 
-      <div className="flex flex-col items-center gap-[0.58rem] px-[1.375rem] pb-[0.4rem] pt-[1.04rem]">
+      <div className="flex flex-col items-center gap-[0.58rem] px-5.5 pb-[0.4rem] pt-[1.04rem]">
         <Button variant="primary" disabled={current.disabled} onClick={current.onClick}>
           {current.buttonLabel}
         </Button>
         {current.buttonSub && (
-          <span className="text-center text-[#626262] font-wantedsans text-[0.6875rem] font-medium leading-[1.25rem]">{current.buttonSub}</span>
+          <span className="text-center text-[#626262] font-wantedsans text-[0.6875rem] font-medium leading-5">{current.buttonSub}</span>
         )}
       </div>
     </div>
