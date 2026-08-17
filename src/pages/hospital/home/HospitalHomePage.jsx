@@ -71,7 +71,7 @@ const HospitalHomePage = () => {
 
         {/* 진행 중 협진 */}
         <section className="flex flex-col gap-4">
-          <h2 className="font-wantedsans text-sm font-bold text-[#181818]">진행 중 협진</h2>
+          {!isLoading && <h2 className="font-wantedsans text-sm font-bold text-[#181818]">진행 중 협진</h2>}
 
           <QueryState
             isLoading={isLoading}

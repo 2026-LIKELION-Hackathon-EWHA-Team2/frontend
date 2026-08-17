@@ -35,7 +35,7 @@ const ConsultPatientCard = ({ patient }) => {
               요청시간 {patient.requestedAt}
             </span>
           </div>
-          <SmallButton variant="arrow" label="협진 마무리" to={`/hospital/case/${patient.id}`} />
+          <SmallButton variant="arrow" label="협진 마무리" to={`/hospital/chat/room/${patient.id}`} />
         </div>
       </div>
     </div>
