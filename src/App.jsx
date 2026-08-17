@@ -40,12 +40,32 @@ import ChatListPage from './pages/hospital/chat/ChatListPage';
 import ChatRoomPage from './pages/hospital/chat/ChatRoomPage';
 import ConsultAgreementPage from './pages/hospital/chat/agreement/ConsultAgreementPage'; // AI 합의서 퍼널
 
+// axiosInstance(response interceptor)가 access_token 만료(401) 시
+// window.dispatchEvent(new CustomEvent('auth:sessionExpired'))로 쏘는 이벤트를 받아서
+// 로그인 페이지로 부드럽게 이동시키는 역할만 하는 컴포넌트 추가!
+const SessionExpiredHandler = () => {
+  const navigate = useNavigate();
+ 
+  useEffect(() => {
+    const handleSessionExpired = () => {
+      navigate('/login');
+      alert('세션이 만료되었어요! 다시 로그인해주세요');
+    };
+ 
+    window.addEventListener('auth:sessionExpired', handleSessionExpired);
+    return () => window.removeEventListener('auth:sessionExpired', handleSessionExpired);
+  }, [navigate]);
+ 
+  return null;
+};
 
 
 function App() {
 
   return (
     <BrowserRouter>
+
+      <SessionExpiredHandler />
 
       {/* 화면 여백 색상 채움 */}
       <div className="min-h-screen w-full bg-[#F1F3F5]">
