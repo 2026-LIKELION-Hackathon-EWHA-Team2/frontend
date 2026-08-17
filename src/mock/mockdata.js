@@ -522,3 +522,6 @@ export const MOCK_AGREEMENT = {
 };
 
 export const AI_SUMMARY_NOTE = 'AI는 초안 정리만 수행하며,\n최종 의료 판단과 후속 조치는 양측 의료진이 직접 확인합니다.';
+
+// 협진 합의 - 내용 수정 완료 후 표시할 마지막 수정 시각 (실시간 값은 백엔드 연동 후 처리)
+export const MOCK_LAST_EDITED_AT = '5월 14일 10:42';

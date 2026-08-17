@@ -33,6 +33,8 @@ const useAgreementStore = create((set, get) => ({
   followUps: MOCK_AGREEMENT.followUps.map((f) => ({ ...f })),
   // 권장 후속 조치 리스트 [{ icon, label, date }] - date는 3일처럼 상대값이거나 5/17처럼 날짜값 다!!
 
+  opinion: '', // 추가 소견 (AI 초안 검토 / 내용 수정 화면에서 공통으로 씀)
+
   lastEditedBy: null, // 마지막으로 수정한 병원명 ('Tokyo Medical')
   lastEditedAt: null, // 마지막 수정 일시 ('5월 14일 10:42')
 
@@ -52,6 +54,7 @@ const useAgreementStore = create((set, get) => ({
       finalJudgement: draft.finalJudgement,
       reasons: draft.reasons.map((r) => ({ ...r })),
       followUps: draft.followUps.map((f) => ({ ...f })),
+      opinion: '',
       lastEditedBy: null,
       lastEditedAt: null,
       isComplete: false,
@@ -75,6 +78,9 @@ const useAgreementStore = create((set, get) => ({
 
   // 내용 수정 화면 - 최종 합의 내용
   setFinalJudgement: (v) => set({ finalJudgement: v }),
+
+  // AI 초안 검토 / 내용 수정 화면 - 추가 소견
+  setOpinion: (v) => set({ opinion: v }),
 
   //내용 수정 화면 - 주요 근거 (tone 수정 포함)
   setReasonTone: (id, tone) =>
@@ -132,6 +138,7 @@ const useAgreementStore = create((set, get) => ({
       finalJudgement: MOCK_AGREEMENT.finalJudgement,
       reasons: MOCK_AGREEMENT.reasons.map((r) => ({ ...r })),
       followUps: MOCK_AGREEMENT.followUps.map((f) => ({ ...f })),
+      opinion: '',
       lastEditedBy: null,
       lastEditedAt: null,
       editingFollowUpIndex: null,

@@ -9,8 +9,8 @@ const STATUS_STYLES = {
   },
   '검토 중': {
     container: 'border-[#6B5DD6] bg-[#F5F3FF]',
-    dot: 'bg-[#6B5DD6]',
-    text: 'text-[#6B5DD6]',
+    dot: 'bg-[#181818]',
+    text: 'text-[#181818]',
   },
   '검토 완료': {
     container: 'border-[#EDEDF1] bg-white',

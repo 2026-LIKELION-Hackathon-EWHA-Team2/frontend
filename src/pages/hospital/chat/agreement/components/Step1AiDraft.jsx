@@ -1,6 +1,5 @@
 // AI 초안 검토
 
-import { useState } from 'react';
 import Header from '../../../../../components/layout/Header';
 import PageContainer from '../../../../../components/layout/PageContainer';
 import Badge from '../../../../../components/Badge';
@@ -11,15 +10,19 @@ import useAgreementStore from '../../../../../store/useAgreementStore';
 import { AI_SUMMARY_NOTE } from '../../../../../mock/mockdata';
 
 // 근거 tone('경미'/'없음'/'권장' 등)을 문장으로 자연스럽게 이어붙이기 위한 어미 처리
-const reasonText = ({ label, tone }) => `${label} ${tone === '없음' ? tone : `${tone}함`}`;
+// tone이 없는(사용자가 직접 추가한) 근거는 label만 표시
+const reasonText = ({ label, tone }) => {
+  if (!tone) return label;
+  return `${label} ${tone === '없음' ? tone : `${tone}함`}`;
+};
 
 const Step1AiDraft = ({ aiDraftLabel, aiDraftDesc, onEdit, onComplete }) => {
   const participants = useAgreementStore((s) => s.participants);
   const finalJudgement = useAgreementStore((s) => s.finalJudgement);
   const reasons = useAgreementStore((s) => s.reasons);
   const complete = useAgreementStore((s) => s.complete);
-
-  const [opinion, setOpinion] = useState('');
+  const opinion = useAgreementStore((s) => s.opinion);
+  const setOpinion = useAgreementStore((s) => s.setOpinion);
 
   const handleComplete = () => {
     complete();
