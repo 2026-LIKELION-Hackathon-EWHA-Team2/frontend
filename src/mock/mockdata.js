@@ -270,7 +270,7 @@ export const MOCK_CONSULT_PATIENTS = [
     age: 32,
     gender: '여',
     consultType: '이마 보톡스 상담',
-    hospital: 'Seoul Beauty Clinic',
+    hospital: 'Tokyo Medical',
     requestedAt: '2026.08.03 09:20',
     unreadCount: 1,
     status: 'new',
@@ -428,8 +428,8 @@ export const MOCK_CONSULT_PATIENTS = [
 
 // 병원 홈 - 통계(전체 수신/검토중/완료)와 진행 중 협진 목록은 MOCK_CONSULT_PATIENTS에서 직접 집계해서 사용 (데이터 이중관리로 인한 불일치 방지)
 export const MOCK_HOSPITAL_HOME = {
-  hospitalName: 'Tokyo Medical',
-  doctorName: 'Dr. tokyo',
+  hospitalName: 'Seoul Beauty Clinic',
+  doctorName: 'Dr. Kim',
 };
 
 // 협진 요청 상세 (2-3 환자케이스보기 -> 화살표로 이어지는 협진 요청 상세 화면)
@@ -451,9 +451,9 @@ export const MOCK_CONSULT_REQUEST_DETAIL = {
 };
 
 // 병원 신속 협진 - 메시지 목록
-// 로그인 계정(Tokyo Medical) 기준: 내가 보낸 메시지(mine: true, 보라색)는 Tokyo Medical, 요청 병원(회색)은 Seoul Beauty Clinic
+// 로그인 계정(Seoul Beauty Clinic) 기준: 내가 보낸 메시지(mine: true, 보라색)는 Seoul Beauty Clinic, 요청 병원(회색)은 Tokyo Medical
 export const MOCK_QUICK_CONSULT = {
-  requestHospital: 'Seoul Beauty Clinic',
+  requestHospital: 'Tokyo Medical',
   reviewTarget: '시술 정보 / 부작용 유형 / 의료진 소견',
   responseDeadline: '4시간 이내',
   status: '검토중',
@@ -464,35 +464,35 @@ export const MOCK_QUICK_CONSULT = {
       text: '시술 기록과 증상 설명에 일부 불일치가 있어 확인 부탁드립니다.',
       textJa: '施術記録と症状説明に一部不一致があり、確認をお願いいたします。',
       time: '10:12',
-      mine: true,
+      mine: false,
     },
     {
       from: 'Seoul Beauty Clinic',
       text: '부종과 홍반은 확인되며, 현재로서는 경증 반응으로 보입니다.',
       textJa: '浮腫と紅斑を確認しており、現時点では軽症の反応と見られます。',
       time: '10:28',
-      mine: false,
+      mine: true,
     },
     {
       from: 'Tokyo Medical',
       text: '시술 후 2일차 발생 여부 다시 확인 부탁드립니다.',
       textJa: '施術後2日目の発生有無を再度ご確認お願いいたします。',
       time: '10:12',
-      mine: true,
+      mine: false,
     },
     {
       from: 'Seoul Beauty Clinic',
       text: '확인 결과 2일차 발생으로 판단되며 추가 사진 검토 중입니다.',
       textJa: '確認の結果、2日目の発生と判断され、追加写真を検討中です。',
       time: '10:28',
-      mine: false,
+      mine: true,
     },
     {
       from: 'Tokyo Medical',
       text: '넵 확인했습니다!',
       textJa: 'はい、確認しました！',
       time: '10:12',
-      mine: true,
+      mine: false,
     },
   ],
 };
