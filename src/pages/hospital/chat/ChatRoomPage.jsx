@@ -6,6 +6,7 @@ import Header from '../../../components/layout/Header';
 import QueryState from '../../../components/state/QueryState';
 import Badge from '../../../components/Badge';
 import SmallButton from '../../../components/button/SmallButton';
+import ConfirmModal from '../../../components/modal/ConfirmModal';
 import { useQuickConsultQuery, useSendQuickConsultMessage } from '../../../hooks/useMockQueries';
 
 const ChatRoomPage = () => {
@@ -16,6 +17,7 @@ const ChatRoomPage = () => {
   // 원문보기/번역보기를 눌러 일본어 버전을 보고 있는 메시지의 인덱스 모음
   const [japaneseShown, setJapaneseShown] = useState(new Set());
   const [inputValue, setInputValue] = useState('');
+  const [showAgreementModal, setShowAgreementModal] = useState(false);
 
   const handleSend = () => {
     const trimmed = inputValue.trim();
@@ -101,11 +103,7 @@ const ChatRoomPage = () => {
                     <img src="/icons/chat-check.svg" alt="" className="h-6 w-6" />
                     <span className="font-wantedsans text-sm font-bold text-[#181818]">병원 간 메시지</span>
                   </div>
-                  <SmallButton
-                    variant="arrow"
-                    label="합의 완료"
-                    onClick={() => navigate(`/hospital/chat/agreement/${id}`)}
-                  />
+                  <SmallButton variant="arrow" label="합의 완료" onClick={() => setShowAgreementModal(true)} />
                 </div>
               </div>
 
@@ -186,6 +184,14 @@ const ChatRoomPage = () => {
           )}
         </QueryState>
       </div>
+
+      <ConfirmModal
+        open={showAgreementModal}
+        title="최종 합의 완료하시겠습니까?"
+        description="대화를 바탕으로 AI가 협진 내용을 요약 정리해줍니다."
+        onCancel={() => setShowAgreementModal(false)}
+        onConfirm={() => navigate(`/hospital/chat/agreement/${id}`)}
+      />
     </div>
   );
 };
