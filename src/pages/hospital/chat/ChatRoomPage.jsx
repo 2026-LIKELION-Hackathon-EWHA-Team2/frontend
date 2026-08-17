@@ -6,14 +6,23 @@ import Header from '../../../components/layout/Header';
 import QueryState from '../../../components/state/QueryState';
 import Badge from '../../../components/Badge';
 import SmallButton from '../../../components/button/SmallButton';
-import { useQuickConsultQuery } from '../../../hooks/useMockQueries';
+import { useQuickConsultQuery, useSendQuickConsultMessage } from '../../../hooks/useMockQueries';
 
 const ChatRoomPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { data: consult, isLoading, isError } = useQuickConsultQuery();
+  const sendMessage = useSendQuickConsultMessage();
   // 원문보기/번역보기를 눌러 일본어 버전을 보고 있는 메시지의 인덱스 모음
   const [japaneseShown, setJapaneseShown] = useState(new Set());
+  const [inputValue, setInputValue] = useState('');
+
+  const handleSend = () => {
+    const trimmed = inputValue.trim();
+    if (!trimmed) return;
+    sendMessage(trimmed);
+    setInputValue('');
+  };
 
   const toggleJapanese = (key) => {
     setJapaneseShown((prev) => {
@@ -159,11 +168,15 @@ const ChatRoomPage = () => {
               <div className="flex shrink-0 items-center gap-2 px-5 pb-4 pt-2">
                 <input
                   type="text"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                   placeholder="메시지를 입력하세요."
                   className="h-11 flex-1 rounded-full border border-[#DADADA] px-4 font-wantedsans text-sm font-normal text-[#181818] outline-none placeholder:text-[#9F9F9F]"
                 />
                 <button
                   type="button"
+                  onClick={handleSend}
                   className="flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#6B5DD6]"
                 >
                   <img src="/icons/send-white.svg" alt="전송" className="pl-1 h-10 w-10" />
