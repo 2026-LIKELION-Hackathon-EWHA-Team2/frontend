@@ -24,7 +24,6 @@ const HOSPITAL_FIELDS = [
   { name: 'hospitalName', label: '병원명', placeholder: mockHospital.name },
   { name: 'userId', label: '아이디', placeholder: 'aftor123' },
   { name: 'password', label: '비밀번호', placeholder: '비밀번호 입력', type: 'password' },
-  { name: 'department', label: '진료과', placeholder: mockHospital.department },
   { name: 'countryCity', label: '국가/도시', placeholder: 'Tokyo, Japan' },
   { name: 'hospitalAddress', label: '병원 주소', placeholder: '', icon: '/icons/search-gray.svg' },
   { name: 'phone', label: '연락처', placeholder: mockHospital.phone },
@@ -34,8 +33,11 @@ const HOSPITAL_FIELDS = [
 // 병원 계정은 계정 정보(1) -> 병원 상세 정보(2) 두 화면으로 나눠서 입력
 const HOSPITAL_SUB_STEPS = [
   ['hospitalName', 'userId', 'password'],
-  ['department', 'countryCity', 'hospitalAddress', 'phone', 'website'],
+  ['countryCity', 'hospitalAddress', 'phone', 'website'],
 ];
+
+// 전문 분야 (병원 상세 정보 화면에서 다중 선택 토글로 선택)
+const SPECIALTY_OPTIONS = ['여드름·흉터', '색소', '리프팅', '보톡스·필러', '가슴·바디', '눈', '코', '윤곽', '제모'];
 
 // 비밀번호 규칙: 8자 이상 + 영문/숫자/특수문자 중 2가지 이상 조합
 const getPasswordError = (password) => {
@@ -66,8 +68,37 @@ const Step1Info = ({ onNext }) => {
     ? allFields.filter((field) => HOSPITAL_SUB_STEPS[subStep].includes(field.name))
     : allFields;
 
+  // 전문 분야 (병원 상세 정보 화면에서만 노출되는 다중 선택 토글)
+  const showSpecialty = isHospital && subStep === 1;
+  const [customSpecialty, setCustomSpecialty] = useState('');
+  const [showCustomInput, setShowCustomInput] = useState(false);
+  const [customOptions, setCustomOptions] = useState([]);
+  const specialtyOptions = [...SPECIALTY_OPTIONS, ...customOptions];
+  const selectedSpecialties = info.department ?? [];
+
+  const toggleSpecialty = (label) => {
+    setInfo({
+      department: selectedSpecialties.includes(label)
+        ? selectedSpecialties.filter((d) => d !== label)
+        : [...selectedSpecialties, label],
+    });
+  };
+
+  const handleAddCustomSpecialty = () => {
+    const trimmed = customSpecialty.trim();
+    if (trimmed) {
+      if (!customOptions.includes(trimmed)) setCustomOptions((prev) => [...prev, trimmed]);
+      if (!selectedSpecialties.includes(trimmed)) setInfo({ department: [...selectedSpecialties, trimmed] });
+    }
+    setCustomSpecialty('');
+    setShowCustomInput(false);
+  };
+
   const passwordError = getPasswordError(info.password);
-  const isFilled = visibleFields.every((field) => info[field.name]?.trim()) && !passwordError;
+  const isFilled =
+    visibleFields.every((field) => info[field.name]?.trim()) &&
+    !passwordError &&
+    (!showSpecialty || selectedSpecialties.length > 0);
 
   const handleChange = (name) => (e) => setInfo({ [name]: e.target.value });
 
@@ -82,6 +113,52 @@ const Step1Info = ({ onNext }) => {
   return (
     <div className="flex flex-1 flex-col px-6 pb-8 pt-8">
       <div className="flex flex-col gap-5">
+        {showSpecialty && (
+          <div className="flex flex-col gap-3">
+            <p className="font-wantedsans text-sm font-bold leading-normal text-[#181818]">전문 분야</p>
+            <div className="flex flex-wrap gap-1.5">
+              {specialtyOptions.map((label) => {
+                const isSelected = selectedSpecialties.includes(label);
+                return (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => toggleSpecialty(label)}
+                    className={`flex cursor-pointer items-center justify-center rounded-full px-3 py-1.5 font-wantedsans text-xs font-normal transition-colors duration-200 ease-in-out ${
+                      isSelected
+                        ? 'border border-[#6B5DD6] bg-[#F2F0FD] text-[#6B5DD6]'
+                        : 'border border-transparent bg-[#F5F5F5] text-[#626262] hover:bg-gray-100'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+
+              {showCustomInput ? (
+                <input
+                  type="text"
+                  autoFocus
+                  value={customSpecialty}
+                  onChange={(e) => setCustomSpecialty(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleAddCustomSpecialty()}
+                  onBlur={handleAddCustomSpecialty}
+                  placeholder="직접 입력"
+                  className="w-20 rounded-full border border-[#6B5DD6] bg-[#F2F0FD] px-3 py-1.5 font-wantedsans text-xs font-normal text-[#6B5DD6] outline-none placeholder:text-[#A78AF4]"
+                />
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setShowCustomInput(true)}
+                  className="flex cursor-pointer items-center justify-center gap-1 rounded-full bg-[#F2F0FD] px-3 py-1.5 font-wantedsans text-xs font-normal text-[#6B5DD6]"
+                >
+                  <span className="text-xs leading-none">+</span> 직접 추가하기
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
         {visibleFields.map((field) => (
           <Input
             key={field.name}

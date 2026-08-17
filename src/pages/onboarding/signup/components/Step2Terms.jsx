@@ -27,7 +27,7 @@ const TERMS_CONFIG = [
   },
   {
     key: 'overseasTransfer',
-    label: '개인정보 국외 이전 동의',
+    label: '개인정보 국외 이전 동의 (필수)',
     required: true,
     patientOnly: true,
     sections: [

@@ -18,7 +18,7 @@ const initialHospitalInfo = {
   hospitalName: '',
   userId: '',
   password: '',
-  department: '',
+  department: [], // 전문 분야 (다중 선택)
   countryCity: '',
   hospitalAddress: '',
   phone: '',
