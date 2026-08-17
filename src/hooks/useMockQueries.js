@@ -106,6 +106,17 @@ export const useHospitalHomeQuery = () =>
     queryFn: () => wait(MOCK_HOSPITAL_HOME),
   });
 
+// 케이스 조회 리스트에서 환자 한 명을 선택했을 때 쓰는 상세 조회
+// (협진 요청 상세 / 환자 정보 상세 보기 화면에서 공통으로 사용)
+
+export const useConsultPatientDetailQuery = (id) =>
+  useQuery({
+    queryKey: ['consultPatientDetail', id],
+    // id가 아직 없을 때(라우팅 진입 초기 등)는 요청 자체를 하지 않도록 enabled로 막아놓기!! 오류 방지 ㅠ
+    enabled: !!id,
+    queryFn: () => wait(MOCK_CONSULT_PATIENTS.find((p) => p.id === id) ?? null),
+  });
+
 // 협진 요청 상세
 export const useConsultRequestDetailQuery = () =>
   useQuery({
