@@ -451,18 +451,49 @@ export const MOCK_CONSULT_REQUEST_DETAIL = {
 };
 
 // 병원 신속 협진 - 메시지 목록
+// 로그인 계정(Tokyo Medical) 기준: 내가 보낸 메시지(mine: true, 보라색)는 Tokyo Medical, 요청 병원(회색)은 Seoul Beauty Clinic
 export const MOCK_QUICK_CONSULT = {
-  requestHospital: 'Tokyo Medical',
+  requestHospital: 'Seoul Beauty Clinic',
   reviewTarget: '시술 정보 / 부작용 유형 / 의료진 소견',
   responseDeadline: '4시간 이내',
   status: '검토중',
+  // textJa: 원문보기/번역보기 버튼을 눌렀을 때 보여줄 일본어 버전
   messages: [
-    { from: 'Tokyo Medical', text: '시술 기록과 증상 설명에 일부 불일치가 있어 확인 부탁드립니다.', time: '10:12', mine: false },
-    { from: 'Seoul Beauty Clinic', text: '부종과 홍반은 확인되며, 현재로서는 경증 반응으로 보입니다.', time: '10:28', mine: true },
-    { from: 'Tokyo Medical', text: '시술 후 2일차 발생 여부 다시 확인 부탁드립니다.', time: '10:12', mine: false },
-    { from: 'Seoul Beauty Clinic', text: '확인 결과 2일차 발생으로 판단되며 추가 사진 검토 중입니다.', time: '10:28', mine: true },
-    { from: '자국 의사', text: '확인 결과 2일차 발생으로 판단되어 추가 사진 검토 중입니다.', time: '10:52', mine: false },
-    { from: 'Tokyo Medical', text: '넵 확인했습니다!', time: '10:12', mine: false },
+    {
+      from: 'Tokyo Medical',
+      text: '시술 기록과 증상 설명에 일부 불일치가 있어 확인 부탁드립니다.',
+      textJa: '施術記録と症状説明に一部不一致があり、確認をお願いいたします。',
+      time: '10:12',
+      mine: true,
+    },
+    {
+      from: 'Seoul Beauty Clinic',
+      text: '부종과 홍반은 확인되며, 현재로서는 경증 반응으로 보입니다.',
+      textJa: '浮腫と紅斑を確認しており、現時点では軽症の反応と見られます。',
+      time: '10:28',
+      mine: false,
+    },
+    {
+      from: 'Tokyo Medical',
+      text: '시술 후 2일차 발생 여부 다시 확인 부탁드립니다.',
+      textJa: '施術後2日目の発生有無を再度ご確認お願いいたします。',
+      time: '10:12',
+      mine: true,
+    },
+    {
+      from: 'Seoul Beauty Clinic',
+      text: '확인 결과 2일차 발생으로 판단되며 추가 사진 검토 중입니다.',
+      textJa: '確認の結果、2日目の発生と判断され、追加写真を検討中です。',
+      time: '10:28',
+      mine: false,
+    },
+    {
+      from: 'Tokyo Medical',
+      text: '넵 확인했습니다!',
+      textJa: 'はい、確認しました！',
+      time: '10:12',
+      mine: true,
+    },
   ],
 };
 
