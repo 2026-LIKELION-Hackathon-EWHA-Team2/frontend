@@ -8,21 +8,24 @@
  */
 const ProgressSteps = ({ steps, currentIndex, showLabel = true, showCheck = false, width, className = '' }) => {
     const circleSize = showCheck ? 'h-8 w-8' : 'h-7 w-7 text-xs leading-[1.125rem]';
-  
+    // 원+라벨 블록은 세로로 쌓여 있어서 items-center로 정렬하면 선이 원의 중심이 아니라
+    // (원+라벨) 전체 블록의 중심에 맞춰짐 -> 선에 원 높이의 절반만큼 top margin을 줘서 원 중심을 직접 관통하게 함
+    const lineOffset = showCheck ? 'mt-4' : 'mt-3.5';
+
     return (
       <ol className="mx-auto flex" style={{ width: width ?? '100%' }}>
         {steps.map((step, idx) => {
           const done = idx < currentIndex;
           const active = idx === currentIndex;
           const filled = done || active;
-          const leftLineDone = idx <= currentIndex; 
-          const rightLineDone = idx < currentIndex; 
-  
+          const leftLineDone = idx <= currentIndex;
+          const rightLineDone = idx < currentIndex;
+
           return (
             <li key={step} className="flex flex-1 flex-col">
-              <div className="flex w-full items-center">
+              <div className="flex w-full items-start">
                 {idx !== 0 && (
-                  <div className={`h-[0.05rem] flex-1 ${leftLineDone ? 'bg-[#6B5DD6]' : 'bg-[#DFDFE4]'}`} />
+                  <div className={`h-[0.05rem] flex-1 ${lineOffset} ${leftLineDone ? 'bg-[#6B5DD6]' : 'bg-[#DFDFE4]'}`} />
                 )}
                 {/* 원+라벨을 같은 부모(items-center)로 묶어서 라벨 텍스트 중심이 항상 원 중심과 일치하도록 함 */}
                 <div className="flex shrink-0 flex-col items-center">
@@ -48,7 +51,7 @@ const ProgressSteps = ({ steps, currentIndex, showLabel = true, showCheck = fals
                   )}
                 </div>
                 {idx !== steps.length - 1 && (
-                  <div className={`h-[0.05rem] flex-1 ${rightLineDone ? 'bg-[#6B5DD6]' : 'bg-[#DFDFE4]'}`} />
+                  <div className={`h-[0.05rem] flex-1 ${lineOffset} ${rightLineDone ? 'bg-[#6B5DD6]' : 'bg-[#DFDFE4]'}`} />
                 )}
               </div>
             </li>

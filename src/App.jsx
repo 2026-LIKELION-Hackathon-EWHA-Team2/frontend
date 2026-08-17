@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import OnboardingShell from './components/layout/OnboardingShell';
 import PatientShell from './components/layout/PatientShell';
 import HospitalShell from './components/layout/HospitalShell';
+import Toast from './components/Toast';
 
 // [온보딩]
 import SplashPage from './pages/onboarding/SplashPage';
@@ -100,7 +101,9 @@ function App() {
             </Route>
             
           </Routes>
-          
+
+          {/* 페이지 이동 후에도 유지되도록 라우트 밖(최상단)에서 한 번만 렌더링 */}
+          <Toast />
         </div>
       </div>
     </BrowserRouter>
