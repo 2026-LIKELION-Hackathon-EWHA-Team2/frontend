@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react';
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 
 // Shell 컴포넌트 불러오기
 import OnboardingShell from './components/layout/OnboardingShell';
