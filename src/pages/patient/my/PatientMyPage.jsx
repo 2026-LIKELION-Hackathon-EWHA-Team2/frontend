@@ -8,7 +8,7 @@ import { usePatientProfileQuery } from '../../../hooks/useMockQueries';
 
 const getInfoRows = (patient) => [
   { icon: '/icons/profile-name.svg', label: '이름', value: patient.name },
-  { icon: '/icons/profile-birth.svg', label: '생년월일', value: patient.birth },
+  { icon: '/icons/profile-birth.svg', label: '생년월일', value: patient.birth_date },
   { icon: '/icons/profile-adress.svg', label: '주소', value: patient.address },
   { icon: '/icons/profile-phone.svg', label: '전화번호', value: patient.phone },
 ];
@@ -31,7 +31,7 @@ const PatientMyPage = () => {
                 <div className="flex flex-col gap-1">
                   <p className="font-wantedsans text-lg font-semibold text-[#181818]">{patient.name}</p>
                   <p className="font-wantedsans text-xs font-normal text-[#8C8C8C]">
-                    여권번호 <span className="ml-1">{patient.passportNumber}</span>
+                    여권번호 <span className="ml-1">{patient.passport_number}</span>
                   </p>
                 </div>
               </section>

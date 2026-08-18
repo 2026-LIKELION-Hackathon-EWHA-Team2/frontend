@@ -35,15 +35,19 @@ const MedicalPassportPage = () => {
                 {patient.name}
               </p>
               <p className="mt-1 font-wantedsans text-[11px] font-medium leading-normal text-[#626262]">
-                여권번호&nbsp;&nbsp;{patient.medicalPassportNo}
+                여권번호&nbsp;&nbsp;{patient.passport_number}
               </p>
 
               <div className="mt-6 flex items-center gap-1.5">
                 <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full bg-[#6B5DD6]">
                   <img src="/icons/check-mark.svg" alt="" className="h-2 w-2" />
                 </span>
+                {/*
+                  patient.lastUpdated 는 현재 API 응답(GET /accounts/patient-profile/)에 없는 필드
+                  일단...임시처리 -.-
+                */}
                 <span className="font-wantedsans text-[10px] font-medium leading-normal text-[#626262]">
-                  최종 업데이트&nbsp;&nbsp;{patient.lastUpdated}
+                  {patient.lastUpdated ? `최종 업데이트  ${patient.lastUpdated}` : ''}
                 </span>
               </div>
             </div>
