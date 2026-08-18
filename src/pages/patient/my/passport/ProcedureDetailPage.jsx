@@ -30,10 +30,6 @@ const ProcedureDetailPage = () => {
         >
           {procedure && (
             <>
-              <div className="flex h-56 w-full items-center justify-center rounded-[10px] bg-[#F5F5F5]">
-                <img src="/icons/home-camera.svg" alt="" className="h-10 w-10 opacity-30" />
-              </div>
-
               <div className="flex flex-col gap-3">
                 <h1 className="font-wantedsans text-[15px] font-bold text-[#181818]">
                   {procedure.name} ({procedure.tag})
