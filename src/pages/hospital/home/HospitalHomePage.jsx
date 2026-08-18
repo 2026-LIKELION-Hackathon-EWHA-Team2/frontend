@@ -1,12 +1,18 @@
 // 병원 홈 피드
 
+import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import PageContainer from '../../../components/layout/PageContainer';
 import QueryState from '../../../components/state/QueryState';
 import ConsultPatientCard from '../../../components/card/ConsultPatientCard';
-import { useHospitalHomeQuery, useConsultPatientsQuery } from '../../../hooks/useMockQueries';
+import useAuthStore from '../../../store/useAuthStore';
+import { useHospitalProfileQuery, useConsultPatientsQuery } from '../../../hooks/useMockQueries'; // 프로필 쿼리로 수정
 
 const HospitalHomePage = () => {
-  const { data: home } = useHospitalHomeQuery();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const logout = useAuthStore((state) => state.logout);
+  const { data: profile } = useHospitalProfileQuery();
   const { data: patients, isLoading, isError } = useConsultPatientsQuery();
 
   const ongoing = patients?.filter((p) => p.status === 'reviewing');
@@ -16,16 +22,30 @@ const HospitalHomePage = () => {
   const doneCount = patients?.filter((p) => p.status === 'done').length ?? 0;
   const totalCount = reviewingCount + doneCount;
 
+  const handleLogoClick = () => {
+    // 임시 로그아웃 처리
+    if (window.confirm('로그아웃 하시겠습니까?')) {
+      logout();
+      queryClient.clear();
+      navigate('/login'); // 로그아웃 후 로그인 페이지로 이동
+    }
+  };
+
   return (
     <>
       {/* aftor 로고 */}
       <header className="top-0 z-50 flex items-center bg-white px-6 pb-10 pt-10">
-        <img src="/icons/aftor-logo.svg" alt="aftor" className="h-6" />
+        <img
+          src="/icons/aftor-logo.svg"
+          alt="aftor"
+          className="h-6 cursor-pointer hover:opacity-80 transition-opacity"
+          onClick={handleLogoClick}
+        />
       </header>
 
       <PageContainer className="flex flex-col gap-8 pt-3 pb-4">
         {/* 인사말 카드 */}
-        {home && (
+        {profile && ( 
           <section className="relative w-full overflow-hidden rounded-[10px] bg-linear-to-b from-white to-[#A78AF4] to-[455.28%] shadow-[-1px_-1px_10px_0_rgba(192,192,192,0.01),1px_1px_20px_0_rgba(192,192,192,0.40)]">
             <img
               src="/icons/hospital-gradient.svg"
@@ -38,10 +58,10 @@ const HospitalHomePage = () => {
                 <h1 className="w-full whitespace-nowrap font-wantedsans text-[22px] font-medium leading-7.5 text-[#181818]">
                   안녕하세요,
                   <br />
-                  {home.hospitalName} 님
+                  {profile.name} 님
                 </h1>
                 <p className="font-wantedsans text-sm font-normal pt-4 text-[#626262]">
-                  {home.doctorName}님 오늘의 협진 현황이에요
+                  {profile.name}님 오늘의 협진 현황이에요
                 </p>
               </div>
 

@@ -71,7 +71,8 @@ const TERMS_CONFIG = [
   },
 ];
 
-const Step2Terms = ({ onNext }) => {
+// props에 isSubmitting, error 추가 (SignupPage에서 API 호출 상태를 전달받음)
+const Step2Terms = ({ onNext, isSubmitting, error }) => {
   const isHospital = useAuthStore((state) => state.role === 'hospital');
   const terms = useSignupStore((state) => state.terms);
   const setTerm = useSignupStore((state) => state.setTerm);
@@ -133,8 +134,16 @@ const Step2Terms = ({ onNext }) => {
         <ConsentCheckbox label="모두 동의합니다" checked={allChecked} onChange={(next) => setAllTerms(next)} />
       </div>
 
-      <Button variant="primary" className="mt-8" disabled={!canSubmit} onClick={onNext}>
-        완료
+      {/* 회원가입 API 실패 시 에러 메시지 표시 */}
+      {error && <p className="mt-3 text-center text-xs text-red-500">{error}</p>}
+
+      <Button
+        variant="primary"
+        className="mt-8"
+        disabled={!canSubmit || isSubmitting} // isSubmitting 중엔 중복 클릭 방지
+        onClick={onNext}
+      >
+        {isSubmitting ? '가입 중' : '완료'} {/* 로딩 중 텍스트 표시 */}
       </Button>
     </div>
   );

@@ -6,6 +6,7 @@ import Button from '../../../../components/button/Button';
 import useAuthStore from '../../../../store/useAuthStore';
 import useSignupStore from '../../../../store/useSignupStore';
 import { MOCK_PATIENT, MOCK_HOSPITALS } from '../../../../mock/mockdata';
+import { formatBirthDate, isBirthDateComplete } from '../../../../utils/format';
 
 // 입력 예시(placeholder)는 mockdata.js에 이미 있는 값을 그대로 재사용
 const mockHospital = MOCK_HOSPITALS[0];
@@ -15,8 +16,9 @@ const PATIENT_FIELDS = [
   { name: 'userId', label: '아이디', placeholder: 'aftor123' },
   { name: 'password', label: '비밀번호', placeholder: '비밀번호 입력', type: 'password' },
   { name: 'address', label: '주소', placeholder: '', icon: '/icons/search-gray.svg' },
-  { name: 'phone', label: '연락처', placeholder: MOCK_PATIENT.phone },
-  { name: 'birth', label: '생년월일', placeholder: MOCK_PATIENT.birth },
+  // 전화번호는 자유 입력 유지 (해외 환자 고려, 자동 포맷 없음)
+  { name: 'phone', label: '연락처', placeholder: '+82-10-0000-0000 형식으로 입력' },
+  { name: 'birth', label: '생년월일', placeholder: 'YYYY.MM.DD' }, //
   { name: 'passportNumber', label: '여권번호', placeholder: MOCK_PATIENT.passportNumber },
 ];
 
@@ -24,9 +26,10 @@ const HOSPITAL_FIELDS = [
   { name: 'hospitalName', label: '병원명', placeholder: mockHospital.name },
   { name: 'userId', label: '아이디', placeholder: 'aftor123' },
   { name: 'password', label: '비밀번호', placeholder: '비밀번호 입력', type: 'password' },
-  { name: 'countryCity', label: '국가/도시', placeholder: 'Tokyo, Japan' },
+  // 국가, 도시 라벨 파싱 로직이랑 일치시켰어요!
+  { name: 'countryCity', label: '도시, 국가', placeholder: 'Tokyo, Japan' },
   { name: 'hospitalAddress', label: '병원 주소', placeholder: '', icon: '/icons/search-gray.svg' },
-  { name: 'phone', label: '연락처', placeholder: mockHospital.phone },
+  { name: 'phone', label: '연락처', placeholder: '+81-3-1234-5678 형식으로 입력' },
   { name: 'website', label: '웹사이트', placeholder: mockHospital.website },
 ];
 
@@ -95,12 +98,28 @@ const Step1Info = ({ onNext }) => {
   };
 
   const passwordError = getPasswordError(info.password);
+
+  // 생년월일이 화면에 보이는 필드인 경우, 8자리(YYYY.MM.DD)가 다 채워졌는지 체크
+  // 덜 입력한 상태로는 '다음' 버튼이 눌리지 않도록 막음
+  const hasBirthField = visibleFields.some((field) => field.name === 'birth');
+  const isBirthValid = !hasBirthField || isBirthDateComplete(info.birth);
+
   const isFilled =
     visibleFields.every((field) => info[field.name]?.trim()) &&
     !passwordError &&
+    isBirthValid &&
     (!showSpecialty || selectedSpecialties.length > 0);
 
-  const handleChange = (name) => (e) => setInfo({ [name]: e.target.value });
+  // 생년월일 자동 포맷 적용
+  const handleChange = (name) => (e) => {
+    const rawValue = e.target.value;
+
+    if (name === 'birth') {
+      setInfo({ birth: formatBirthDate(rawValue) }); // 숫자만 입력해도 자동으로 . 붙여서 변환
+    } else {
+      setInfo({ [name]: rawValue });
+    }
+  };
 
   const handleNext = () => {
     if (isLastSubStep) {
@@ -159,19 +178,31 @@ const Step1Info = ({ onNext }) => {
           </div>
         )}
 
-        {visibleFields.map((field) => (
-          <Input
-            key={field.name}
-            label={field.label}
-            name={field.name}
-            type={field.type ?? 'text'}
-            placeholder={field.placeholder}
-            value={info[field.name]}
-            onChange={handleChange(field.name)}
-            icon={field.icon}
-            error={field.name === 'password' ? passwordError : undefined}
-          />
-        ))}
+        {visibleFields.map((field) => {
+          const isBirthField = field.name === 'birth';
+
+          return (
+            <Input
+              key={field.name}
+              label={field.label}
+              name={field.name}
+              type={field.type ?? 'text'}
+              placeholder={field.placeholder}
+              value={info[field.name]}
+              onChange={handleChange(field.name)}
+              icon={field.icon}
+              // 생년월일 8자리가 아직 안 채워졌으면 에러 문구 표시 (password 에러랑 겹치지 않게 분기)
+              error={
+                field.name === 'password'
+                  ? passwordError
+                  : isBirthField && info.birth && !isBirthDateComplete(info.birth)
+                    ? '생년월일 8자리를 모두 입력해주세요. (예: 1992.05.20)'
+                    : undefined
+              }
+              maxLength={isBirthField ? 10 : undefined} // 생년월일만 길이 제한 (YYYY.MM.DD = 10자)
+            />
+          );
+        })}
       </div>
 
       <Button variant="primary" className="mt-8" disabled={!isFilled} onClick={handleNext}>

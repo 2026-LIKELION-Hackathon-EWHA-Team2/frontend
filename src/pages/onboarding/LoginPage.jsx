@@ -12,7 +12,6 @@ import { useLoginMutation } from '../../hooks/useMockQueries';
 const LoginPage = () => {
   const navigate = useNavigate();
   const login = useAuthStore((state) => state.login);
-  const setRole = useAuthStore((state) => state.setRole);
   const loginMutation = useLoginMutation();
 
   const [userId, setUserId] = useState('');
@@ -23,12 +22,29 @@ const LoginPage = () => {
 
   const handleLogin = () => {
     loginMutation.mutate(
-      { userId },
+      { userId, password }, // 기존엔 password를 안 보냈는데, 실제 로그인은 필수라서 추가함
       {
-        onSuccess: ({ userId: loggedInUserId, role }) => {
-          login(loggedInUserId, keepLoggedIn);
-          setRole(role);
+    
+        // API 응답 형태 적용 { id, name, login_id, user_type, access, refresh, patient_id/hospital_id }
+        onSuccess: (data) => {
+          const role = data.user_type === 'HOSPITAL' ? 'hospital' : 'patient'; // 대문자 -> 소문자 변환 필수
+
+          login(
+            {
+              userId: data.login_id,
+              role,
+              accessToken: data.access,
+              refreshToken: data.refresh,
+            },
+            keepLoggedIn
+          );
+
           navigate(role === 'hospital' ? '/hospital/home' : '/patient/home');
+        },
+        // 로그인 실패 처리 추가 (아이디/비번 틀림 등)
+        onError: (error) => {
+          console.error(error);
+          alert('아이디 또는 비밀번호를 확인해주세요.');
         },
       }
     );
