@@ -161,3 +161,16 @@ export const useSendQuickConsultMessage = () => {
 // 협진 합의 - AI 정리 초안 (useAgreementStore 초기화에 사용하는 형식)
 export const useAgreementDraftQuery = () =>
   useQuery({ queryKey: ['agreementDraft'], queryFn: () => wait(MOCK_AGREEMENT) });
+
+// 협진 합의 - 양측 병원이 모두 검토 완료했을 때 케이스 상태를 '완료'로 변경 (mock, 캐시에 바로 반영)
+export const useCompleteConsultCase = () => {
+  const queryClient = useQueryClient();
+  return (id) => {
+    queryClient.setQueryData(['consultPatients'], (old = []) =>
+      old.map((p) => (p.id === id ? { ...p, status: 'done' } : p))
+    );
+    queryClient.setQueryData(['consultPatientDetail', id], (old) =>
+      old ? { ...old, status: 'done' } : old
+    );
+  };
+};

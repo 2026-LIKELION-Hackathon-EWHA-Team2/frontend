@@ -17,17 +17,13 @@ const reasonText = ({ label, tone }) => {
   return `${label} ${tone === '없음' ? tone : `${tone}함`}`;
 };
 
-const Step3EditComplete = ({ nextStep, prevStep }) => {
+// 검토 완료 시 처리(상대 병원 검토 여부에 따라 최종 합의서로 보낼지, 홈 + 안내 토스트로 보낼지)는
+// 부모(ConsultAgreementPage)의 handleAgree가 담당 - Step1AiDraft의 '검토 완료'와 로직을 공유하기 위함
+const Step3EditComplete = ({ onComplete, prevStep }) => {
   const participants = useAgreementStore((s) => s.participants);
   const finalJudgement = useAgreementStore((s) => s.finalJudgement);
   const reasons = useAgreementStore((s) => s.reasons);
   const opinion = useAgreementStore((s) => s.opinion);
-  const complete = useAgreementStore((s) => s.complete);
-
-  const handleComplete = () => {
-    complete();
-    nextStep();
-  };
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -105,7 +101,7 @@ const Step3EditComplete = ({ nextStep, prevStep }) => {
           <Button variant="outline" onClick={prevStep} className="flex-1">
             합의안 수정
           </Button>
-          <Button variant="primary" onClick={handleComplete} className="flex-1">
+          <Button variant="primary" onClick={onComplete} className="flex-1">
             검토 완료
           </Button>
         </div>
