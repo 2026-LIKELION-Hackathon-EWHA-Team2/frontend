@@ -82,7 +82,7 @@ const PatientDetailPage = () => {
           <div className="border-t border-[#EDEDF1] gap-2 pt-1.5">
             <InfoRow icon="/icons/info-area.svg" label="증상 부위" value={patient.symptomArea} />
             <InfoRow icon="/icons/info-calendar.svg" label="증상 시작일" value={patient.symptomDate} />
-            <InfoRow icon="/icons/info-calendar.svg" label="시술일" value={patient.procedureAt} />
+            <InfoRow icon="/icons/info-calendar.svg" label="시술일" value={patient.procedureAt?.split(' ')[0]} />
             <InfoRow icon="/icons/info-pain.svg" label="통증 정도" value={patient.symptomLevel} />
             <InfoRow icon="/icons/info-desc.svg" label="증상 설명" value={patient.symptomDesc} />
           </div>
