@@ -40,7 +40,11 @@ axiosInstance.interceptors.response.use(
   (response) => response, // 정상 응답은 그대로 통과
 
   (error) => {
-    if (error.response?.status === 401) {
+    // 수정 -> 401이어도 '원래 로그인 상태였다가 만료된 경우'에만 세션만료 처리하도록 조건 추가했어요
+    const hadAuthHeader = Boolean(error.config?.headers?.Authorization);
+    const isLoginRequest = error.config?.url?.includes('/accounts/login/');
+
+    if (error.response?.status === 401 && hadAuthHeader && !isLoginRequest) {
       // access_token 만료(또는 유효하지 않음) -> 재발급 시도 없이 바로 로그인 상태 초기화
       // store의 logout()을 호출해서 메모리 상태 + storage + keepLoggedIn 플래그까지 한번에 정리
       useAuthStore.getState().logout();

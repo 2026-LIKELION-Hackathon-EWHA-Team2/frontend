@@ -12,7 +12,7 @@ import { usePatientProfileQuery, useRecentCasesQuery } from '../../../hooks/useM
 
 const PatientHomePage = () => {
   const navigate = useNavigate();
-  const queryClient = useQueryClient(); // ★ 추가
+  const queryClient = useQueryClient();
   const logout = useAuthStore((state) => state.logout);
   const { data: patient } = usePatientProfileQuery();
   const { data: cases, isLoading, isError } = useRecentCasesQuery();
@@ -21,6 +21,8 @@ const PatientHomePage = () => {
     // 임시 로그아웃 처리
     if (window.confirm('로그아웃 하시겠습니까?')) {
       logout();
+      // clear() 전에 cancelQueries()로 진행 중인 요청부터 취소하도록 수정했어요
+      queryClient.cancelQueries();
       queryClient.clear();
       navigate('/login'); // 로그아웃 후 로그인 페이지로 이동
     }
