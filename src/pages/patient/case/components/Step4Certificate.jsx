@@ -2,10 +2,19 @@
 
 import { useMemo, useState } from 'react';
 import useCaseFormStore from '../../../../store/useCaseFormStore';
-import { useHospitalListQuery } from '../../../../hooks/useMockQueries'; // 일단은 네트워크 병원 리스트 받아오는 걸로
+import { useHospitalAccountsListQuery } from '../../../../hooks/useMockQueries'; // accounts 병원 목록 API 적용
+
+// 필드명 맞추기 위한 함수...
+const normalizeHospital = (h) => ({
+  id: h.hospital_id, // ★ hospital_id → id
+  name: h.name,
+  // specialties 배열에서 이름만 뽑아 콤마로 이어붙임
+  department: h.specialties?.map((s) => s.specialty_name).join(', ') || '',
+});
 
 const Step4Certificate = () => {
-  const { data: hospitals, isLoading, isError } = useHospitalListQuery(); // ✅ isLoading, isError 추가로 꺼내옴
+  const { data: rawHospitals, isLoading, isError } = useHospitalAccountsListQuery();
+  const hospitals = useMemo(() => rawHospitals?.map(normalizeHospital), [rawHospitals]);
   const { setHospital, diagnosisFile, setDiagnosisFile } = useCaseFormStore();
 
   const [hospitalQuery, setHospitalQuery] = useState('');
@@ -18,7 +27,7 @@ const Step4Certificate = () => {
   }, [hospitals, hospitalQuery]);
 
   const handleSelectHospital = (h) => {
-    setHospital({ id: h.id, name: h.name }); // 리스트에서 선택
+    setHospital({ id: h.id, name: h.name });
     setHospitalQuery(h.name);
     setShowHospitalList(false);
   };

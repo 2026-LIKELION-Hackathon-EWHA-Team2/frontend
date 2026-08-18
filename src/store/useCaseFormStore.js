@@ -15,6 +15,12 @@ const useCaseFormStore = create((set, get) => ({
 
   setPhotos: (photos) => set({ photos }),
   addPhoto: (photo) => set({ photos: [...get().photos, photo] }),
+  removePhoto: (idx) =>
+    set((state) => {
+      const target = state.photos[idx];
+      if (target) URL.revokeObjectURL(target);
+      return { photos: state.photos.filter((_, i) => i !== idx) }; // 사진 삭제 기능 추가
+    }),
   setSymptomArea: (symptomArea) => set({ symptomArea }),
   setCustomArea: (customArea) => set({ customArea }),
   setSymptomStartDate: (symptomStartDate) => set({ symptomStartDate }),
@@ -26,17 +32,20 @@ const useCaseFormStore = create((set, get) => ({
   setDiagnosisFile: (diagnosisFile) => set({ diagnosisFile }),
 
   reset: () =>
-    set({
-      photos: [],
-      symptomArea: [],
-      customArea: '',
-      symptomStartDate: '',
-      symptomTiming: '',
-      symptomDetail: '',
-      painLevel: '보통',
-      checkedSymptoms: [],
-      hospital: null,
-      diagnosisFile: null,
+    set((state) => {
+      state.photos.forEach((p) => URL.revokeObjectURL(p));
+      return {
+        photos: [],
+        symptomArea: [],
+        customArea: '',
+        symptomStartDate: '',
+        symptomTiming: '',
+        symptomDetail: '',
+        painLevel: '보통',
+        checkedSymptoms: [],
+        hospital: null,
+        diagnosisFile: null,
+      };
     }),
 }));
 
