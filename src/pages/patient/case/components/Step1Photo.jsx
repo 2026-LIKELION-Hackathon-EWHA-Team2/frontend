@@ -13,7 +13,13 @@ const GUIDE_ITEMS = [
 const MAX_PHOTOS = 6;
 
 const Step1Photo = () => {
-  const { photos, addPhoto } = useCaseFormStore();
+  const { photos, addPhoto, removePhoto } = useCaseFormStore();
+
+  const handleRemovePhoto = (e, idx) => {
+    e.preventDefault();
+    e.stopPropagation();
+    removePhoto(idx);
+  };
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files || []);
     if (files.length === 0) return;
@@ -51,8 +57,18 @@ const Step1Photo = () => {
         {photos.length > 0 ? (
           <div className="flex flex-wrap justify-center gap-2 px-4">
             {photos.map((p, idx) => (
-              <img key={idx} src={p} alt={`업로드 사진 ${idx + 1}`} 
-              className={`rounded-lg object-cover ${photos.length >= 4 ? 'h-12 w-12' : 'h-16 w-16'}`}/>
+              <div key={idx} className="relative">
+                <img src={p} alt={`업로드 사진 ${idx + 1}`}
+                className={`rounded-lg object-cover ${photos.length >= 4 ? 'h-12 w-12' : 'h-16 w-16'}`}/>
+                <button
+                  type="button"
+                  onClick={(e) => handleRemovePhoto(e, idx)}
+                  className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-white shadow"
+                  aria-label={`사진 ${idx + 1} 삭제`}
+                >
+                  <img src="/icons/delete-circle.svg" alt="" className="h-4 w-4" />
+                </button>
+              </div>
             ))}
           </div>
         ) : (
