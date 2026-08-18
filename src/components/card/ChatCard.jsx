@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom';
 const ChatCard = ({
   patientName,
   caseId,
-  consultType,
   hospital,
   time,
   unreadCount,
@@ -44,7 +43,7 @@ const ChatCard = ({
       <div className="flex flex-1 flex-col gap-1">
         <p className="font-wantedsans text-sm font-medium text-[#181818]">{patientName}</p>
         <p className="-mt-1 font-wantedsans text-[11px] font-normal text-[#626262]">
-          Case #{caseId} &nbsp;|&nbsp; {consultType}
+          Case #{caseId}
         </p>
         <div className="flex items-center gap-1">
           <img src="/icons/case-hospital.svg" alt="" className="h-3 w-3" />

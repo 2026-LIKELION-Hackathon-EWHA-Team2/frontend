@@ -16,21 +16,20 @@ import { CASE_STATUS_BADGE, getCaseStatusCounts } from '../../../utils/caseStatu
 const ConsultRequestListPage = () => {
   const { data: patients, isLoading } = useConsultPatientsQuery();
 
-  const [activeTab, setActiveTab] = useState('all'); // 'all' | 'reviewing' | 'done' 
+  const [activeTab, setActiveTab] = useState('new'); // 'new' | 'reviewing' | 'done'
   const [searchTerm, setSearchTerm] = useState('');
 
   // Badge 상태 인식해서 숫자 자동 반영! utils 만들엇어요~~
   const counts = useMemo(() => getCaseStatusCounts(patients ?? []), [patients]);
 
   const tabs = [
-    { key: 'all', label: '전체 수신', count: counts.all },
+    { key: 'new', label: '신규 요청', count: counts.new },
     { key: 'reviewing', label: '검토중', count: counts.reviewing },
     { key: 'done', label: '완료', count: counts.done },
   ];
 
   const tabFiltered = useMemo(() => {
     if (!patients) return [];
-    if (activeTab === 'all') return patients;
     return patients.filter((p) => p.status === activeTab);
   }, [patients, activeTab]);
 
@@ -73,7 +72,6 @@ const ConsultRequestListPage = () => {
                 key={patient.id}
                 patientName={patient.name}
                 caseId={patient.caseId}
-                consultType={patient.consultType}
                 hospital={patient.hospital}
                 to={detailPath}
                 rightContent={

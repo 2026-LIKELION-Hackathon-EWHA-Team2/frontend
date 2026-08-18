@@ -7,6 +7,7 @@ import QueryState from '../../../components/state/QueryState';
 import ConsultPatientCard from '../../../components/card/ConsultPatientCard';
 import useAuthStore from '../../../store/useAuthStore';
 import { useHospitalProfileQuery, useConsultPatientsQuery } from '../../../hooks/useMockQueries'; // 프로필 쿼리로 수정
+import { getCaseStatusCounts } from '../../../utils/caseStatus';
 
 const HospitalHomePage = () => {
   const navigate = useNavigate();
@@ -16,11 +17,8 @@ const HospitalHomePage = () => {
   const { data: patients, isLoading, isError } = useConsultPatientsQuery();
 
   const ongoing = patients?.filter((p) => p.status === 'reviewing');
-  // 통계는 별도 mock이 아니라 실제 목록에서 직접 집계 (숫자가 목록과 어긋나지 않도록)
-  // '전체 수신'은 카드가 검토중/완료 두 항목만 세분화해서 보여주므로, 그 합으로 정의 (신규 접수 전 상태는 이 카드에서 별도 집계하지 않음)
-  const reviewingCount = ongoing?.length ?? 0;
-  const doneCount = patients?.filter((p) => p.status === 'done').length ?? 0;
-  const totalCount = reviewingCount + doneCount;
+  // 통계는 별도 mock이 아니라 실제 목록에서 직접 집계 (숫자가 목록과 어긋나지 않도록), ConsultRequestListPage와 동일한 집계 유틸 재사용
+  const counts = getCaseStatusCounts(patients ?? []);
 
   const handleLogoClick = () => {
     // 임시 로그아웃 처리
@@ -67,9 +65,9 @@ const HospitalHomePage = () => {
 
               <div className=" flex justify-center gap-2">
                 {[
-                  ['전체 수신', totalCount],
-                  ['검토중', reviewingCount],
-                  ['완료', doneCount],
+                  ['신규 요청', counts.new],
+                  ['검토중', counts.reviewing],
+                  ['완료', counts.done],
                 ].map(([label, count]) => (
                   <div
                     key={label}
