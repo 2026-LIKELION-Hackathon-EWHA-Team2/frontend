@@ -13,7 +13,7 @@ import Button from '../../../components/button/Button';
 import SmallButton from '../../../components/button/SmallButton';
 import CaseSummaryCard from '../../../components/card/CaseSummaryCard';
 import QueryState from '../../../components/state/QueryState'
-import { useConsultPatientDetailQuery } from '../../../hooks/useMockQueries';
+import { useConsultPatientDetailQuery, useStartConsultCase } from '../../../hooks/useMockQueries';
 
 // 섹션(아이콘 + 텍스트)
 const SectionTitle = ({ icon, children }) => (
@@ -27,9 +27,12 @@ const ConsultRequestDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { data: detail, isLoading } = useConsultPatientDetailQuery(id);
+  const startConsultCase = useStartConsultCase();
 
-  // 협진 시작하기 클릭 -> 나중에 api 호출로!
+  // 협진 시작하기 클릭 -> '신규 요청' 상태를 '검토중'으로 바꾸고(채팅 목록에 노출) 채팅방으로 이동
+  // 나중에 API 연동 시에는 협진 시작 API 호출 후 성공 시 이동하도록 바꿔야 할 거 같습니다.
   const handleStartConsult = () => {
+    startConsultCase(id);
     navigate(`/hospital/chat/room/${id}`);
   };
 

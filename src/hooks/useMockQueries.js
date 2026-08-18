@@ -162,6 +162,20 @@ export const useSendQuickConsultMessage = () => {
 export const useAgreementDraftQuery = () =>
   useQuery({ queryKey: ['agreementDraft'], queryFn: () => wait(MOCK_AGREEMENT) });
 
+// 케이스 조회 상세 - '협진 시작하기' 클릭 시 케이스 상태를 '신규 요청' -> '검토중'으로 변경 (mock, 캐시에 바로 반영)
+// 채팅 목록에는 이 상태가 되어야 카드가 나타남 (신규 요청 상태는 채팅방이 아직 없는 것으로 취급)
+export const useStartConsultCase = () => {
+  const queryClient = useQueryClient();
+  return (id) => {
+    queryClient.setQueryData(['consultPatients'], (old = []) =>
+      old.map((p) => (p.id === id ? { ...p, status: 'reviewing' } : p))
+    );
+    queryClient.setQueryData(['consultPatientDetail', id], (old) =>
+      old ? { ...old, status: 'reviewing' } : old
+    );
+  };
+};
+
 // 협진 합의 - 양측 병원이 모두 검토 완료했을 때 케이스 상태를 '완료'로 변경 (mock, 캐시에 바로 반영)
 export const useCompleteConsultCase = () => {
   const queryClient = useQueryClient();

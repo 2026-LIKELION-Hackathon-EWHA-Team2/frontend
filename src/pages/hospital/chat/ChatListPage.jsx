@@ -8,10 +8,13 @@ import ChatCard from '../../../components/card/ChatCard';
 import Badge from '../../../components/Badge';
 import SmallButton from '../../../components/button/SmallButton';
 import { useConsultPatientsQuery } from '../../../hooks/useMockQueries';
+import { CASE_STATUS_BADGE } from '../../../utils/caseStatus';
 
 const ChatListPage = () => {
   const navigate = useNavigate();
-  const { data: chats, isLoading, isError } = useConsultPatientsQuery();
+  const { data: allChats, isLoading, isError } = useConsultPatientsQuery();
+  // '신규 요청' 상태는 아직 협진 시작 전(케이스 조회에서 '협진 시작하기'를 눌러야 채팅방이 생김)이라 목록에서 제외
+  const chats = allChats?.filter((chat) => chat.status !== 'new');
 
   return (
     <>
@@ -25,37 +28,40 @@ const ChatListPage = () => {
           emptyProps={{ title: '진행 중인 채팅이 없어요' }}
         >
           <div className="flex flex-col gap-3">
-            {chats?.map((chat) => (
-              <ChatCard
-                key={chat.id}
-                patientName={chat.name}
-                caseId={chat.caseId}
-                hospital={chat.hospital}
-                time={chat.requestedAt?.split(' ')[1]}
-                unreadCount={chat.unreadCount}
-                to={`/hospital/chat/room/${chat.id}`}
-                hospitalExtra={
-                  chat.status === 'done' ? (
+            {chats?.map((chat) => {
+              const statusBadge = CASE_STATUS_BADGE[chat.status];
+              const isDone = chat.status === 'done';
+
+              return (
+                <ChatCard
+                  key={chat.id}
+                  patientName={chat.name}
+                  caseId={chat.caseId}
+                  hospital={chat.hospital}
+                  time={chat.requestedAt?.split(' ')[1]}
+                  unreadCount={chat.unreadCount}
+                  to={`/hospital/chat/room/${chat.id}`}
+                  hospitalExtra={
                     <>
-                      <Badge tone="mint" size="lg">
-                        완료
-                      </Badge>
-                      <SmallButton
-                        variant="arrow"
-                        label="합의안 보기"
-                        onClick={() =>
-                          navigate(`/hospital/chat/agreement/${chat.id}`, { state: { initialStep: 4 } })
-                        }
-                      />
+                      {statusBadge && (
+                        <Badge tone={statusBadge.tone} size="lg">
+                          {statusBadge.label}
+                        </Badge>
+                      )}
+                      {isDone && (
+                        <SmallButton
+                          variant="arrow"
+                          label="합의안 보기"
+                          onClick={() =>
+                            navigate(`/hospital/chat/agreement/${chat.id}`, { state: { initialStep: 4 } })
+                          }
+                        />
+                      )}
                     </>
-                  ) : (
-                    <Badge tone="blue" size="lg">
-                      검토중
-                    </Badge>
-                  )
-                }
-              />
-            ))}
+                  }
+                />
+              );
+            })}
           </div>
         </QueryState>
       </PageContainer>
