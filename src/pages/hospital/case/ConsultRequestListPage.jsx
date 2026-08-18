@@ -1,6 +1,7 @@
 // 케이스 조회. GNB '케이스' 버튼 누르면 나오는 메인 페이지.
 
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Header from '../../../components/layout/Header';
 import PageContainer from '../../../components/layout/PageContainer';
@@ -10,14 +11,18 @@ import SmallButton from '../../../components/button/SmallButton';
 import SearchBar from '../../../components/SearchBar';
 import ChatCard from '../../../components/card/ChatCard';
 import QueryState from '../../../components/state/QueryState'
+import NewRequestModal from '../../../components/modal/NewRequestModal';
 import { useConsultPatientsQuery } from '../../../hooks/useMockQueries';
 import { CASE_STATUS_BADGE, getCaseStatusCounts } from '../../../utils/caseStatus';
 
 const ConsultRequestListPage = () => {
+  const navigate = useNavigate();
   const { data: patients, isLoading } = useConsultPatientsQuery();
 
   const [activeTab, setActiveTab] = useState('new'); // 'new' | 'reviewing' | 'done'
   const [searchTerm, setSearchTerm] = useState('');
+  // '신규 요청' 카드는 바로 이동하지 않고, 확인 모달을 먼저 띄우기 위해 대상 환자를 잠깐 들고 있음
+  const [pendingPatient, setPendingPatient] = useState(null);
 
   // Badge 상태 인식해서 숫자 자동 반영! utils 만들엇어요~~
   const counts = useMemo(() => getCaseStatusCounts(patients ?? []), [patients]);
@@ -66,6 +71,7 @@ const ConsultRequestListPage = () => {
           {visiblePatients.map((patient) => {
             const statusBadge = CASE_STATUS_BADGE[patient.status];
             const detailPath = `/hospital/case/request/${patient.id}`;
+            const isNewRequest = patient.status === 'new';
 
             return (
               <ChatCard
@@ -73,7 +79,8 @@ const ConsultRequestListPage = () => {
                 patientName={patient.name}
                 caseId={patient.caseId}
                 hospital={patient.hospital}
-                to={detailPath}
+                to={isNewRequest ? undefined : detailPath}
+                onClick={isNewRequest ? () => setPendingPatient(patient) : undefined}
                 rightContent={
                   <>
                     {statusBadge && (
@@ -81,7 +88,12 @@ const ConsultRequestListPage = () => {
                         {statusBadge.label}
                       </Badge>
                     )}
-                    <SmallButton variant="arrow" label="케이스 보기" to={detailPath} />
+                    <SmallButton
+                      variant="arrow"
+                      label="케이스 보기"
+                      to={isNewRequest ? undefined : detailPath}
+                      onClick={isNewRequest ? () => setPendingPatient(patient) : undefined}
+                    />
                   </>
                 }
               />
@@ -89,6 +101,16 @@ const ConsultRequestListPage = () => {
           })}
         </div>
       </PageContainer>
+
+      <NewRequestModal
+        open={!!pendingPatient}
+        patientName={pendingPatient?.name}
+        onClose={() => setPendingPatient(null)}
+        onConfirm={() => {
+          navigate(`/hospital/case/request/${pendingPatient.id}`);
+          setPendingPatient(null);
+        }}
+      />
     </div>
   );
 };

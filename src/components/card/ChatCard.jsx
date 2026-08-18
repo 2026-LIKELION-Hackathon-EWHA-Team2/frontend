@@ -12,13 +12,15 @@ const ChatCard = ({
   time,
   unreadCount,
   to,
+  onClick, // to 대신 직접 클릭 핸들링이 필요할 때 (ex. 확인 모달 띄우기)
   rightContent, //요거 추가했어용
   className = '',
 }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    if (to) navigate(to);
+    if (onClick) onClick();
+    else if (to) navigate(to);
   };
 
   const handleKeyDown = (e) => {
