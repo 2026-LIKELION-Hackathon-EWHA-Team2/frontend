@@ -33,6 +33,11 @@ const ConsultRequestDetail = () => {
     navigate(`/hospital/chat/room/${id}`);
   };
 
+  // 완료된 케이스는 최종 합의안(협진 합의 4단계)으로 이동
+  const handleViewAgreement = () => {
+    navigate(`/hospital/chat/agreement/${id}`, { state: { initialStep: 4 } });
+  };
+
   if (isLoading) {
     return (
       <>
@@ -115,9 +120,15 @@ const ConsultRequestDetail = () => {
         </PageContainer>
 
         <div className="flex flex-col px-5.5 pb-[0.83rem] pt-1.5">
-        <Button variant="primary" onClick={handleStartConsult}>
-          협진 시작하기
-        </Button>
+        {detail.status === 'done' ? (
+          <Button variant="primary" onClick={handleViewAgreement}>
+            최종 합의안 보기
+          </Button>
+        ) : (
+          <Button variant="primary" onClick={handleStartConsult}>
+            협진 시작하기
+          </Button>
+        )}
         </div>
       </div>
     </>
