@@ -1,6 +1,8 @@
 // 2-1 홈 피드
 
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
+import useAuthStore from '../../../store/useAuthStore';
 import PageContainer from '../../../components/layout/PageContainer';
 import Button from '../../../components/button/Button';
 import QuickLaunch from '../../../components/button/QuickLaunch';
@@ -10,14 +12,30 @@ import { usePatientProfileQuery, useRecentCasesQuery } from '../../../hooks/useM
 
 const PatientHomePage = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient(); // ★ 추가
+  const logout = useAuthStore((state) => state.logout);
   const { data: patient } = usePatientProfileQuery();
   const { data: cases, isLoading, isError } = useRecentCasesQuery();
+
+  const handleLogoClick = () => {
+    // 임시 로그아웃 처리
+    if (window.confirm('로그아웃 하시겠습니까?')) {
+      logout();
+      queryClient.clear();
+      navigate('/login'); // 로그아웃 후 로그인 페이지로 이동
+    }
+  };
 
   return (
     <>
       {/* aftor 로고 */}
       <header className=" top-0 z-50 flex items-center bg-white px-6 pb-10 pt-10">
-        <img src="/icons/aftor-logo.svg" alt="aftor" className="h-6" />
+      <img
+        src="/icons/aftor-logo.svg"
+        alt="aftor"
+        className="h-6 cursor-pointer hover:opacity-80 transition-opacity"
+        onClick={handleLogoClick}
+      />
       </header>
 
       <PageContainer className="flex flex-col gap-8 pt-3 pb-4">
@@ -32,7 +50,7 @@ const PatientHomePage = () => {
               <h1 className="w-50 font-wantedsans text-2xl font-medium leading-7.5 text-[#181818]">
                 안녕하세요,
                 <br />
-                {patient?.firstName} 님
+                {patient?.name} 님
               </h1>
               <p className="font-wantedsans text-sm font-normal text-[#626262]">
                 귀국 후 건강 상태를 관리해보세요.

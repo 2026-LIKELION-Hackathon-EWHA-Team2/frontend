@@ -21,16 +21,22 @@ const useAuthStore = create(
       role: null,
       isLoggedIn: false,
       userId: '',
+      accessToken: '',
+      refreshToken: '', // refresh 엔드포인트 따로 없고, accessToken 유효기간 길게 잡아서 만료 시 그냥 로그아웃되는 걸로!
 
       setRole: (role) => set({ role }),
 
-      login: (userId, keepLoggedIn = true) => {
+      login: ({ userId, role, accessToken, refreshToken }, keepLoggedIn = true) => {
+        // 어느 storage(local/session)를 쓸지 결정하는 플래그부터 저장해두고
         localStorage.setItem('keepLoggedIn', String(keepLoggedIn));
-        set({ isLoggedIn: true, userId });
+        // 그 다음 상태를 저장해야 dynamicStorage가 올바른 storage에 씀 (순서 중요!)
+        set({ isLoggedIn: true, userId, role, accessToken, refreshToken });
       },
 
       logout: () => {
-        set({ isLoggedIn: false, userId: '', role: null });
+        set({ isLoggedIn: false, userId: '', role: null, accessToken: '', refreshToken: '' });
+        localStorage.removeItem('auth-storage'); // localStorage에 남아있을 수 있는 이전 세션 정보 확실히 제거
+        sessionStorage.removeItem('auth-storage'); // sessionStorage에 남아있을 수 있는 이전 세션 정보 확실히 제거
         localStorage.removeItem('keepLoggedIn');
       },
     }),
@@ -41,6 +47,8 @@ const useAuthStore = create(
         role: state.role,
         isLoggedIn: state.isLoggedIn,
         userId: state.userId,
+        accessToken: state.accessToken,
+        refreshToken: state.refreshToken,
       }),
     }
   )
