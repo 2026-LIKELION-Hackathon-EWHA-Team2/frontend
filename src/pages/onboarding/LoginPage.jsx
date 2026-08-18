@@ -101,7 +101,7 @@ const LoginPage = () => {
         disabled={!isFilled || loginMutation.isPending}
         onClick={handleLogin}
       >
-        로그인
+        {loginMutation.isPending ? '로그인 중' : '로그인'}
       </Button>
 
       <Button variant="underline" to="/select-role" className="mx-auto mt-4">
