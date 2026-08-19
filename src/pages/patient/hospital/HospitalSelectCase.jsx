@@ -6,11 +6,12 @@ import PageContainer from '../../../components/layout/PageContainer';
 import QueryState from '../../../components/state/QueryState';
 import Button from '../../../components/button/Button';
 import CaseSelectCard from '../../../components/card/CaseSelectCard';
-import { useCaseListQuery } from '../../../hooks/useMockQueries';
+import { useSubmittedSymptomCaseListQuery } from '../../../hooks/useMockQueries';
 import useHospitalMatchStore from '../../../store/useHospitalMatchStore';
 
 const HospitalSelectCase = () => {
-  const { data: cases, isLoading, isError } = useCaseListQuery();
+  // 병원 매칭 전(SUBMITTED) 상태인 케이스만 필터링해서 내려주는 훅
+  const { data: cases, isLoading, isError } = useSubmittedSymptomCaseListQuery();
   const [selectedId, setSelectedId] = useState(null);
   const setSelectedCaseId = useHospitalMatchStore((state) => state.setSelectedCaseId);
 

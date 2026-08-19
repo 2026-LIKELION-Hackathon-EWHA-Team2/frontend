@@ -12,7 +12,7 @@ import ProgressSteps from '../../../components/ProgressSteps';
 import Button from '../../../components/button/Button';
 import useCaseFormStore from '../../../store/useCaseFormStore';
 import useToastStore from '../../../store/useToastStore';
-import { useCreateCaseMutation } from '../../../hooks/useMockQueries';
+import { useCreateSymptomCaseMutation } from '../../../hooks/useMockQueries';
 
 import Step0Intro from './components/Step0Intro';
 import Step1Photo from './components/Step1Photo';
@@ -25,7 +25,7 @@ const PROGRESS_STEPS = ['사진 입력', '증상 입력', '진단서 입력'];
 const CaseUploadPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { mutate: createCase, isPending: isSubmitting } = useCreateCaseMutation();
+  const { mutate: createCase, isPending: isSubmitting } = useCreateSymptomCaseMutation();
   const showToast = useToastStore((state) => state.showToast);
 
   // 다른 페이지에서 navigate('/patient/case/upload', { state: { initialStep: 1 } }) 형태로 넘기면
@@ -51,21 +51,21 @@ const CaseUploadPage = () => {
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 0));
 
   // 완료 처리: 폼 전체 값을 넘겨서 등록 -> 성공하면 폼 초기화 + 홈 화면으로 이동
-  // (지금은 mock이라 바로 성공하는 형태고, 실제 API 연동 후에도 이 부분은 그대로 써도 될 거 같긴 해요!!
-  //  query hook 만 수정하면 되지 않을까.....)
+  // useCreateSymptomCaseMutation 내부(hooks/useMockQueries.js -> utils/symptomCaseMapper.js)를 거쳐서
+  // 이 값들을 실제 API 스펙(multipart/form-data)으로 변환해서 보내도록 했습니당!!! 
   const handleComplete = () => {
     createCase(
       {
-        photos,
-        symptomArea,
-        customArea,
+        hospital,
+        diagnosisFile,
         symptomStartDate,
         symptomTiming,
         symptomDetail,
         painLevel,
+        symptomArea,
+        customArea,
         checkedSymptoms,
-        hospital,
-        diagnosisFile,
+        photos,
       },
       {
         onSuccess: () => {
