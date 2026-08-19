@@ -39,14 +39,16 @@ const MedicalPassportPage = () => {
                 여권번호&nbsp;&nbsp;{patient.passport_number}
               </p>
 
-              <div className="mt-6 flex items-center gap-1.5">
-                <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full bg-[#6B5DD6]">
-                  <img src="/icons/check-mark.svg" alt="" className="h-2 w-2" />
-                </span>
-                <span className="font-wantedsans text-[10px] font-medium leading-normal text-[#626262]">
-                  {patient.last_updated ? `최종 업데이트  ${formatDateOnly(patient.last_updated)}` : ''}
-                </span>
-              </div>
+              {patient.last_updated && (
+                <div className="mt-6 flex items-center gap-1.5">
+                  <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full bg-[#6B5DD6]">
+                    <img src="/icons/check-mark.svg" alt="" className="h-2 w-2" />
+                  </span>
+                  <span className="font-wantedsans text-[10px] font-medium leading-normal text-[#626262]">
+                    {`최종 업데이트  ${formatDateOnly(patient.last_updated)}`}
+                  </span>
+                </div>
+              )}
             </div>
 
             <img
