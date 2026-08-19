@@ -54,6 +54,16 @@ const ConsultRequestDetail = () => {
     navigate(`/hospital/chat/agreement/${room.medicalCaseId}/${room.id}`);
   };
 
+  // 검토중(수락됨) 케이스는 이미 만들어진 채팅방으로 이동
+  const handleGoToChatRoom = () => {
+    const room = rooms?.find((r) => String(r.id) === String(detail?.chatRoomId));
+    if (!room) {
+      showToast('채팅방 정보를 불러오지 못했습니다.');
+      return;
+    }
+    navigate(`/hospital/chat/room/${room.medicalCaseId}/${room.id}`);
+  };
+
   if (isLoading) {
     return (
       <>
@@ -139,6 +149,10 @@ const ConsultRequestDetail = () => {
         {detail.status === 'done' ? (
           <Button variant="primary" onClick={handleViewAgreement}>
             최종 합의안 보기
+          </Button>
+        ) : detail.status === 'reviewing' ? (
+          <Button variant="primary" onClick={handleGoToChatRoom}>
+            협진 채팅방으로 이동하기
           </Button>
         ) : (
           <Button variant="primary" disabled={acceptRequest.isPending} onClick={handleStartConsult}>
