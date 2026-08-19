@@ -13,7 +13,14 @@ import ProgressSteps from '../../../../components/ProgressSteps';
 import Button from '../../../../components/button/Button';
 import useCaseSyncStore from '../../../../store/useCaseSyncStore';
 import useHospitalMatchStore from '../../../../store/useHospitalMatchStore';
-import { useHospitalListQuery } from '../../../../hooks/useMockQueries';
+import useToastStore from '../../../../store/useToastStore';
+import {
+  useCreateCaseTransferMutation,
+  useReviewCaseTransferMutation,
+  useSendCaseTransferMutation,
+} from '../../../../hooks/useMockQueries';
+import { getCountryName } from '../../../../utils/country';
+import { toApiGender, toApiDateFormat } from '../../../../utils/format';
 
 import Step0Intro from './components/Step0Intro';
 import Step1Identify from './components/Step1Identify';
@@ -29,24 +36,105 @@ const CaseSyncPage = () => {
   const [step, setStep] = useState(0);
   const [isSending, setIsSending] = useState(false);
 
-  const { patientName, agreements, setSelectedCaseId, setTargetHospital, setIsSent, reset } = useCaseSyncStore();
+  const {
+    patientName,
+    gender,
+    birth,
+    selectedCaseId,
+    recommendationId,
+    agreements,
+    transferId,
+    setSelectedCaseId,
+    setRecommendationId,
+    setTargetHospital,
+    setTransferId,
+    setProcedureName,
+    setProcedurePart,
+    setProcedureDate,
+    setMedications,
+    setDoctorNote,
+    setIsSent,
+    reset,
+  } = useCaseSyncStore();
 
   // '병원과 동기화하기' 버튼으로 이 페이지에 진입할 때 매칭 store 값을 그대로 승계받기!
-  const { selectedCaseId: matchedCaseId, selectedHospitalId, reset: resetHospitalMatch } = useHospitalMatchStore();
-  const { data: hospitals = [] } = useHospitalListQuery();
+  const {
+    selectedCaseId: matchedCaseId,
+    selectedHospitalId,
+    selectedRecommendationId,
+    recommendedHospitals,
+    partnerHospitalName,
+    reset: resetHospitalMatch,
+  } = useHospitalMatchStore();
+  const showToast = useToastStore((state) => state.showToast);
+
+  const createTransferMutation = useCreateCaseTransferMutation();
+  const reviewMutation = useReviewCaseTransferMutation();
+  const sendMutation = useSendCaseTransferMutation();
 
   const nextStep = () => setStep((prev) => prev + 1);
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 0));
 
-  // 전송 처리: 지금은 mock이라 잠깐의 지연 후 바로 성공 처리 되도록 구현해두고,,
-  // 실제 API 연동 시엔 이 자리에서 케이스 전송 mutation 호출 후 onSuccess에서 아래 로직 실행하면 될 것 같아요!!
+  // 'AI로 구조화하기' 클릭 시 실제 Case 전송 건 생성 API를 호출 (진단서 AI 분석·구조화가 여기서 일어남)
+  // 응답의 structured_data를 Step3AiReview가 보여줄 store 필드에 반영하고, transferId를 저장해둬야
+  // 이후 검토(review)·전송(send) 단계에서 진짜 CaseTransfer를 가리킬 수 있음
+  const handleStructure = () => {
+    createTransferMutation.mutate(
+      {
+        symptom_case_id: selectedCaseId,
+        recommendation_id: recommendationId,
+        patient_name: patientName,
+        patient_gender: toApiGender(gender),
+        patient_birth_date: toApiDateFormat(birth),
+      },
+      {
+        onSuccess: (data) => {
+          setTransferId(data.id);
+          setProcedureName(data.structured_data.procedure.name);
+          setProcedurePart(data.structured_data.procedure.area);
+          setProcedureDate(data.structured_data.procedure.date);
+          setMedications(data.structured_data.ingredients ?? []);
+          setDoctorNote(data.structured_data.clinician_note ?? '');
+          nextStep();
+        },
+        onError: () => {
+          showToast('AI 구조화에 실패했습니다. 다시 시도해주세요.');
+        },
+      }
+    );
+  };
+
+  // 전송 처리: 검토(review)로 READY_TO_TRANSFER 확인 후에만 최종 전송(send) 호출
+  // (review만 끝난 상태에서 바로 완료 화면으로 넘어가면 안 됨 - 아직 병원에 전송된 게 아니라서)
   const handleSend = () => {
     setIsSending(true);
-    setTimeout(() => {
-      setIsSent(true);
-      setIsSending(false);
-      nextStep();
-    }, 600);
+    reviewMutation.mutate(
+      { transferId, agreements },
+      {
+        onSuccess: (reviewed) => {
+          if (reviewed.status !== 'READY_TO_TRANSFER') {
+            setIsSending(false);
+            showToast('필수 동의 처리에 실패했습니다. 다시 시도해주세요.');
+            return;
+          }
+          sendMutation.mutate(transferId, {
+            onSuccess: () => {
+              setIsSending(false);
+              setIsSent(true);
+              nextStep();
+            },
+            onError: () => {
+              setIsSending(false);
+              showToast('전송에 실패했습니다. 다시 시도해주세요.');
+            },
+          });
+        },
+        onError: () => {
+          setIsSending(false);
+          showToast('필수 동의 처리에 실패했습니다. 다시 시도해주세요.');
+        },
+      }
+    );
   };
 
   const handleFinish = () => {
@@ -66,9 +154,19 @@ const CaseSyncPage = () => {
         reset(); // 이전에 입력하다 만 값이 남아있지 않도록 진입 시 초기화
         // 매칭 완료 단계에서 넘어온 케이스/병원 정보 승계
         if (matchedCaseId) setSelectedCaseId(matchedCaseId);
-        const matchedHospital = hospitals.find((h) => h.id === (selectedHospitalId ?? 'tokyo-medical'));
-        if (matchedHospital) {
-          setTargetHospital({ name: matchedHospital.name, info: `일본 · ${matchedHospital.department}` });
+        if (selectedRecommendationId) setRecommendationId(selectedRecommendationId);
+        if (partnerHospitalName) {
+          // 추천 병원 선택(select) API는 병원명만 주므로, 국가/진료분야는 아직 store에 남아있는
+          // recommendedHospitals에서 같은 hospital_id를 찾아 보충함
+          const matchedHospital = recommendedHospitals.find(
+            (r) => r.hospital.hospital_id === selectedHospitalId
+          )?.hospital;
+          const info = matchedHospital
+            ? [getCountryName(matchedHospital.country), matchedHospital.specialties[0]?.specialty_name]
+                .filter(Boolean)
+                .join(' · ')
+            : '';
+          setTargetHospital({ name: partnerHospitalName, info });
         }
         resetHospitalMatch(); // 값 다 승계받았으니 매칭 store는 다음 매칭을 위해 초기화
         nextStep();
@@ -88,9 +186,9 @@ const CaseSyncPage = () => {
       progressIndex: 0,
       containerClassName: '',
       content: <Step2Select />,
-      buttonLabel: 'AI로 구조화하기',
-      disabled: false,
-      onClick: nextStep,
+      buttonLabel: createTransferMutation.isPending ? '구조화 중...' : 'AI로 구조화하기',
+      disabled: createTransferMutation.isPending,
+      onClick: handleStructure,
     },
     3: {
       subtitle: 'AI가 의료 정보를 번역하고 구조화합니다.',

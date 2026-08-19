@@ -8,42 +8,27 @@ import QueryState from '../../../../components/state/QueryState';
 import HospitalCard from '../../../../components/card/HospitalCard';
 import SmallButton from '../../../../components/button/SmallButton';
 import SortModal from '../../../../components/modal/SortModal';
-import { useHospitalListQuery } from '../../../../hooks/useMockQueries';
+import { useNetworkHospitalsQuery } from '../../../../hooks/useMockQueries';
 import useHospitalMatchStore from '../../../../store/useHospitalMatchStore';
 
 const SORT_OPTIONS = [
   { value: 'distance', label: '거리순으로 보기' },
   { value: 'experience', label: '협진 경험 순으로 보기' },
-  { value: 'department', label: '전문 분야 일치순으로 보기' },
 ];
 
 const SORT_LABELS = {
   distance: '거리순',
   experience: '협진 경험순',
-  department: '전문 분야 일치순',
-};
-
-const sortHospitals = (hospitals, sortOrder) => {
-  const sorted = [...hospitals];
-  if (sortOrder === 'distance') {
-    sorted.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
-  } else if (sortOrder === 'experience') {
-    sorted.sort((a, b) => Number(b.hasConsultExperience) - Number(a.hasConsultExperience));
-  } else if (sortOrder === 'department') {
-    sorted.sort((a, b) => a.department.localeCompare(b.department));
-  }
-  return sorted;
 };
 
 const NetworkListPage = () => {
   const navigate = useNavigate();
-  const { data: hospitals, isLoading, isError } = useHospitalListQuery();
   const { sortOrder, setSortOrder } = useHospitalMatchStore();
+  // 정렬은 클라이언트에서 다시 하지 않고 서버 sort 파라미터로 처리 (백엔드가 이미 정렬된 배열을 줌)
+  const { data: hospitals, isLoading, isError } = useNetworkHospitalsQuery(sortOrder);
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [draftSortOrder, setDraftSortOrder] = useState(sortOrder);
-
-  const sortedHospitals = hospitals ? sortHospitals(hospitals, sortOrder) : [];
 
   const handleOpenModal = () => {
     setDraftSortOrder(sortOrder);
@@ -65,15 +50,15 @@ const NetworkListPage = () => {
         </div>
 
         <div className="mt-3 flex flex-col gap-2.5">
-          <QueryState isLoading={isLoading} isError={isError} isEmpty={!sortedHospitals.length}>
-            {sortedHospitals.map((hospital) => (
+          <QueryState isLoading={isLoading} isError={isError} isEmpty={!hospitals?.length}>
+            {hospitals?.map((hospital) => (
               <HospitalCard
-                key={hospital.id}
-                image={hospital.image}
+                key={hospital.hospital_id}
+                image={hospital.image_url}
                 name={hospital.name}
-                department={hospital.department}
-                distance={hospital.distance}
-                onDetailClick={() => navigate(`/patient/hospital/network/${hospital.id}`)}
+                department={hospital.specialties.map((s) => s.specialty_name).join(', ')}
+                distance={`${hospital.distance_km}km`}
+                onDetailClick={() => navigate(`/patient/hospital/network/${hospital.hospital_id}`)}
               />
             ))}
           </QueryState>

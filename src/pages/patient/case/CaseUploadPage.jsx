@@ -73,6 +73,11 @@ const CaseUploadPage = () => {
           navigate('/patient/home');
           showToast('케이스 등록이 완료되었습니다!');
         },
+        onError: (error) => {
+          // DRF 400 응답은 {필드명: [에러메시지]} 형태라 콘솔에 원본을 남겨서 바로 원인 확인 가능하게 함
+          console.error('케이스 등록 실패:', error.response?.data ?? error);
+          showToast('케이스 등록에 실패했습니다. 입력 내용을 확인해주세요.');
+        },
       }
     );
   };

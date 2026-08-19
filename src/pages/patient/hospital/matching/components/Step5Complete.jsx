@@ -3,14 +3,12 @@
 import Header from '../../../../../components/layout/Header';
 import PageContainer from '../../../../../components/layout/PageContainer';
 import Button from '../../../../../components/button/Button';
-import { useHospitalListQuery } from '../../../../../hooks/useMockQueries';
 import useHospitalMatchStore from '../../../../../store/useHospitalMatchStore';
 
 const Step5Complete = ({ prevStep }) => {
-  const { data: hospitals } = useHospitalListQuery();
-  const { selectedHospitalId, reset } = useHospitalMatchStore();
-
-  const hospital = hospitals?.find((item) => item.id === selectedHospitalId);
+  // partnerHospitalName은 추천 병원 선택 API(select) 응답값 - mock 병원 목록 조회 필요 없음
+  // (매칭 store는 여기서 reset하지 않음 - CaseSyncPage 진입 시 이 값들을 읽어간 뒤에 resetHospitalMatch()로 정리함)
+  const partnerHospitalName = useHospitalMatchStore((state) => state.partnerHospitalName);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -29,7 +27,7 @@ const Step5Complete = ({ prevStep }) => {
             매칭 완료
           </p>
           <p className="mt-2 text-center font-wantedsans text-sm font-medium leading-normal text-[#626262]">
-            {hospital?.name}
+            {partnerHospitalName}
             <br />
             으로 매칭이 완료되었습니다.
           </p>
