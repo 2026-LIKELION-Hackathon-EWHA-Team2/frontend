@@ -14,6 +14,7 @@ const HospitalSelectCase = () => {
   const { data: cases, isLoading, isError } = useSubmittedSymptomCaseListQuery();
   const [selectedId, setSelectedId] = useState(null);
   const setSelectedCaseId = useHospitalMatchStore((state) => state.setSelectedCaseId);
+  const resetHospitalMatch = useHospitalMatchStore((state) => state.reset);
 
   useEffect(() => {
     if (cases?.length && !selectedId) {
@@ -22,9 +23,18 @@ const HospitalSelectCase = () => {
   }, [cases, selectedId]);
 
   // 선택한 케이스를 매칭 store에도 그대로 반영 (이후 단계에서 계속 참조 필요해서요 ㅠ)
+  // 이전에 다른 케이스로 매칭을 진행하다 만 상태(selectedHospitalId, personalInfoAgreed 등)가
+  // store에 남아있으면 AiMatchingPage가 다른 케이스인데도 동의/완료 화면으로 바로 건너뛰는
+  // 버그가 있어서, 케이스가 실제로 바뀔 때만 이전 상태를 reset 후 새 케이스를 저장하는 형태로 수정 ~.~
   useEffect(() => {
-    if (selectedId) setSelectedCaseId(selectedId);
-  }, [selectedId, setSelectedCaseId]);
+    if (!selectedId) return;
+
+    const prevCaseId = useHospitalMatchStore.getState().selectedCaseId;
+    if (prevCaseId !== selectedId) {
+      resetHospitalMatch();
+    }
+    setSelectedCaseId(selectedId);
+  }, [selectedId, setSelectedCaseId, resetHospitalMatch]);
 
   return (
     <div className="flex min-h-screen flex-col">
