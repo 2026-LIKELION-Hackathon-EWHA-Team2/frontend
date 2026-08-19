@@ -20,14 +20,8 @@ const Step1AiDraft = ({ aiDraftLabel, aiDraftDesc, onEdit, onComplete }) => {
   const participants = useAgreementStore((s) => s.participants);
   const finalJudgement = useAgreementStore((s) => s.finalJudgement);
   const reasons = useAgreementStore((s) => s.reasons);
-  const complete = useAgreementStore((s) => s.complete);
   const opinion = useAgreementStore((s) => s.opinion);
   const setOpinion = useAgreementStore((s) => s.setOpinion);
-
-  const handleComplete = () => {
-    complete();
-    onComplete();
-  };
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -121,7 +115,7 @@ const Step1AiDraft = ({ aiDraftLabel, aiDraftDesc, onEdit, onComplete }) => {
           <Button variant="outline" onClick={onEdit} className="flex-1">
             합의안 수정
           </Button>
-          <Button variant="primary" onClick={handleComplete} className="flex-1">
+          <Button variant="primary" onClick={onComplete} className="flex-1">
             검토 완료
           </Button>
         </div>

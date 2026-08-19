@@ -571,7 +571,7 @@ export const MOCK_AGREEMENT = {
   aiDraftDesc: '병원 간 대화를 바탕으로 AI가 작성한 초안입니다.\n양측 의료진의 검토와 승인이 필요합니다.',
   participants: [
     { name: 'Tokyo Medical', status: '검토 대기' },
-    { name: '자국 병원', status: '검토 대기' },
+    { name: '우리 병원', status: '검토 대기' },
   ],
   finalJudgement: '경증 시술 후 반응으로 판단됩니다.',
   reasons: [

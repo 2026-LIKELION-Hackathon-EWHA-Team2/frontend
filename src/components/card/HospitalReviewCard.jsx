@@ -21,8 +21,8 @@ const STATUS_STYLES = {
 
 const HospitalReviewCard = ({ name, status }) => {
   const style = STATUS_STYLES[status] ?? STATUS_STYLES['검토 대기'];
-  // 자국 병원(로그인된 우리 병원)은 아이콘을 보라색으로 구분
-  const isSelf = name === '자국 병원';
+  // 우리 병원(로그인된 병원)은 아이콘을 보라색으로 구분
+  const isSelf = name === '우리 병원';
 
   return (
     <div className={`flex flex-1 items-center gap-3 rounded-[10px] border p-3 ${style.container}`}>

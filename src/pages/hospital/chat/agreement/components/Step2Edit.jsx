@@ -22,10 +22,10 @@ const Step2Edit = ({ nextStep, prevStep }) => {
   const opinion = useAgreementStore((s) => s.opinion);
   const setOpinion = useAgreementStore((s) => s.setOpinion);
 
-  // 내용 수정 화면 진입 시, 우리(자국) 병원이 수정 의사로 선택되고 검토중 상태로 전환됨
+  // 내용 수정 화면 진입 시, 우리 병원이 수정 의사로 선택되고 검토중 상태로 전환됨
   useEffect(() => {
-    selectParticipant('자국 병원');
-    setParticipantStatus('자국 병원', '검토 중');
+    selectParticipant('우리 병원');
+    setParticipantStatus('우리 병원', '검토 중');
   }, [selectParticipant, setParticipantStatus]);
 
   const handleSave = () => {

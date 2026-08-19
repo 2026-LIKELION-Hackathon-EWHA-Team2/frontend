@@ -13,14 +13,14 @@ const Toast = () => {
     <div className="pointer-events-none fixed inset-0 z-70">
       <div className="relative mx-auto h-full max-w-md">
         <div
-          className={`absolute bottom-24 left-1/2 flex -translate-x-1/2 items-center gap-2 rounded-full bg-[#3D3D3D] px-4 py-3 shadow-[0_4px_16px_0_rgba(0,0,0,0.25)] transition-all duration-300 ease-in-out ${
+          className={`absolute bottom-24 left-1/2 flex w-max max-w-[92%] -translate-x-1/2 items-start gap-2 rounded-2xl bg-[#3D3D3D] px-4 py-3 shadow-[0_4px_16px_0_rgba(0,0,0,0.25)] transition-all duration-300 ease-in-out ${
             visible ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'
           }`}
         >
-          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#6B5DD6]">
+          <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#6B5DD6]">
             <img src="/icons/check-mark.svg" alt="" className="h-2.5 w-2.5" />
           </span>
-          <span className="whitespace-nowrap font-wantedsans text-sm font-medium text-white">{message}</span>
+          <span className="whitespace-pre text-center font-wantedsans text-sm font-medium text-white">{message}</span>
         </div>
       </div>
     </div>

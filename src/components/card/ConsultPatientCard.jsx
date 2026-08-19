@@ -2,7 +2,7 @@ import Badge from '../Badge';
 import SmallButton from '../button/SmallButton';
 
 // 병원 홈 - 진행 중 협진 카드
-// props: patient ({ id, caseId, name, gender, age, consultType, hospital, requestedAt })
+// props: patient ({ id, caseId, name, gender, age, hospital, requestedAt })
 
 const ConsultPatientCard = ({ patient }) => {
   return (
@@ -21,7 +21,7 @@ const ConsultPatientCard = ({ patient }) => {
           </Badge>
         </div>
         <p className="mb-0.5 font-wantedsans text-[11px] font-normal text-[#626262]">
-          {patient.name} ({patient.gender}, {patient.age}세) &nbsp;|&nbsp; {patient.consultType}
+          {patient.name} ({patient.gender}, {patient.age}세)
         </p>
 
         <div className="mt-1.5 flex items-center gap-1">

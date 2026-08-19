@@ -8,6 +8,7 @@ import Textarea from '../../../../../components/Textarea';
 import Button from '../../../../../components/button/Button';
 import HospitalReviewCard from '../../../../../components/card/HospitalReviewCard';
 import useAgreementStore from '../../../../../store/useAgreementStore';
+import { useHospitalProfileQuery } from '../../../../../hooks/useMockQueries';
 import { AI_SUMMARY_NOTE, MOCK_LAST_EDITED_AT } from '../../../../../mock/mockdata';
 
 // 근거 tone('경미'/'없음'/'권장' 등)을 문장으로 자연스럽게 이어붙이기 위한 어미 처리
@@ -17,17 +18,14 @@ const reasonText = ({ label, tone }) => {
   return `${label} ${tone === '없음' ? tone : `${tone}함`}`;
 };
 
-const Step3EditComplete = ({ nextStep, prevStep }) => {
+// 검토 완료 시 처리(상대 병원 검토 여부에 따라 최종 합의서로 보낼지, 홈 + 안내 토스트로 보낼지)는
+// 부모(ConsultAgreementPage)의 handleAgree가 담당 - Step1AiDraft의 '검토 완료'와 로직을 공유하기 위함
+const Step3EditComplete = ({ onComplete, prevStep }) => {
   const participants = useAgreementStore((s) => s.participants);
   const finalJudgement = useAgreementStore((s) => s.finalJudgement);
   const reasons = useAgreementStore((s) => s.reasons);
   const opinion = useAgreementStore((s) => s.opinion);
-  const complete = useAgreementStore((s) => s.complete);
-
-  const handleComplete = () => {
-    complete();
-    nextStep();
-  };
+  const { data: profile } = useHospitalProfileQuery();
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -42,7 +40,7 @@ const Step3EditComplete = ({ nextStep, prevStep }) => {
         <div className="flex items-center gap-1.5">
           <img src="/icons/check-lightpurple.svg" alt="" className="h-4 w-4 shrink-0" />
           <span className="font-wantedsans text-xs font-medium leading-normal text-[#181818]">
-            Seoul Beauty Clinic 수정 · {MOCK_LAST_EDITED_AT}
+            {profile?.name} 수정 · {MOCK_LAST_EDITED_AT}
           </span>
         </div>
 
@@ -105,7 +103,7 @@ const Step3EditComplete = ({ nextStep, prevStep }) => {
           <Button variant="outline" onClick={prevStep} className="flex-1">
             합의안 수정
           </Button>
-          <Button variant="primary" onClick={handleComplete} className="flex-1">
+          <Button variant="primary" onClick={onComplete} className="flex-1">
             검토 완료
           </Button>
         </div>

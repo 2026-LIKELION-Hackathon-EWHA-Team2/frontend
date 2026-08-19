@@ -2,7 +2,6 @@
 const CaseSummaryCard = ({
   patientName,
   caseId,
-  consultType,
   hospital,
   requestedAt,
   rightContent, // 우측 슬롯 ('상세 보기' SmallButton). 필요 없으면 생략.
@@ -20,7 +19,7 @@ const CaseSummaryCard = ({
         <div className="flex flex-col gap-[0.0625rem]">
         <p className="text-[#181818] font-wantedsans text-sm font-medium leading-[1.125rem]">{patientName}</p>
         <p className="text-[#686868] font-wantedsans text-[0.5625rem] font-medium leading-normal">
-          Case #{caseId} &nbsp;|&nbsp; {consultType}
+          Case #{caseId}
         </p>
         </div>
         <div className="flex items-center gap-1">
