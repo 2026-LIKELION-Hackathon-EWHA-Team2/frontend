@@ -4,8 +4,8 @@
 const AREA_TYPE_MAP = {
   face: 'FACE',
   chest: 'CHEST',
-  eyes: 'EYES',
-  lips: 'LIPS',
+  eyes: 'EYE',
+  lips: 'MOUTH',
   nose: 'NOSE',
 };
 
@@ -14,7 +14,7 @@ const SYMPTOM_TYPE_MAP = {
   redness: 'REDNESS',
   swelling: 'SWELLING',
   pain: 'PAIN',
-  bruise: 'BRUISE',
+  bruise: 'BRUISING_BLEEDING',
   discharge: 'DISCHARGE',
   itching: 'ITCHING',
 };
