@@ -7,20 +7,12 @@ import QueryState from '../../../../../components/state/QueryState';
 
 const Step2Select = () => {
   const { data: cases = [], isLoading, isError } = useHospitalSelectedSymptomCaseListQuery();
-  const {
-    selectedCaseId,
-    setLinkedDiagnosis,
-    setProcedureName,
-    setProcedurePart,
-    setProcedureDate,
-    setMedications,
-    setDoctorNote,
-  } = useCaseSyncStore();
+  const { selectedCaseId, setLinkedDiagnosis } = useCaseSyncStore();
 
   const selectedCase = cases.find((c) => c.id === selectedCaseId);
 
-  // 케이스 데이터를 '케이스 검토(Step3)'에서 쓸 store 필드로 동기화
-  // (실제 연동 시엔 이 자리에서 AI 구조화 API를 호출해 응답으로 set 하면 될 것 같아요!!)
+  // 진단서 연동 정보만 store에 동기화 (시술/약물/소견 정보는 여기서 다루지 않음 -
+  // '다음 단계(AI로 구조화하기)'에서 실제 Case 전송 건 생성 API를 호출해 응답으로 채움)
   useEffect(() => {
     if (!selectedCase) return;
     setLinkedDiagnosis(
@@ -28,11 +20,6 @@ const Step2Select = () => {
         ? { name: selectedCase.diagnosisName }
         : null
     );
-    setProcedureName(selectedCase.procedureName ?? '');
-    setProcedurePart(selectedCase.procedureArea ?? '');
-    setProcedureDate(selectedCase.procedureDate ?? '');
-    setMedications(selectedCase.ingredients ?? []);
-    setDoctorNote(selectedCase.doctorNote ?? '');
   }, [selectedCase]);
 
   if (!selectedCase) return null;
@@ -103,11 +90,11 @@ const Step2Select = () => {
           {selectedCase.diagnosisAttached ? (
             <div className="flex items-center gap-2.5 rounded-[0.625rem] border border-[#DADADA] px-3 py-3.5">
               <img src="/icons/diagnosis-file.svg" alt="" className="h-9.25 w-9.25 shrink-0" />
-              <div className="flex flex-col gap-1">
+              <div className="flex min-w-0 flex-1 flex-col gap-1">
                 <span className="text-[#181818] font-wantedsans text-[0.75rem] font-bold leading-normal">
                   연동된 진단서
                 </span>
-                <span className="text-[#626262] font-wantedsans text-[0.625rem] font-medium leading-[0.875rem]">
+                <span className="break-all text-[#626262] font-wantedsans text-[0.625rem] font-medium leading-[0.875rem]">
                   {selectedCase.diagnosisName}
                 </span>
               </div>

@@ -4,15 +4,17 @@ import Header from '../../../../../components/layout/Header';
 import PageContainer from '../../../../../components/layout/PageContainer';
 import QueryState from '../../../../../components/state/QueryState';
 import HospitalCard from '../../../../../components/card/HospitalCard';
-import { useHospitalListQuery } from '../../../../../hooks/useMockQueries';
 import useHospitalMatchStore from '../../../../../store/useHospitalMatchStore';
 
 const Step2List = ({ nextStep, prevStep }) => {
-  const { data: hospitals, isLoading, isError } = useHospitalListQuery();
-  const { setSelectedHospitalId } = useHospitalMatchStore();
+  // Step1Setting에서 매칭 요청 응답(recommendations)을 그대로 store에 저장해뒀으므로
+  // 여기선 별도 API 호출 없이 그 값만 읽어서 보여주면 됨
+  const { recommendedHospitals, setSelectedHospitalId, setSelectedRecommendationId } = useHospitalMatchStore();
 
-  const handleDetailClick = (hospitalId) => {
-    setSelectedHospitalId(hospitalId);
+  const handleDetailClick = (recommendation) => {
+    // hospital_id와 recommendation_id는 서로 다른 값이라 각각 저장해야 함
+    setSelectedHospitalId(recommendation.hospital.hospital_id);
+    setSelectedRecommendationId(recommendation.recommendation_id);
     nextStep();
   };
 
@@ -26,15 +28,15 @@ const Step2List = ({ nextStep, prevStep }) => {
         </p>
 
         <div className="mt-6.5 flex flex-col gap-2.5">
-          <QueryState isLoading={isLoading} isError={isError} isEmpty={!hospitals?.length}>
-            {hospitals?.map((hospital) => (
+          <QueryState isLoading={false} isError={false} isEmpty={!recommendedHospitals.length}>
+            {recommendedHospitals.map((recommendation) => (
               <HospitalCard
-                key={hospital.id}
-                image={hospital.image}
-                name={hospital.name}
-                department={hospital.department}
-                distance={hospital.distance}
-                onDetailClick={() => handleDetailClick(hospital.id)}
+                key={recommendation.recommendation_id}
+                image={recommendation.hospital.image_url}
+                name={recommendation.hospital.name}
+                department={recommendation.hospital.specialties.map((s) => s.specialty_name).join(', ')}
+                distance={`${recommendation.distance_km}km`}
+                onDetailClick={() => handleDetailClick(recommendation)}
               />
             ))}
           </QueryState>

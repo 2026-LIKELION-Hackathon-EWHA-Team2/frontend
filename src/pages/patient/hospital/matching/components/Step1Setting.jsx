@@ -5,6 +5,8 @@ import PageContainer from '../../../../../components/layout/PageContainer';
 import Button from '../../../../../components/button/Button';
 import LevelBarCard from '../../../../../components/card/LevelBarCard';
 import useHospitalMatchStore from '../../../../../store/useHospitalMatchStore';
+import useToastStore from '../../../../../store/useToastStore';
+import { useCreateMatchRequestMutation } from '../../../../../hooks/useMockQueries';
 
 // LevelBarCard 기준, 표시 퍼센트는 (value-1)/4*100 => 5=100%,4=75%,3=50%,2=25%,1=0%
 const PERCENT_LABELS = ['0', '25', '50', '75', '100'];
@@ -30,8 +32,47 @@ const PREFERENCE_OPTIONS = [
   },
 ];
 
+// 프론트 슬라이더(1~5)를 백엔드 가중치(0~100)로 변환
+const levelToWeight = (level) => (level - 1) * 25;
+
 const Step1Setting = ({ nextStep }) => {
-  const { preference, setPreference } = useHospitalMatchStore();
+  const { selectedCaseId, preference, setPreference, setMatchRequestId, setRecommendedHospitals } =
+    useHospitalMatchStore();
+  const showToast = useToastStore((state) => state.showToast);
+  const createMatchRequest = useCreateMatchRequestMutation();
+
+  const weights = {
+    specialty_weight: levelToWeight(preference.department),
+    distance_weight: levelToWeight(preference.distance),
+    collaboration_weight: levelToWeight(preference.experience),
+  };
+  // 세 가중치가 모두 0일 수 없음 (슬라이더를 전부 최저로 내리면 발생 가능)
+  const allWeightsZero = Object.values(weights).every((w) => w === 0);
+
+  const handleSubmit = () => {
+    if (allWeightsZero) {
+      showToast('선호 기준을 하나 이상 설정해주세요.');
+      return;
+    }
+
+    createMatchRequest.mutate(
+      {
+        symptom_case: selectedCaseId,
+        location_source: 'PROFILE',
+        ...weights,
+      },
+      {
+        onSuccess: (data) => {
+          setMatchRequestId(data.match_request.match_request_id);
+          setRecommendedHospitals(data.recommendations);
+          nextStep();
+        },
+        onError: () => {
+          showToast('병원 추천을 불러오지 못했습니다. 다시 시도해주세요.');
+        },
+      }
+    );
+  };
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -63,8 +104,8 @@ const Step1Setting = ({ nextStep }) => {
         </div>
 
         <div className="mt-40">
-          <Button variant="primary" onClick={nextStep}>
-            AI로 추천받기
+          <Button variant="primary" disabled={createMatchRequest.isPending} onClick={handleSubmit}>
+            {createMatchRequest.isPending ? '추천받는 중...' : 'AI로 추천받기'}
           </Button>
         </div>
       </PageContainer>

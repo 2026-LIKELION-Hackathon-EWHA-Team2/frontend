@@ -6,6 +6,8 @@ import PageContainer from '../../../../../components/layout/PageContainer';
 import Button from '../../../../../components/button/Button';
 import ConsentCheckbox from '../../../../../components/checkbox/ConsentCheckbox';
 import useHospitalMatchStore from '../../../../../store/useHospitalMatchStore';
+import useToastStore from '../../../../../store/useToastStore';
+import { useConsentMatchRequestMutation } from '../../../../../hooks/useMockQueries';
 
 const CONSENT_ITEMS = [
   { key: 'provide', label: '이 병원에 개인 정보를 제공하는 것에 동의합니다. (필수)' },
@@ -15,7 +17,9 @@ const CONSENT_ITEMS = [
 ];
 
 const Step4Consent = ({ nextStep, prevStep }) => {
-  const setPersonalInfoAgreed = useHospitalMatchStore((state) => state.setPersonalInfoAgreed);
+  const { matchRequestId, setPersonalInfoAgreed } = useHospitalMatchStore();
+  const showToast = useToastStore((state) => state.showToast);
+  const consentMutation = useConsentMatchRequestMutation();
 
   const [agreements, setAgreements] = useState(
     CONSENT_ITEMS.reduce((acc, item) => ({ ...acc, [item.key]: false }), {})
@@ -27,9 +31,20 @@ const Step4Consent = ({ nextStep, prevStep }) => {
     setAgreements(CONSENT_ITEMS.reduce((acc, item) => ({ ...acc, [item.key]: next }), {}));
   };
 
+  // 이 API는 동의 정보만 저장하고 의료정보를 병원에 최종 전송하진 않음 (실제 Case 전송은 별도 흐름)
   const handleSubmit = () => {
-    setPersonalInfoAgreed(true);
-    nextStep();
+    consentMutation.mutate(
+      { matchRequestId, agreements },
+      {
+        onSuccess: () => {
+          setPersonalInfoAgreed(true);
+          nextStep();
+        },
+        onError: () => {
+          showToast('동의 처리에 실패했습니다. 다시 시도해주세요.');
+        },
+      }
+    );
   };
 
   return (
@@ -59,8 +74,12 @@ const Step4Consent = ({ nextStep, prevStep }) => {
         </div>
 
         <div className="mt-30 pb-4">
-          <Button variant="primary" disabled={!allChecked} onClick={handleSubmit}>
-            전송하기
+          <Button
+            variant="primary"
+            disabled={!allChecked || consentMutation.isPending}
+            onClick={handleSubmit}
+          >
+            {consentMutation.isPending ? '처리 중...' : '전송하기'}
           </Button>
         </div>
       </PageContainer>

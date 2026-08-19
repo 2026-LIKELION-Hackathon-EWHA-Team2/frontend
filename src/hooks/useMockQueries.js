@@ -1,7 +1,7 @@
+import { useMemo } from 'react';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import {
   MOCK_CONSULT_PATIENTS,
-  MOCK_HOSPITALS, // ★ useHospitalListQuery에서 사용 (네트워크, 병원 매칭, 케이스 동기화 페이지)
   MOCK_HANDOVER_DOCUMENT,
   MOCK_HOSPITAL_HOME, // ★ 다른 곳에서 안 쓰면 나중에 지워도 됨
   MOCK_CONSULT_REQUEST_DETAIL,
@@ -30,6 +30,16 @@ import {
 import { getCountryName } from '../utils/country'
 import { formatDateOnly } from '../utils/format'
 import { createSymptomCaseApi, getSymptomCaseListApi } from '../apis/symptomCaseApi';
+import {
+  createMatchRequestApi,
+  getMatchRequestDetailApi,
+  getMatchRecommendationsApi,
+  getNetworkHospitalsApi,
+  getNetworkHospitalDetailApi,
+  selectMatchRecommendationApi,
+  selectNetworkHospitalApi,
+  consentMatchRequestApi,
+} from '../apis/matchingApi';
 import {
   buildSymptomCaseFormData,
   normalizeSymptomCaseForHome,
@@ -73,8 +83,6 @@ export const useHospitalProfileQuery = () =>
   });
 
 // 진단서 입력 화면 - Step4Certificate에서 '시술 받은 병원' 검색할 때 사용
-// 훅 이름을 useHospitalAccountsListQuery로 지음 (기존 useHospitalListQuery랑 구분하려구요! 일단은...)
-
 // search 파라미터로 병원명 검색 가능 (안 넣으면 전체 조회)
 export const useHospitalAccountsListQuery = (search = '') =>
   useQuery({
@@ -82,20 +90,11 @@ export const useHospitalAccountsListQuery = (search = '') =>
     queryFn: () => getHospitalListApi(search),
   });
 
-// AI 추천 병원 리스트 / 네트워크 병원 목록에서 사용
-// useHospitalAccountsListQuery(accounts API)랑 다른 훅! 거리/경험치/진료시간 같은
-// 필드가 필요해서 별도 병원 상세 API가 나오기 전까지는 mock 유지하는 걸로 해뒀어요 @.@
-export const useHospitalListQuery = () =>
-  useQuery({
-    queryKey: ['hospitalList'],
-    queryFn: () => wait(MOCK_HOSPITALS),
-  });
-
 //cases api
 
 // Case 전송 건 생성 - 성공 시 REVIEW_REQUIRED 상태의 CaseTransfer 반환 (병원에 바로 전송되는 건 아님)
-// 아직 페이지에서 호출하지 않음: symptom_case_id/recommendation_id를 넘겨줄 AI 매칭 플로우
-// (병원 추천 리스트/매칭 동의)가 전부 mock이라, 실제 값 없이 연결하면 잘못된 요청만 나감
+// AI 매칭(useHospitalMatchStore의 selectedCaseId/selectedRecommendationId)이 이제 실제 값이라 호출 가능해짐
+// 아직 CaseSyncPage 진입 시점에 이 mutation을 트리거하는 지점을 안 만들어서 페이지 연결은 남아있음
 export const useCreateCaseTransferMutation = () =>
   useMutation({
     mutationFn: (body) => createCaseTransferApi(body),
@@ -220,19 +219,23 @@ export const useSymptomCaseListQuery = () =>
   useQuery({ queryKey: ['symptomCases'], queryFn: getSymptomCaseListApi });
 
 // 환자 홈 피드 - 최근 케이스 목록
+// data를 useMemo로 감싸서 query.data가 안 바뀌면 배열/객체 참조도 그대로 유지되게 함
+// (매번 새 배열을 반환하면, 이 값을 useEffect 의존성으로 쓰는 화면에서 렌더링 무한루프가 남)
 export const useRecentSymptomCasesQuery = () => {
   const query = useSymptomCaseListQuery();
-  return { ...query, data: query.data?.map(normalizeSymptomCaseForHome) };
+  const data = useMemo(() => query.data?.map(normalizeSymptomCaseForHome), [query.data]);
+  return { ...query, data };
 };
 
 // AI 추천 병원 매칭 진입 전 - 케이스 선택 화면 (HospitalSelectCase)
 // status가 SUBMITTED(등록만 하고 병원 매칭은 아직 안 한 상태)인 케이스만 필터링해서 보여줌
 export const useSubmittedSymptomCaseListQuery = () => {
   const query = useSymptomCaseListQuery();
-  return {
-    ...query,
-    data: query.data?.filter((c) => c.status === 'SUBMITTED').map(normalizeSymptomCaseForSelect),
-  };
+  const data = useMemo(
+    () => query.data?.filter((c) => c.status === 'SUBMITTED').map(normalizeSymptomCaseForSelect),
+    [query.data]
+  );
+  return { ...query, data };
 };
 
 // 케이스 동기화 Step2Select에서 사용
@@ -242,11 +245,76 @@ export const useSubmittedSymptomCaseListQuery = () => {
 //    Step2Select가 항상 '선택된 케이스를 찾을 수 없습니다'로 빠지는 문제가 있었음
 export const useHospitalSelectedSymptomCaseListQuery = () => {
   const query = useSymptomCaseListQuery();
-  return {
-    ...query,
-    data: query.data?.filter((c) => c.status === 'HOSPITAL_SELECTED').map(normalizeSymptomCaseForSelect),
-  };
+  const data = useMemo(
+    () => query.data?.filter((c) => c.status === 'HOSPITAL_SELECTED').map(normalizeSymptomCaseForSelect),
+    [query.data]
+  );
+  return { ...query, data };
 };
+
+// ------------------------------------------------------------
+// matching api
+
+// 매칭 요청 생성 및 AI 병원 추천 - Step1Setting '전송하기' 클릭 시 호출
+// 응답에 추천 병원 목록이 함께 오므로, 별도 목록 조회 API 없이 이 결과를 store에 그대로 저장해서 씀
+export const useCreateMatchRequestMutation = () =>
+  useMutation({
+    mutationFn: (body) => createMatchRequestApi(body),
+  });
+
+// 매칭 요청 상세 조회 (재진입/새로고침 시 상태 복구용 - 아직 페이지에서 쓰지 않음)
+// useHospitalMatchStore에 persist가 없어서 새로고침하면 matchRequestId 자체가 날아가므로
+// 지금 구조에선 이 훅으로 복구할 상황 자체가 안 생김 (store에 persist 추가하면 그때 활용)
+export const useMatchRequestDetailQuery = (matchRequestId) =>
+  useQuery({
+    queryKey: ['matchRequestDetail', matchRequestId],
+    enabled: !!matchRequestId,
+    queryFn: () => getMatchRequestDetailApi(matchRequestId),
+  });
+
+// 추천 병원 목록 조회 - sortOrder는 useHospitalMatchStore의 sortOrder 값('distance'|'experience'|'department')
+// 그대로 넘기면 됨 (백엔드 sort 파라미터 변환은 getMatchRecommendationsApi 내부에서 처리)
+// 응답이 이미 정렬되어 있으므로 이 훅이 반환하는 recommendations 배열 순서를 그대로 렌더링해야 함
+export const useMatchRecommendationsQuery = (matchRequestId, sortOrder) =>
+  useQuery({
+    queryKey: ['matchRecommendations', matchRequestId, sortOrder],
+    enabled: !!matchRequestId,
+    queryFn: () => getMatchRecommendationsApi(matchRequestId, sortOrder),
+  });
+
+// 추천 병원 선택 - Step3Detail '이 병원으로 매칭 신청' 클릭 시 호출
+export const useSelectMatchRecommendationMutation = () =>
+  useMutation({
+    mutationFn: (recommendationId) => selectMatchRecommendationApi(recommendationId),
+  });
+
+// 선택 병원 매칭 동의 - Step4Consent(매칭) '전송하기' 클릭 시 호출
+export const useConsentMatchRequestMutation = () =>
+  useMutation({
+    mutationFn: ({ matchRequestId, agreements }) => consentMatchRequestApi(matchRequestId, agreements),
+  });
+
+// 네트워크 병원 목록 조회 (AI 매칭 없이 직접 둘러보는 화면) - sortOrder는 'distance'|'experience'만 사용
+export const useNetworkHospitalsQuery = (sortOrder) =>
+  useQuery({
+    queryKey: ['networkHospitals', sortOrder],
+    queryFn: () => getNetworkHospitalsApi(sortOrder),
+  });
+
+// 네트워크 병원 상세 조회 - NetworkDetailPage 전용 (목록과 응답 형태가 같아서 매핑 로직 공유 가능)
+export const useNetworkHospitalDetailQuery = (hospitalId) =>
+  useQuery({
+    queryKey: ['networkHospitalDetail', hospitalId],
+    enabled: !!hospitalId,
+    queryFn: () => getNetworkHospitalDetailApi(hospitalId),
+  });
+
+// 네트워크 병원 선택 - NetworkDetailPage '이 병원으로 매칭 신청' 클릭 시 호출
+// 응답에 match_request_id/recommendation_id가 새로 생겨서, AI 매칭 선택 때와 동일하게 store에 저장하면 됨
+export const useSelectNetworkHospitalMutation = () =>
+  useMutation({
+    mutationFn: ({ hospitalId, symptomCaseId }) => selectNetworkHospitalApi(hospitalId, symptomCaseId),
+  });
 
 // ------------------------------------------------------------
 // 여기서부터는 아직 남은 hook들 - 아직 mock 유지

@@ -81,7 +81,8 @@ export const buildSymptomCaseFormData = ({
   }
 
   photos.forEach((photo) => {
-    if (photo?.file) formData.append('images', photo.file);
+    // 백엔드 필드명은 images가 아니라 uploaded_images (실제 응답 에러로 확인함)
+    if (photo?.file) formData.append('uploaded_images', photo.file);
   });
 
   return formData;
@@ -105,7 +106,8 @@ export const normalizeSymptomCaseForSelect = (item) => ({
   // 진단서 첨부 여부/파일명은 diagnosis_document_url로 채움 -> 일단은..... 
 
   diagnosisAttached: Boolean(item.diagnosis_document_url),
-  diagnosisName: item.diagnosis_document_url?.split('/').pop() ?? '',
+  // URL 마지막 조각은 퍼센트 인코딩된 채로 오므로(예: %ED%85%8C...) 디코딩해서 사람이 읽을 수 있는 파일명으로 변환
+  diagnosisName: item.diagnosis_document_url ? decodeURIComponent(item.diagnosis_document_url.split('/').pop()) : '',
   
   // ★★★ procedureName/procedureArea/procedureDate/ingredients/doctorNote는
   // symptom-cases API에 없는 필드!!! 
