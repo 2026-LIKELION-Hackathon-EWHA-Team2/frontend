@@ -72,7 +72,8 @@ const ChatRoomPage = () => {
 
           <div className="flex flex-1 flex-col-reverse gap-4 overflow-y-auto px-5 py-4">
             {[...(messages ?? [])].reverse().map((msg) => {
-              const mine = msg.senderHospitalId === profile?.id;
+              // senderHospitalId 기준 비교가 profile.id와 매칭되지 않아(네임스페이스 다름 추정) 병원명으로 비교
+              const mine = msg.from === profile?.name;
               const showOriginal = originalShown.has(msg.id);
               const displayText = mine ? msg.original : showOriginal ? msg.original : msg.translated;
 

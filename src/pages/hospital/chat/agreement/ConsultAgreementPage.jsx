@@ -101,7 +101,19 @@ const ConsultAgreementPage = () => {
             양측 의료진이 협진 내용을 합의하고 최종 의견을 확정합니다.
           </p>
 
-          {isFinal ? (
+          {agreement?.status === 'AI_DRAFT' ? (
+            <div className="flex items-start gap-3 rounded-[10px] bg-[#F2F0FD] p-4">
+              <div className="mt-2 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#6B5DD6]">
+                <img src="/icons/ai-glitter.svg" alt="" className="h-7 w-7" />
+              </div>
+              <div className="flex flex-col gap-1 pt-0.5">
+                <p className="font-wantedsans text-base font-bold leading-normal text-[#6B5DD6]">AI 정리 초안</p>
+                <p className="whitespace-pre-line font-wantedsans text-xs font-medium leading-normal text-[#626262]">
+                  {'병원 간 대화를 바탕으로 AI가 작성한 초안입니다.\n양측 의료진의 검토와 승인이 필요합니다.'}
+                </p>
+              </div>
+            </div>
+          ) : isFinal ? (
             <div className="flex items-center gap-3 rounded-[10px] bg-[#F2F0FD] p-4">
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#6B5DD6]">
                 <img src="/icons/check-mark.svg" alt="" className="h-5 w-5" />
