@@ -43,7 +43,8 @@ const Step4Certificate = () => {
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setDiagnosisFile({ name: file.name, previewUrl: URL.createObjectURL(file) });
+    // 실제 업로드에 쓸 file과, 화면 미리보기용 previewUrl을 같이 저장 (API 연동을 위해 file도 보관)
+    setDiagnosisFile({ file, name: file.name, previewUrl: URL.createObjectURL(file) });
   };
 
   return (

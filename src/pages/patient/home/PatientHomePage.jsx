@@ -8,14 +8,15 @@ import Button from '../../../components/button/Button';
 import QuickLaunch from '../../../components/button/QuickLaunch';
 import Badge from '../../../components/Badge';
 import QueryState from '../../../components/state/QueryState';
-import { usePatientProfileQuery, useRecentCasesQuery } from '../../../hooks/useMockQueries';
+import { usePatientProfileQuery, useRecentSymptomCasesQuery } from '../../../hooks/useMockQueries'; // 연동
+import { getPatientCaseBadge } from '../../../utils/caseStatus'; // status badge 변환 적용
 
 const PatientHomePage = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const logout = useAuthStore((state) => state.logout);
   const { data: patient } = usePatientProfileQuery();
-  const { data: cases, isLoading, isError } = useRecentCasesQuery();
+  const { data: cases, isLoading, isError } = useRecentSymptomCasesQuery();
 
   const handleLogoClick = () => {
     // 임시 로그아웃 처리
@@ -97,28 +98,31 @@ const PatientHomePage = () => {
             emptyProps={{ title: '아직 등록된 케이스가 없어요' }}
           >
             <div className="flex flex-col items-start rounded-[10px] border border-[#EDEDF1] bg-white py-5">
-              {cases?.map((c, index) => (
-                <div
-                  key={`${c.id}-${index}`}
-                  className="flex w-full items-center justify-between gap-3 px-5 pb-7 last:pb-0"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10.5 w-10.5 shrink-0 items-center justify-center rounded-full bg-[#F1F0F3]">
-                      <img src="/icons/home-case.svg" alt="" className="h-5 w-5" />
+              {cases?.map((c, index) => {
+                const badge = getPatientCaseBadge(c.status);
+                return (
+                  <div
+                    key={`${c.id}-${index}`}
+                    className="flex w-full items-center justify-between gap-3 px-5 pb-7 last:pb-0"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-10.5 w-10.5 shrink-0 items-center justify-center rounded-full bg-[#F1F0F3]">
+                        <img src="/icons/home-case.svg" alt="" className="h-5 w-5" />
+                      </div>
+                      <div className="flex flex-col gap-1.5">
+                        <span className="font-wantedsans text-sm font-medium text-[#181818]">
+                          Case #{c.id}
+                        </span>
+                        <span className="font-wantedsans text-[10px] font-normal leading-3.5 text-[#737373]">
+                          {c.date}
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex flex-col gap-1.5">
-                      <span className="font-wantedsans text-sm font-medium text-[#181818]">
-                        Case #{c.id}
-                      </span>
-                      <span className="font-wantedsans text-[10px] font-normal leading-3.5 text-[#737373]">
-                        {c.date}
-                      </span>
-                    </div>
-                  </div>
 
-                  <Badge tone={c.tone}>{c.status}</Badge>
-                </div>
-              ))}
+                    {badge && <Badge tone={badge.tone}>{badge.label}</Badge>}
+                  </div>
+                );
+              })}
             </div>
           </QueryState>
         </section>

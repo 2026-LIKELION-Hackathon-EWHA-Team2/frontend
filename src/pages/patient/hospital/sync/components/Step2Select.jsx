@@ -2,11 +2,11 @@
 
 import { useEffect } from 'react';
 import useCaseSyncStore from '../../../../../store/useCaseSyncStore';
-import { useCaseListQuery } from '../../../../../hooks/useMockQueries';
+import { useHospitalSelectedSymptomCaseListQuery } from '../../../../../hooks/useMockQueries';
 import QueryState from '../../../../../components/state/QueryState';
 
 const Step2Select = () => {
-  const { data: cases = [], isLoading, isError } = useCaseListQuery();
+  const { data: cases = [], isLoading, isError } = useHospitalSelectedSymptomCaseListQuery();
   const {
     selectedCaseId,
     setLinkedDiagnosis,
@@ -126,4 +126,3 @@ const Step2Select = () => {
 };
  
 export default Step2Select;
- 

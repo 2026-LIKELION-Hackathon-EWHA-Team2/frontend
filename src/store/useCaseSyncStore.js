@@ -7,7 +7,7 @@ const useCaseSyncStore = create((set, get) => ({
   gender: "", // 성별 (선택) - '여성' | '남성'
   birth: "", // 생년월일 (선택) - YYYY.MM.DD 형식 문자열
 
-  selectedCaseId: "case01", // 동기화할 케이스 파라미터...!
+  selectedCaseId: null, // 동기화할 케이스 파라미터 (symptom_case_id, 숫자)
   linkedDiagnosis: null, // '연동된 진단서' 카드 정보 ({ name: '눈썹 문신', clinic: 'ABC Beauty Clinic', date: '2025.06.10' })
 
   // 전송 건 생성 API 응답의 id (CaseTransfer ID). AI 검토/전송 동의/전송 완료 화면
@@ -60,7 +60,7 @@ const useCaseSyncStore = create((set, get) => ({
       patientName: "",
       gender: "",
       birth: "",
-      selectedCaseId: "case01",
+      selectedCaseId: null,
       linkedDiagnosis: null,
       transferId: null,
       procedureName: "",

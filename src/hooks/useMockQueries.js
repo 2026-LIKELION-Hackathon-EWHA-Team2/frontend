@@ -2,8 +2,7 @@ import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import {
   MOCK_CONSULT_PATIENTS,
   MOCK_HOSPITALS, // ★ useHospitalListQuery에서 사용 (네트워크, 병원 매칭, 케이스 동기화 페이지)
-  MOCK_CASES,
-  MOCK_RECENT_CASES,
+  MOCK_HANDOVER_DOCUMENT,
   MOCK_HOSPITAL_HOME, // ★ 다른 곳에서 안 쓰면 나중에 지워도 됨
   MOCK_CONSULT_REQUEST_DETAIL,
   MOCK_QUICK_CONSULT,
@@ -30,6 +29,12 @@ import {
 } from '../apis/caseApi'
 import { getCountryName } from '../utils/country'
 import { formatDateOnly } from '../utils/format'
+import { createSymptomCaseApi, getSymptomCaseListApi } from '../apis/symptomCaseApi';
+import {
+  buildSymptomCaseFormData,
+  normalizeSymptomCaseForHome,
+  normalizeSymptomCaseForSelect,
+} from '../utils/symptomCaseMapper';
 
 const wait = (data, ms = 400) => new Promise((resolve) => setTimeout(() => resolve(data), ms));
 
@@ -196,6 +201,54 @@ export const useProcedureHistoryDetailQuery = (medicalCaseId) =>
   });
 
 // ------------------------------------------------------------
+// selfsymptoms/ api
+
+// 증상 케이스 생성 (useCaseFormStore 값을 그대로 넘기면 내부에서 FormData로 변환)
+export const useCreateSymptomCaseMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (formValues) => createSymptomCaseApi(buildSymptomCaseFormData(formValues)),
+    onSuccess: () => {
+      // 홈 최근 케이스 / 케이스 선택 목록에서 같이 쓰는 목록 캐시라 한번에 갱신
+      queryClient.invalidateQueries({ queryKey: ['symptomCases'] });
+    },
+  });
+};
+
+// 증상 케이스 목록 (raw, 변환 전) - 아래 훅들에서 공통으로 사용
+export const useSymptomCaseListQuery = () =>
+  useQuery({ queryKey: ['symptomCases'], queryFn: getSymptomCaseListApi });
+
+// 환자 홈 피드 - 최근 케이스 목록
+export const useRecentSymptomCasesQuery = () => {
+  const query = useSymptomCaseListQuery();
+  return { ...query, data: query.data?.map(normalizeSymptomCaseForHome) };
+};
+
+// AI 추천 병원 매칭 진입 전 - 케이스 선택 화면 (HospitalSelectCase)
+// status가 SUBMITTED(등록만 하고 병원 매칭은 아직 안 한 상태)인 케이스만 필터링해서 보여줌
+export const useSubmittedSymptomCaseListQuery = () => {
+  const query = useSymptomCaseListQuery();
+  return {
+    ...query,
+    data: query.data?.filter((c) => c.status === 'SUBMITTED').map(normalizeSymptomCaseForSelect),
+  };
+};
+
+// 케이스 동기화 Step2Select에서 사용
+// Case 전송 건 생성(POST /cases/transfers/) 전제조건이 '증상 Case가 HOSPITAL_SELECTED 상태'라서
+// (apis/caseApi.js의 createCaseTransferApi 주석 참고) AI 매칭까지 끝낸 케이스만 필터링해서 보여줘야 함
+// -> useSubmittedSymptomCaseListQuery(SUBMITTED)를 그대로 쓰면 매칭 끝난 케이스가 목록에 안 잡혀서
+//    Step2Select가 항상 '선택된 케이스를 찾을 수 없습니다'로 빠지는 문제가 있었음
+export const useHospitalSelectedSymptomCaseListQuery = () => {
+  const query = useSymptomCaseListQuery();
+  return {
+    ...query,
+    data: query.data?.filter((c) => c.status === 'HOSPITAL_SELECTED').map(normalizeSymptomCaseForSelect),
+  };
+};
+
+// ------------------------------------------------------------
 // 여기서부터는 아직 남은 hook들 - 아직 mock 유지
 // ------------------------------------------------------------
 
@@ -203,38 +256,9 @@ export const useProcedureHistoryDetailQuery = (medicalCaseId) =>
 export const useConsultPatientsQuery = () =>
   useQuery({ queryKey: ['consultPatients'], queryFn: () => wait(MOCK_CONSULT_PATIENTS) });
 
-// 케이스 목록 (AI 추천 병원 매칭 - 케이스 선택)
-export const useCaseListQuery = () =>
-  useQuery({ queryKey: ['caseList'], queryFn: () => wait(MOCK_CASES) });
-
-// 케이스 등록 완료 mutation
-export const useCreateCaseMutation = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (formData) =>
-      wait({
-        id: `case-${Date.now()}`,
-        status: '저장 완료',
-        tone: 'orange',
-        date: new Date().toISOString().slice(0, 10).replaceAll('-', '.'),
-        symptomCount: formData.checkedSymptoms.length,
-        symptomArea: formData.symptomArea,
-      }),
-    onSuccess: (newCase) => {
-      queryClient.setQueryData(['recentCases'], (old = []) => [...old, newCase]);
-    },
-  });
-};
-
-// 홈 - 최근 케이스 목록
-export const useRecentCasesQuery = () =>
-  useQuery({ queryKey: ['recentCases'], queryFn: () => wait(MOCK_RECENT_CASES) });
-
-// 홈 - 새 케이스 등록 완료 시 '최근 케이스' 목록 캐시에 바로 추가
-export const useAddRecentCase = () => {
-  const queryClient = useQueryClient();
-  return (newCase) => queryClient.setQueryData(['recentCases'], (old = []) => [...old, newCase]);
-};
+// 협진 인계서
+export const useHandoverDocumentQuery = () =>
+  useQuery({ queryKey: ['handoverDocument'], queryFn: () => wait(MOCK_HANDOVER_DOCUMENT) });
 
 // 케이스 조회 리스트에서 환자 한 명을 선택했을 때 쓰는 상세 조회
 // (협진 요청 상세 / 환자 정보 상세 보기 화면에서 공통으로 사용)
