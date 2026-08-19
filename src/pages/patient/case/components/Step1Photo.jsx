@@ -27,8 +27,9 @@ const Step1Photo = () => {
     if (remainingSlots <= 0) return;
     const selectedFiles = files.slice(0, remainingSlots);
     selectedFiles.forEach((file) => {
-      const url = URL.createObjectURL(file);
-      addPhoto(url);
+      // 실제 업로드에 쓸 file과, 화면 미리보기용 previewUrl을 같이 저장 (API 연동을 위해 file도 보관)
+      const previewUrl = URL.createObjectURL(file);
+      addPhoto({ file, previewUrl });
     });
     e.target.value = '';
   };
@@ -58,7 +59,7 @@ const Step1Photo = () => {
           <div className="flex flex-wrap justify-center gap-2 px-4">
             {photos.map((p, idx) => (
               <div key={idx} className="relative">
-                <img src={p} alt={`업로드 사진 ${idx + 1}`}
+                <img src={p.previewUrl} alt={`업로드 사진 ${idx + 1}`}
                 className={`rounded-lg object-cover ${photos.length >= 4 ? 'h-12 w-12' : 'h-16 w-16'}`}/>
                 <button
                   type="button"
