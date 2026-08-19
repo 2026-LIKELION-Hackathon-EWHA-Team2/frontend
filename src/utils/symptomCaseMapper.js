@@ -35,6 +35,9 @@ const PAIN_LEVEL_MAP = {
 };
 
 // symptomArea(선택된 area id 배열) + customArea(직접 입력 텍스트) -> areas JSON 배열
+// DateDropdown은 항상 'YYYY.MM.DD' 형식으로 저장됨 -> API가 요구하는 'YYYY-MM-DD'로 변환
+const toApiDate = (value = '') => value.trim().replaceAll('.', '-');
+
 const buildAreas = (symptomArea = [], customArea = '') => {
   const areas = symptomArea.map((id) => ({ area_type: AREA_TYPE_MAP[id] ?? 'OTHER' }));
   if (customArea?.trim()) areas.push({ area_type: 'OTHER' });
@@ -66,7 +69,7 @@ export const buildSymptomCaseFormData = ({
   const formData = new FormData();
 
   formData.append('diagnosed_hospital', hospital?.id);
-  formData.append('symptom_start_date', symptomStartDate);
+  formData.append('symptom_start_date', toApiDate(symptomStartDate));
   formData.append('onset_timing', ONSET_TIMING_MAP[symptomTiming] ?? symptomTiming);
   formData.append('description', symptomDetail);
   formData.append('pain_level', PAIN_LEVEL_MAP[painLevel] ?? 3);
