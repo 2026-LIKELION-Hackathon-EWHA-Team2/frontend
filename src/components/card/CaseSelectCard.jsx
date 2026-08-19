@@ -6,6 +6,7 @@ const VISIBLE_THUMB_SLOTS = 3;
 
 const CaseSelectCard = ({
   title,
+  hospitalName,
   thumbnails = [],
   recordedAt,
   symptoms,
@@ -61,7 +62,14 @@ const CaseSelectCard = ({
               );
             })}
           </div>
-          <p className="text-center font-wantedsans text-base font-medium leading-normal text-[#181818]">{title}</p>
+          <div className="flex flex-col gap-0.5">
+            <p className="font-wantedsans text-base font-medium leading-normal text-[#181818]">{title}</p>
+            {hospitalName && (
+              <p className="font-wantedsans text-[0.6875rem] font-normal leading-normal text-[#8C8C8C]">
+                {hospitalName}
+              </p>
+            )}
+          </div>
         </div>
 
         <div className="flex flex-col gap-1">
