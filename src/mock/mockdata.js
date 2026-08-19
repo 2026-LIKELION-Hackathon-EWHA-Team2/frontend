@@ -562,31 +562,3 @@ export const MOCK_QUICK_CONSULT = {
   ],
 };
 
-// 협진 합의 - AI 정리 초안
-export const MOCK_AGREEMENT = {
-  requestHospital: 'Tokyo Medical',
-  reviewTarget: '시술 정보 / 부작용 유형 / 의료진 소견',
-  responseDeadline: '4시간 이내',
-  aiDraftLabel: 'AI 정리 초안',
-  aiDraftDesc: '병원 간 대화를 바탕으로 AI가 작성한 초안입니다.\n양측 의료진의 검토와 승인이 필요합니다.',
-  participants: [
-    { name: 'Tokyo Medical', status: '검토 대기' },
-    { name: '우리 병원', status: '검토 대기' },
-  ],
-  finalJudgement: '경증 시술 후 반응으로 판단됩니다.',
-  reasons: [
-    { id: 1, label: '부종 및 홍반', tone: '경미' },
-    { id: 2, label: '괴사 / 감염 징후', tone: '없음' },
-    { id: 3, label: '추가 경과 관찰', tone: '권장' },
-  ],
-  followUps: [
-    { icon: '/icons/followup-observe.svg', label: '증상 관찰', date: '3일' },
-    { icon: '/icons/followup-photo.svg', label: '사진 재업로드', date: '5/17' },
-    { icon: '/icons/followup-check.svg', label: '추가 확인', date: '5/24' },
-  ],
-};
-
-export const AI_SUMMARY_NOTE = 'AI는 초안 정리만 수행하며,\n최종 의료 판단과 후속 조치는 양측 의료진이 직접 확인합니다.';
-
-// 협진 합의 - 내용 수정 완료 후 표시할 마지막 수정 시각 (실시간 값은 백엔드 연동 후 처리)
-export const MOCK_LAST_EDITED_AT = '5월 14일 10:42';

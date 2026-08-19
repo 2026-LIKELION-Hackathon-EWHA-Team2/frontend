@@ -1,10 +1,5 @@
 // 협진 요청 상세 (협진 시작하기 버튼 있는 화면)
 
-// 백엔드 연동 시 참고할 부분입니당.
-// useConsultPatientDetailQuery(id) 내부의 mock fetch만 실제 단건 조회 API로 교체할 것.
-// 협진 시작하기 버튼은 지금은 채팅방으로 바로 이동만 시키는데,
-// 협진 시작 API 호출 후 성공 시 이동하도록 바꿔야 할 거 같습니다.. 예상?이에요 아닐 수도
-
 import { useNavigate, useParams } from 'react-router-dom';
 
 import Header from '../../../components/layout/Header';
@@ -13,7 +8,12 @@ import Button from '../../../components/button/Button';
 import SmallButton from '../../../components/button/SmallButton';
 import CaseSummaryCard from '../../../components/card/CaseSummaryCard';
 import QueryState from '../../../components/state/QueryState'
-import { useConsultPatientDetailQuery, useStartConsultCase } from '../../../hooks/useMockQueries';
+import {
+  useCollaborationRequestDetailQuery,
+  useAcceptCollaborationRequestMutation,
+  useChatRoomListQuery,
+} from '../../../hooks/useMockQueries';
+import useToastStore from '../../../store/useToastStore';
 
 // 섹션(아이콘 + 텍스트)
 const SectionTitle = ({ icon, children }) => (
@@ -26,19 +26,32 @@ const SectionTitle = ({ icon, children }) => (
 const ConsultRequestDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { data: detail, isLoading } = useConsultPatientDetailQuery(id);
-  const startConsultCase = useStartConsultCase();
+  const { data: detail, isLoading } = useCollaborationRequestDetailQuery(id);
+  const acceptRequest = useAcceptCollaborationRequestMutation();
+  const showToast = useToastStore((state) => state.showToast);
+  // 합의안 상세 API는 case_id(medical_case_id)+room_id가 둘 다 필요한데, 협진 요청 상세 응답에는
+  // chat_room_id만 있고 medical_case_id가 없어서 채팅방 목록에서 같은 방을 찾아 보조로 가져옴
+  const { data: rooms } = useChatRoomListQuery();
 
-  // 협진 시작하기 클릭 -> '신규 요청' 상태를 '검토중'으로 바꾸고(채팅 목록에 노출) 채팅방으로 이동
-  // 나중에 API 연동 시에는 협진 시작 API 호출 후 성공 시 이동하도록 바꿔야 할 거 같습니다.
+  // 협진 시작하기 클릭 -> 수락 API 호출 후 응답의 medical_case_id/chat_room_id로 채팅방 이동
   const handleStartConsult = () => {
-    startConsultCase(id);
-    navigate(`/hospital/chat/room/${id}`);
+    acceptRequest.mutate(id, {
+      onSuccess: (data) => {
+        const { medical_case_id } = data.collaboration_request;
+        navigate(`/hospital/chat/room/${medical_case_id}/${data.chat_room_id}`);
+      },
+      onError: () => showToast('협진 시작에 실패했습니다. 다시 시도해주세요.'),
+    });
   };
 
-  // 완료된 케이스는 최종 합의안(협진 합의 4단계)으로 이동
+  // 완료된 케이스는 최종 합의안으로 이동
   const handleViewAgreement = () => {
-    navigate(`/hospital/chat/agreement/${id}`, { state: { initialStep: 4 } });
+    const room = rooms?.find((r) => String(r.id) === String(detail?.chatRoomId));
+    if (!room) {
+      showToast('합의안 정보를 불러오지 못했습니다.');
+      return;
+    }
+    navigate(`/hospital/chat/agreement/${room.medicalCaseId}/${room.id}`);
   };
 
   if (isLoading) {
@@ -128,8 +141,8 @@ const ConsultRequestDetail = () => {
             최종 합의안 보기
           </Button>
         ) : (
-          <Button variant="primary" onClick={handleStartConsult}>
-            협진 시작하기
+          <Button variant="primary" disabled={acceptRequest.isPending} onClick={handleStartConsult}>
+            {acceptRequest.isPending ? '시작 중...' : '협진 시작하기'}
           </Button>
         )}
         </div>

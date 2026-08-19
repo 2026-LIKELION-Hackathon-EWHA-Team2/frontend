@@ -60,3 +60,89 @@ export const getProcedureHistoryListApi = () =>
 // 협진 진행 중이거나 최종 합의안이 없으면 404
 export const getProcedureHistoryDetailApi = (medicalCaseId) =>
   axiosInstance.get(`/cases/procedure-histories/${medicalCaseId}/`).then((res) => res.data);
+
+// ------------------------------------------------------------
+// 병원측 cases api
+
+// 협진 병원 수신 Case 목록 조회
+// GET /cases/transfers/received/
+export const getReceivedCaseTransfersApi = () =>
+  axiosInstance.get('/cases/transfers/received/').then((res) => res.data);
+
+// 협진 병원 수신 Case 상세 조회
+// GET /cases/transfers/received/{transfer_id}/
+// (아직 쓰는 화면 없음 - PatientDetailPage는 협진 요청 상세 API를 대신 씀)
+export const getReceivedCaseTransferDetailApi = (transferId) =>
+  axiosInstance.get(`/cases/transfers/received/${transferId}/`).then((res) => res.data);
+
+// 협진 요청 목록 조회
+// GET /cases/collaboration-requests/
+// 로그인한 병원이 대상 병원으로 수신한 전체 기간의 협진 요청 목록 (병원 계정만 접근 가능)
+// 페이지네이션 없음 - results로 감싸지 않고 배열 그대로 반환
+// status: REQUESTED(신규 요청) | ACCEPTED(검토중) | COMPLETED(완료) | REJECTED
+export const getCollaborationRequestListApi = () =>
+  axiosInstance.get('/cases/collaboration-requests/').then((res) => res.data);
+
+// 협진 요청 상세 조회
+// GET /cases/collaboration-requests/{collaboration_request_id}/
+// 원 병원 또는 협진 병원(요청을 주고받은 두 병원)만 조회 가능
+// '협진 요청 상세'(/hospital/case/request/:id)와 '환자 정보 상세'(/hospital/case/:id) 화면이 공용으로 사용
+// (둘 다 id는 collaboration_request_id - transfer_id/chat_room_id와 혼동하지 말 것)
+// case_transfer_id가 null이면(=전송 완료된 CaseTransfer 없음) patient_provided_data도 null
+export const getCollaborationRequestDetailApi = (collaborationRequestId) =>
+  axiosInstance.get(`/cases/collaboration-requests/${collaborationRequestId}/`).then((res) => res.data);
+
+// 협진 요청 수락 및 채팅방 생성
+// POST /cases/collaboration-requests/{collaboration_request_id}/accept/
+export const acceptCollaborationRequestApi = (collaborationRequestId) =>
+  axiosInstance
+    .post(`/cases/collaboration-requests/${collaborationRequestId}/accept/`)
+    .then((res) => res.data);
+
+// 병원 대시보드 조회
+// GET /cases/hospital/dashboard/
+export const getHospitalDashboardApi = () =>
+  axiosInstance.get('/cases/hospital/dashboard/').then((res) => res.data);
+
+// 협진 채팅방 목록 조회
+// GET /cases/chat/rooms/?status=IN_REVIEW|COMPLETED
+export const getChatRoomListApi = (status) =>
+  axiosInstance.get('/cases/chat/rooms/', { params: status ? { status } : undefined }).then((res) => res.data);
+
+// 채팅 메시지 목록 조회
+// GET /cases/{case_id}/chat/rooms/{room_id}/messages/
+export const getChatMessagesApi = (caseId, roomId) =>
+  axiosInstance.get(`/cases/${caseId}/chat/rooms/${roomId}/messages/`).then((res) => res.data);
+
+// 채팅 메시지 전송
+// POST /cases/{case_id}/chat/rooms/{room_id}/messages/
+export const sendChatMessageApi = (caseId, roomId, content) =>
+  axiosInstance.post(`/cases/${caseId}/chat/rooms/${roomId}/messages/`, { content }).then((res) => res.data);
+
+// 협진 채팅 읽음 처리
+// POST /cases/chat/rooms/{room_id}/read/
+export const markChatRoomReadApi = (roomId, lastReadMessageId) =>
+  axiosInstance
+    .post(`/cases/chat/rooms/${roomId}/read/`, lastReadMessageId ? { last_read_message_id: lastReadMessageId } : {})
+    .then((res) => res.data);
+
+// 합의안 상세 조회
+// GET /cases/{case_id}/chat/rooms/{room_id}/agreement/
+// case_id = medical_case_id
+export const getAgreementDetailApi = (caseId, roomId) =>
+  axiosInstance.get(`/cases/${caseId}/chat/rooms/${roomId}/agreement/`).then((res) => res.data);
+
+// 협진 합의안 수정 (수정할 필드만 전달)
+// PATCH /cases/{case_id}/chat/rooms/{room_id}/agreement/
+export const updateAgreementApi = (caseId, roomId, fields) =>
+  axiosInstance.patch(`/cases/${caseId}/chat/rooms/${roomId}/agreement/`, fields).then((res) => res.data);
+
+// AI 협진 합의안 초안 생성 (합의안 상세 조회가 404일 때만 호출)
+// POST /cases/{case_id}/chat/rooms/{room_id}/agreement/generate/
+export const generateAgreementApi = (caseId, roomId) =>
+  axiosInstance.post(`/cases/${caseId}/chat/rooms/${roomId}/agreement/generate/`).then((res) => res.data);
+
+// 합의안 검토 완료 / 최종 확정 (REVIEW, FINALIZE 둘 다 이 API 하나로 처리)
+// POST /cases/{case_id}/chat/rooms/{room_id}/agreement/review/
+export const reviewAgreementApi = (caseId, roomId) =>
+  axiosInstance.post(`/cases/${caseId}/chat/rooms/${roomId}/agreement/review/`).then((res) => res.data);

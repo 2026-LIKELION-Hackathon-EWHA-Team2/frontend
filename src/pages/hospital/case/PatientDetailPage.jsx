@@ -1,7 +1,5 @@
 // 환자 케이스 상세 보기 (열람 동의 모달 포함)
 
-// 백엔드 연동 시: useConsultPatientDetailQuery(id) 내부의 mock fetch만 실제 단건 조회 API로 교체.
-
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -10,7 +8,7 @@ import PageContainer from '../../../components/layout/PageContainer';
 import Badge from '../../../components/Badge';
 import CaseSummaryCard from '../../../components/card/CaseSummaryCard';
 import QueryState from '../../../components/state/QueryState';
-import { useConsultPatientDetailQuery } from '../../../hooks/useMockQueries';
+import { useCollaborationRequestDetailQuery } from '../../../hooks/useMockQueries';
 
 const InfoRow = ({ icon, label, value }) => (
   <div className="flex items-start gap-2 pt-1">
@@ -23,7 +21,7 @@ const InfoRow = ({ icon, label, value }) => (
 const PatientDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { data: patient, isLoading } = useConsultPatientDetailQuery(id);
+  const { data: patient, isLoading, isError } = useCollaborationRequestDetailQuery(id);
 
   return (
     <>
@@ -32,7 +30,7 @@ const PatientDetailPage = () => {
       <PageContainer>
         <QueryState
           isLoading={isLoading}
-          isError={!patient}
+          isError={isError || (!isLoading && !patient)}
           errorMessage="해당 환자 정보를 찾을 수 없습니다"
         >
         <CaseSummaryCard

@@ -117,8 +117,8 @@ function App() {
 
               {/* 채팅 탭 */}
               <Route path="chat" element={<ChatListPage />} />
-              <Route path="chat/room/:id" element={<ChatRoomPage />} />
-              <Route path="chat/agreement/:id" element={<ConsultAgreementPage />} />
+              <Route path="chat/room/:caseId/:roomId" element={<ChatRoomPage />} />
+              <Route path="chat/agreement/:caseId/:roomId" element={<ConsultAgreementPage />} />
             </Route>
             
           </Routes>

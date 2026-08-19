@@ -6,19 +6,21 @@ import PageContainer from '../../../components/layout/PageContainer';
 import QueryState from '../../../components/state/QueryState';
 import ConsultPatientCard from '../../../components/card/ConsultPatientCard';
 import useAuthStore from '../../../store/useAuthStore';
-import { useHospitalProfileQuery, useConsultPatientsQuery } from '../../../hooks/useMockQueries'; // 프로필 쿼리로 수정
-import { getCaseStatusCounts } from '../../../utils/caseStatus';
+import { useHospitalProfileQuery, useHospitalDashboardQuery } from '../../../hooks/useMockQueries';
 
 const HospitalHomePage = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const logout = useAuthStore((state) => state.logout);
   const { data: profile } = useHospitalProfileQuery();
-  const { data: patients, isLoading, isError } = useConsultPatientsQuery();
+  const { data: dashboard, isLoading, isError } = useHospitalDashboardQuery();
 
-  const ongoing = patients?.filter((p) => p.status === 'reviewing');
-  // 통계는 별도 mock이 아니라 실제 목록에서 직접 집계 (숫자가 목록과 어긋나지 않도록), ConsultRequestListPage와 동일한 집계 유틸 재사용
-  const counts = getCaseStatusCounts(patients ?? []);
+  const ongoing = dashboard?.ongoingCollaborations;
+  const counts = {
+    new: dashboard?.todaySummary.new_request_count ?? 0,
+    reviewing: dashboard?.todaySummary.in_review_count ?? 0,
+    done: dashboard?.todaySummary.completed_count ?? 0,
+  };
 
   const handleLogoClick = () => {
     // 임시 로그아웃 처리
