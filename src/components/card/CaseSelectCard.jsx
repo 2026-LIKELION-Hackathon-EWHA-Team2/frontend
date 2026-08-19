@@ -37,16 +37,20 @@ const CaseSelectCard = ({
             {slots.map((thumb, idx) => {
               const isLastVisible = idx === VISIBLE_THUMB_SLOTS - 1;
               const showMoreOverlay = isLastVisible && extraCount > 0;
+              // 사진이 3장 이하면 빈 슬롯은 아이콘 없이 빈 칸으로 (자리만 차지), 4장 이상일 때만 photo-none 아이콘 사용
+              const isEmptySlot = !thumb && thumbnails.length < VISIBLE_THUMB_SLOTS;
 
               return (
                 <div
                   key={idx}
-                  className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-[#F5F5F5]"
+                  className={`relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg ${
+                    isEmptySlot ? '' : 'bg-[#F5F5F5]'
+                  }`}
                 >
                   {thumb ? (
                     <img src={thumb} alt="" className="h-full w-full object-cover" />
                   ) : (
-                    <img src="/icons/photo-none.svg" alt="" className="h-full w-full object-cover" />
+                    !isEmptySlot && <img src="/icons/photo-none.svg" alt="" className="h-full w-full object-cover" />
                   )}
                   {showMoreOverlay && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/50">
