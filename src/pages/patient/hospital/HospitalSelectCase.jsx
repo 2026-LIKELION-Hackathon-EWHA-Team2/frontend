@@ -64,6 +64,7 @@ const HospitalSelectCase = () => {
               <CaseSelectCard
                 key={item.id}
                 title={item.title}
+                hospitalName={item.hospitalName}
                 thumbnails={item.thumbnails}
                 recordedAt={item.recordedAt}
                 symptoms={item.symptoms}

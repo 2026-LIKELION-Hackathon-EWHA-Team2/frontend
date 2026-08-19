@@ -98,7 +98,8 @@ export const normalizeSymptomCaseForHome = (item) => ({
 // HospitalSelectCase(CaseSelectCard) / 케이스 동기화 Step2Select에서 공통으로 쓰는 형태로 변환
 export const normalizeSymptomCaseForSelect = (item) => ({
   id: item.symptom_case_id,
-  title: item.diagnosed_hospital_name ?? `Case #${item.symptom_case_id}`,
+  title: `Case #${item.symptom_case_id}`,
+  hospitalName: item.diagnosed_hospital_name ?? null,
   thumbnails: item.images?.map((img) => img.image_url) ?? [],
   recordedAt: item.created_at?.slice(0, 10).replaceAll('-', '.') ?? '',
   symptoms: item.symptom_types?.map((s) => s.custom_symptom ?? s.symptom_name) ?? [],
