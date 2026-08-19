@@ -75,13 +75,13 @@ export const getReceivedCaseTransfersApi = () =>
 export const getReceivedCaseTransferDetailApi = (transferId) =>
   axiosInstance.get(`/cases/transfers/received/${transferId}/`).then((res) => res.data);
 
-// 협진 요청 목록 조회
-// GET /cases/collaboration-requests/
-// 로그인한 병원이 대상 병원으로 수신한 전체 기간의 협진 요청 목록 (병원 계정만 접근 가능)
+// 협진 Case 목록 조회
+// GET /cases/collaboration-requests/?status=&search=
+// 로그인한 병원이 원 병원 또는 협진 병원으로 참여한 전체 협진 Case 목록 (병원 계정만 접근 가능)
 // 페이지네이션 없음 - results로 감싸지 않고 배열 그대로 반환
-// status: REQUESTED(신규 요청) | ACCEPTED(검토중) | COMPLETED(완료) | REJECTED
-export const getCollaborationRequestListApi = () =>
-  axiosInstance.get('/cases/collaboration-requests/').then((res) => res.data);
+// status: REQUESTED(신규 요청) | ACCEPTED(검토중) | COMPLETED(완료)
+export const getCollaborationRequestListApi = (params = {}) =>
+  axiosInstance.get('/cases/collaboration-requests/', { params }).then((res) => res.data);
 
 // 협진 요청 상세 조회
 // GET /cases/collaboration-requests/{collaboration_request_id}/

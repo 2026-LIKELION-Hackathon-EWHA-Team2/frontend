@@ -11,7 +11,7 @@ import QueryState from '../../../components/state/QueryState'
 import {
   useCollaborationRequestDetailQuery,
   useAcceptCollaborationRequestMutation,
-  useChatRoomListQuery,
+  useConsultPatientsQuery,
 } from '../../../hooks/useMockQueries';
 import useToastStore from '../../../store/useToastStore';
 
@@ -29,9 +29,10 @@ const ConsultRequestDetail = () => {
   const { data: detail, isLoading } = useCollaborationRequestDetailQuery(id);
   const acceptRequest = useAcceptCollaborationRequestMutation();
   const showToast = useToastStore((state) => state.showToast);
-  // 합의안 상세 API는 case_id(medical_case_id)+room_id가 둘 다 필요한데, 협진 요청 상세 응답에는
-  // chat_room_id만 있고 medical_case_id가 없어서 채팅방 목록에서 같은 방을 찾아 보조로 가져옴
-  const { data: rooms } = useChatRoomListQuery();
+  // 협진 요청 목록 API가 같은 id로 medical_case_id/chat_room_id/canAccept까지 내려줘서
+  // 채팅·합의안 이동 및 수락 버튼 노출 여부 판단에 재사용함
+  const { data: patients } = useConsultPatientsQuery();
+  const listItem = patients?.find((p) => String(p.id) === String(id));
 
   // 협진 시작하기 클릭 -> 수락 API 호출 후 응답의 medical_case_id/chat_room_id로 채팅방 이동
   const handleStartConsult = () => {
@@ -46,22 +47,20 @@ const ConsultRequestDetail = () => {
 
   // 완료된 케이스는 최종 합의안으로 이동
   const handleViewAgreement = () => {
-    const room = rooms?.find((r) => String(r.id) === String(detail?.chatRoomId));
-    if (!room) {
+    if (!listItem?.medicalCaseId || !listItem?.chatRoomId) {
       showToast('합의안 정보를 불러오지 못했습니다.');
       return;
     }
-    navigate(`/hospital/chat/agreement/${room.medicalCaseId}/${room.id}`);
+    navigate(`/hospital/chat/agreement/${listItem.medicalCaseId}/${listItem.chatRoomId}`);
   };
 
   // 검토중(수락됨) 케이스는 이미 만들어진 채팅방으로 이동
   const handleGoToChatRoom = () => {
-    const room = rooms?.find((r) => String(r.id) === String(detail?.chatRoomId));
-    if (!room) {
+    if (!listItem?.medicalCaseId || !listItem?.chatRoomId) {
       showToast('채팅방 정보를 불러오지 못했습니다.');
       return;
     }
-    navigate(`/hospital/chat/room/${room.medicalCaseId}/${room.id}`);
+    navigate(`/hospital/chat/room/${listItem.medicalCaseId}/${listItem.chatRoomId}`);
   };
 
   if (isLoading) {
@@ -153,6 +152,11 @@ const ConsultRequestDetail = () => {
         ) : detail.status === 'reviewing' ? (
           <Button variant="primary" onClick={handleGoToChatRoom}>
             협진 채팅방으로 이동하기
+          </Button>
+        ) : listItem && !listItem.canAccept ? (
+          // 원 병원(요청을 보낸 쪽)은 자신의 요청을 직접 수락할 수 없음 - 상대 병원의 수락 대기
+          <Button variant="primary" disabled>
+            상대 병원의 수락 대기 중
           </Button>
         ) : (
           <Button variant="primary" disabled={acceptRequest.isPending} onClick={handleStartConsult}>

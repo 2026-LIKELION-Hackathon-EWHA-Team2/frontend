@@ -267,36 +267,55 @@ const COLLABORATION_STATUS_MAP = {
 };
 
 // 백엔드 응답 -> ConsultRequestListPage/HospitalHomePage/ChatListPage가 공통으로 쓰는 flat 형태로 변환
+// 원 병원/협진 병원 둘 다 같은 Case를 보게 되면서, '상대 병원' 표시와 '협진 시작하기' 노출 여부를
+// 로그인한 병원이 origin인지 partner인지로 직접 판별해야 함 (myHospitalId = 병원 프로필의 id)
 // gender/age/unreadCount는 이 API에 없는 필드라 매핑하지 않음 (undefined -> 컴포넌트에서 안 보이게 처리)
-const mapCollaborationRequest = (item) => ({
-  id: item.id, // collaboration_request_id (chat_room_id/case_transfer_id와는 다른 값이라 별도로 보관)
-  chatRoomId: item.chat_room_id,
-  caseTransferId: item.case_transfer_id,
-  caseId: item.case_number?.replace(/^CASE-/, ''),
-  name: item.medical_case?.patient_name,
-  hospital: item.origin_hospital_name,
-  requestedAt: formatDateTime(item.requested_at),
-  status: COLLABORATION_STATUS_MAP[item.status],
-});
+const mapCollaborationRequest = (item, myHospitalId) => {
+  const isOrigin = item.origin_hospital_id === myHospitalId;
+  return {
+    id: item.id, // collaboration_request_id (chat_room_id/case_transfer_id와는 다른 값이라 별도로 보관)
+    chatRoomId: item.chat_room_id,
+    caseTransferId: item.case_transfer_id,
+    medicalCaseId: item.medical_case_id,
+    caseId: item.case_number?.replace(/^CASE-/, ''),
+    name: item.medical_case?.patient_name,
+    hospital: isOrigin ? item.partner_hospital_name : item.origin_hospital_name,
+    requestedAt: formatDateTime(item.requested_at),
+    status: COLLABORATION_STATUS_MAP[item.status],
+    // REQUESTED 건은 원/협진 병원 모두 목록에 뜨지만, 수락은 협진(상대) 병원만 가능
+    canAccept: item.status === 'REQUESTED' && item.partner_hospital_id === myHospitalId,
+  };
+};
 
-// 협진 요청 목록 - 케이스 조회/병원 홈/채팅 목록에서 공통으로 사용
-export const useConsultPatientsQuery = () =>
-  useQuery({
-    queryKey: ['consultPatients'],
-    queryFn: () => getCollaborationRequestListApi().then((list) => list.map(mapCollaborationRequest)),
+// 협진 Case 목록 - 케이스 조회/병원 홈/채팅 목록에서 공통으로 사용
+export const useConsultPatientsQuery = () => {
+  const { data: profile } = useHospitalProfileQuery();
+  return useQuery({
+    queryKey: ['consultPatients', profile?.id],
+    enabled: !!profile,
+    queryFn: () =>
+      getCollaborationRequestListApi().then((list) =>
+        list.map((item) => mapCollaborationRequest(item, profile.id))
+      ),
   });
+};
 
 // 병원 대시보드 - today_summary는 '오늘' 발생/전환된 건수라 전체 누적 건수와 다름에 유의
-export const useHospitalDashboardQuery = () =>
-  useQuery({
-    queryKey: ['hospitalDashboard'],
+export const useHospitalDashboardQuery = () => {
+  const { data: profile } = useHospitalProfileQuery();
+  return useQuery({
+    queryKey: ['hospitalDashboard', profile?.id],
+    enabled: !!profile,
     queryFn: () =>
       getHospitalDashboardApi().then((data) => ({
         todaySummary: data.today_summary,
         totalUnreadCount: data.total_unread_count,
-        ongoingCollaborations: data.ongoing_collaborations.map(mapCollaborationRequest),
+        ongoingCollaborations: data.ongoing_collaborations.map((item) =>
+          mapCollaborationRequest(item, profile.id)
+        ),
       })),
   });
+};
 
 // 백엔드 응답 -> ConsultRequestDetail(협진 요청 상세) / PatientDetailPage(환자 정보 상세)가
 // 공통으로 쓰는 flat 형태로 변환. 두 화면이 같은 API를 쓴다고 문서에 명시돼 있어서 훅도 하나로 공유함
