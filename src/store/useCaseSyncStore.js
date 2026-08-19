@@ -10,6 +10,10 @@ const useCaseSyncStore = create((set, get) => ({
   selectedCaseId: "case01", // 동기화할 케이스 파라미터...!
   linkedDiagnosis: null, // '연동된 진단서' 카드 정보 ({ name: '눈썹 문신', clinic: 'ABC Beauty Clinic', date: '2025.06.10' })
 
+  // 전송 건 생성 API 응답의 id (CaseTransfer ID). AI 검토/전송 동의/전송 완료 화면
+  // 재진입 시 이 id로 상세 조회(useCaseTransferDetailQuery)해서 새로고침 대응
+  transferId: null,
+
   procedureName: "", // 시술명 ('보톡스')
   procedurePart: "", // 시술 부위 ('이마')
   procedureDate: "", // 시술 일자 ('2025.08.01')
@@ -31,6 +35,7 @@ const useCaseSyncStore = create((set, get) => ({
 
   setSelectedCaseId: (v) => set({ selectedCaseId: v }),
   setLinkedDiagnosis: (v) => set({ linkedDiagnosis: v }),
+  setTransferId: (v) => set({ transferId: v }),
 
   setProcedureName: (v) => set({ procedureName: v }),
   setProcedurePart: (v) => set({ procedurePart: v }),
@@ -57,6 +62,7 @@ const useCaseSyncStore = create((set, get) => ({
       birth: "",
       selectedCaseId: "case01",
       linkedDiagnosis: null,
+      transferId: null,
       procedureName: "",
       procedurePart: "",
       procedureDate: "",

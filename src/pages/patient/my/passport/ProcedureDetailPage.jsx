@@ -6,16 +6,13 @@ import PageContainer from '../../../../components/layout/PageContainer';
 import QueryState from '../../../../components/state/QueryState';
 import ConsultCard from '../../../../components/card/ConsultCard';
 import Button from '../../../../components/button/Button';
-import { useProcedureHistoryQuery, useHandoverDocumentQuery } from '../../../../hooks/useMockQueries';
+import { useProcedureHistoryDetailQuery } from '../../../../hooks/useMockQueries';
 
 const ProcedureDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { data: procedures, isLoading, isError } = useProcedureHistoryQuery();
-  const { data: handover } = useHandoverDocumentQuery();
-
-  const procedure = procedures?.find((item) => item.id === id);
+  const { data: procedure, isLoading, isError } = useProcedureHistoryDetailQuery(id);
 
   return (
     <>
@@ -27,6 +24,7 @@ const ProcedureDetailPage = () => {
           isError={isError}
           isEmpty={!procedure}
           emptyProps={{ title: '시술 이력을 찾을 수 없어요' }}
+          errorMessage="완료된 시술 이력을 찾을 수 없어요"
         >
           {procedure && (
             <>
@@ -56,9 +54,9 @@ const ProcedureDetailPage = () => {
                 <div className="flex flex-col gap-3">
                   <h2 className="font-wantedsans text-[15px] font-bold text-[#181818]">관련 협진 이력</h2>
                   <ConsultCard
-                    caseId={procedure.relatedCaseId}
-                    hospitalName={handover?.fromHospital}
-                    date={handover?.confirmedAt?.replaceAll(' ', '')}
+                    caseId={procedure.consult.caseId}
+                    hospitalName={procedure.consult.hospitalName}
+                    date={procedure.consult.date}
                     status="확인 서명 완료"
                     onClick={() => navigate(`/patient/my/passport/${procedure.id}/consult`)}
                   />

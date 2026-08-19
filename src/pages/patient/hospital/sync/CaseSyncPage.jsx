@@ -13,7 +13,12 @@ import ProgressSteps from '../../../../components/ProgressSteps';
 import Button from '../../../../components/button/Button';
 import useCaseSyncStore from '../../../../store/useCaseSyncStore';
 import useHospitalMatchStore from '../../../../store/useHospitalMatchStore';
-import { useHospitalListQuery } from '../../../../hooks/useMockQueries';
+import useToastStore from '../../../../store/useToastStore';
+import {
+  useHospitalListQuery,
+  useReviewCaseTransferMutation,
+  useSendCaseTransferMutation,
+} from '../../../../hooks/useMockQueries';
 
 import Step0Intro from './components/Step0Intro';
 import Step1Identify from './components/Step1Identify';
@@ -29,24 +34,51 @@ const CaseSyncPage = () => {
   const [step, setStep] = useState(0);
   const [isSending, setIsSending] = useState(false);
 
-  const { patientName, agreements, setSelectedCaseId, setTargetHospital, setIsSent, reset } = useCaseSyncStore();
+  const { patientName, agreements, transferId, setSelectedCaseId, setTargetHospital, setIsSent, reset } =
+    useCaseSyncStore();
 
   // '병원과 동기화하기' 버튼으로 이 페이지에 진입할 때 매칭 store 값을 그대로 승계받기!
   const { selectedCaseId: matchedCaseId, selectedHospitalId, reset: resetHospitalMatch } = useHospitalMatchStore();
   const { data: hospitals = [] } = useHospitalListQuery();
+  const showToast = useToastStore((state) => state.showToast);
+
+  const reviewMutation = useReviewCaseTransferMutation();
+  const sendMutation = useSendCaseTransferMutation();
 
   const nextStep = () => setStep((prev) => prev + 1);
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 0));
 
-  // 전송 처리: 지금은 mock이라 잠깐의 지연 후 바로 성공 처리 되도록 구현해두고,,
-  // 실제 API 연동 시엔 이 자리에서 케이스 전송 mutation 호출 후 onSuccess에서 아래 로직 실행하면 될 것 같아요!!
+  // 전송 처리: 검토(review)로 READY_TO_TRANSFER 확인 후에만 최종 전송(send) 호출
+  // (review만 끝난 상태에서 바로 완료 화면으로 넘어가면 안 됨 - 아직 병원에 전송된 게 아니라서)
   const handleSend = () => {
     setIsSending(true);
-    setTimeout(() => {
-      setIsSent(true);
-      setIsSending(false);
-      nextStep();
-    }, 600);
+    reviewMutation.mutate(
+      { transferId, agreements },
+      {
+        onSuccess: (reviewed) => {
+          if (reviewed.status !== 'READY_TO_TRANSFER') {
+            setIsSending(false);
+            showToast('필수 동의 처리에 실패했습니다. 다시 시도해주세요.');
+            return;
+          }
+          sendMutation.mutate(transferId, {
+            onSuccess: () => {
+              setIsSending(false);
+              setIsSent(true);
+              nextStep();
+            },
+            onError: () => {
+              setIsSending(false);
+              showToast('전송에 실패했습니다. 다시 시도해주세요.');
+            },
+          });
+        },
+        onError: () => {
+          setIsSending(false);
+          showToast('필수 동의 처리에 실패했습니다. 다시 시도해주세요.');
+        },
+      }
+    );
   };
 
   const handleFinish = () => {

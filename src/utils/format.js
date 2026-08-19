@@ -17,9 +17,16 @@ export const toApiDateFormat = (displayValue) => displayValue.replaceAll('.', '-
 // 'YYYY.MM.DD'가 완성된 형태인지 체크 (8자리 숫자 다 채워졌는지)
 export const isBirthDateComplete = (value) => value.replace(/[^0-9]/g, '').length === 8;
 
+// 화면 표시용 성별('여성'/'남성'/'기타') → 백엔드로 보낼 코드('FEMALE'/'MALE'/'OTHER')로 변환
+const GENDER_API_MAP = { 여성: 'FEMALE', 남성: 'MALE', 기타: 'OTHER' };
+export const toApiGender = (displayValue) => GENDER_API_MAP[displayValue] ?? displayValue;
+
 
 // 전화번호: 숫자만 입력받아서 010-1234-5678 형태로 자동 포맷
 // 국제번호(+81 등)도 고려해서 앞에 '+'는 그대로 유지 -> 음 근데 생각해보니까... 나라마다 양식이 달라서
+
+// ISO datetime 문자열('2026-08-15T05:00:00Z')을 화면 표시용 'YYYY.MM.DD'로 변환
+export const formatDateOnly = (isoString) => (isoString ? isoString.slice(0, 10).replaceAll('-', '.') : '');
 
 export const formatPhoneNumber = (value) => {
   const hasPlus = value.trim().startsWith('+');
