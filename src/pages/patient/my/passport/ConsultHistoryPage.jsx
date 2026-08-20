@@ -1,6 +1,6 @@
 // 2-4 인계 서류 (협진 결과 인계서)
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from '../../../../components/layout/Header';
 import PageContainer from '../../../../components/layout/PageContainer';
@@ -24,7 +24,13 @@ const ConsultHistoryPage = () => {
   const clearOverridePath = useGnbOverrideStore((state) => state.clearOverridePath);
 
   const { data: procedure, isLoading, isError } = useProcedureHistoryDetailQuery(id);
-  const { participants, finalJudgement, reasons, opinion } = procedure?.agreement ?? {};
+  const { participants, finalJudgement, reasons, opinion, opinionOriginal, opinionTranslated } =
+    procedure?.agreement ?? {};
+
+  // 추가 소견 원문보기/번역보기 토글
+  const [showOriginal, setShowOriginal] = useState(false);
+  const hasOpinionTranslation = !!opinionOriginal && opinionOriginal !== opinionTranslated;
+  const opinionText = hasOpinionTranslation && showOriginal ? opinionOriginal : opinion;
 
   // 마이페이지 하위 경로지만, 이 화면에서는 하단 GNB의 '병원' 탭을 활성 표시
   useEffect(() => {
@@ -110,8 +116,21 @@ const ConsultHistoryPage = () => {
 
               {/* 추가 소견 */}
               <div className="flex flex-col gap-2">
-                <h2 className="font-wantedsans text-[15px] font-medium text-[#181818]">추가 소견</h2>
-                <Textarea placeholder="추가 소견이 없습니다" value={opinion} readOnly />
+                <div className="flex items-center justify-between">
+                  <h2 className="font-wantedsans text-[15px] font-medium text-[#181818]">추가 소견</h2>
+                  {hasOpinionTranslation && (
+                    <span
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => setShowOriginal((prev) => !prev)}
+                      onKeyDown={(e) => e.key === 'Enter' && setShowOriginal((prev) => !prev)}
+                      className="cursor-pointer font-wantedsans text-xs font-medium text-[#6B5DD6]"
+                    >
+                      {showOriginal ? '번역보기' : '원문보기'}
+                    </span>
+                  )}
+                </div>
+                <Textarea placeholder="추가 소견이 없습니다" value={opinionText} readOnly />
               </div>
 
               <div className="-mt-2 flex gap-3">
