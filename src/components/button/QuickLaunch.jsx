@@ -33,10 +33,10 @@ const QuickLaunch = ({
       </div>
 
       <div className="flex flex-1 flex-col gap-1">
-        <span className="font-wantedsans text-[13px] font-medium text-[#181818]">
+        <span className="font-wantedsans text-[11px] font-medium text-[#181818]">
           {title}
         </span>
-        <span className="font-wantedsans text-[10px] font-normal leading-3.5 text-[#737373]">
+        <span className="font-wantedsans text-[9px] font-normal leading-3.5 text-[#737373]">
           {description}
         </span>
       </div>
