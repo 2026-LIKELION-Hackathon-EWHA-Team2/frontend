@@ -12,14 +12,17 @@ export const formatBirthDate = (value) => {
 
 // 화면 표시용 'YYYY.MM.DD' → 백엔드로 보낼 'YYYY-MM-DD' 형식으로 변환
 // birth_date 필드는 API 스펙상 하이픈 형식이라 전송 직전에 변환 필요!
-export const toApiDateFormat = (displayValue) => displayValue.replaceAll('.', '-');
+// 입력이 비어있으면 null을 반환으로 수정
+export const toApiDateFormat = (displayValue) =>
+  displayValue ? displayValue.replaceAll('.', '-') : null;
 
 // 'YYYY.MM.DD'가 완성된 형태인지 체크 (8자리 숫자 다 채워졌는지)
 export const isBirthDateComplete = (value) => value.replace(/[^0-9]/g, '').length === 8;
 
 // 화면 표시용 성별('여성'/'남성'/'기타') → 백엔드로 보낼 코드('FEMALE'/'MALE'/'OTHER')로 변환
 const GENDER_API_MAP = { 여성: 'FEMALE', 남성: 'MALE', 기타: 'OTHER' };
-export const toApiGender = (displayValue) => GENDER_API_MAP[displayValue] ?? displayValue;
+// 미선택 null을 반환!
+export const toApiGender = (displayValue) => (displayValue ? GENDER_API_MAP[displayValue] ?? displayValue : null);
 
 
 // 전화번호: 숫자만 입력받아서 010-1234-5678 형태로 자동 포맷
@@ -62,7 +65,7 @@ export const formatDateTime = (isoString) => {
 
 // 백엔드가 상대경로(예: 'media/symptom_images/2026/08/19/example.jpg')로 내려주는 미디어 파일 경로를
 // 절대 URL로 변환. 이미 절대 URL이면 그대로 둠. 경로 자체에 'media/'가 이미 포함돼 있어서 따로 붙이지 않음
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://borderlesslion-front.vercel.app/api';
 export const resolveMediaUrl = (path) => {
   if (!path) return '';
   if (/^https?:\/\//.test(path)) return path;
