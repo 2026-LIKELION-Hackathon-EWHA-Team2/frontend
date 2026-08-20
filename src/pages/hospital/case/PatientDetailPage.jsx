@@ -82,7 +82,7 @@ const PatientDetailPage = () => {
             <InfoRow icon="/icons/info-calendar.svg" label="증상 시작일" value={patient.symptomDate} />
             <InfoRow icon="/icons/info-calendar.svg" label="시술일" value={patient.procedureAt?.split(' ')[0]} />
             <InfoRow icon="/icons/info-pain.svg" label="통증 정도" value={patient.symptomLevel} />
-            <InfoRow icon="/icons/info-desc.svg" label="증상 설명" value={patient.symptomDesc} />
+            <InfoRow icon="/icons/info-desc.svg" label="증상 설명" value={patient.symptomDesc || '작성된 증상 설명이 없습니다.'} />
           </div>
         </div>
 
@@ -117,7 +117,7 @@ const PatientDetailPage = () => {
             </div>
           </div>
           <p className="pt-1.5 text-[#333] font-wantedsans text-[0.625rem] font-normal leading-[0.875rem]">
-            {patient.aiSummary}
+            {patient.aiSummary || 'AI 번역·요약 정보가 없습니다.'}
           </p>
         </div>
         </QueryState>

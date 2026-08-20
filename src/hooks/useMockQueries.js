@@ -40,7 +40,7 @@ import {
   markChatRoomReadApi,
 } from '../apis/caseApi'
 import { getCountryName } from '../utils/country'
-import { formatDateOnly, formatDateTime } from '../utils/format'
+import { formatDateOnly, formatDateTime, resolveMediaUrl } from '../utils/format'
 import { createSymptomCaseApi, getSymptomCaseListApi } from '../apis/symptomCaseApi';
 import {
   createMatchRequestApi,
@@ -215,9 +215,6 @@ export const useProcedureHistoryDetailQuery = (medicalCaseId) =>
 // ------------------------------------------------------------
 // 병원측 cases api
 
-// 통증 정도(1~5) -> 화면 표시용 한글 라벨. selfsymptoms 쪽 PAIN_LEVEL_MAP(라벨->숫자)의 역방향
-const PAIN_LEVEL_LABELS = ['없음', '약간', '보통', '심함', '매우 심함'];
-
 // 백엔드 응답 -> PatientDetailPage(CaseSummaryCard 등)가 기대하는 필드 형태로 변환
 // transmitted_data 하위 필드는 환자가 전송에 포함하지 않았으면 아예 없을 수 있어서 전부 옵셔널 체이닝 처리
 const mapReceivedCaseTransferDetail = (data) => {
@@ -231,14 +228,14 @@ const mapReceivedCaseTransferDetail = (data) => {
     name: transmitted.patient_info?.name,
     hospital: data.origin_hospital_name, // 시술받은 원 병원 (= 이 케이스를 보낸 쪽)
     requestedAt: formatDateTime(data.transferred_at),
-    photos: symptoms.images?.map((img) => img.image_url ?? img) ?? [],
+    photos: symptoms.images?.map((img) => resolveMediaUrl(img.image_url ?? img)) ?? [],
     symptomTags: symptoms.types ?? [],
     symptomArea: symptoms.areas?.join(', ') ?? '',
     symptomDate: symptoms.start_date
       ? `${formatDateOnly(symptoms.start_date)}${symptoms.onset_timing ? ` (${symptoms.onset_timing})` : ''}`
       : '',
     procedureAt: transmitted.procedure?.date ? formatDateOnly(transmitted.procedure.date) : '',
-    symptomLevel: PAIN_LEVEL_LABELS[(symptoms.pain_level ?? 1) - 1],
+    symptomLevel: symptoms.pain_level != null ? `${symptoms.pain_level}/5` : '',
     symptomDesc: symptoms.description,
     sideEffects: transmitted.adverse_effects?.map((e) => e.translated_name) ?? [],
     aiSummary: data.ai_translation_summary,
@@ -325,10 +322,11 @@ export const useHospitalDashboardQuery = () => {
 
 // 백엔드 응답 -> ConsultRequestDetail(협진 요청 상세) / PatientDetailPage(환자 정보 상세)가
 // 공통으로 쓰는 flat 형태로 변환. 두 화면이 같은 API를 쓴다고 문서에 명시돼 있어서 훅도 하나로 공유함
-// case_transfer_id가 null이면(전송 완료된 CaseTransfer 없음) patient_provided_data도 null이라
-// 환자 제공 정보 관련 필드는 전부 옵셔널 체이닝 처리!!
+// patient_provided_data는 연결된 CaseTransfer가 없으면 빈 객체({})로 오고, 있어도 항목별로
+// 환자 동의 여부에 따라 통째로 빠질 수 있어서 전부 옵셔널 체이닝 처리!!
 const mapCollaborationRequestDetail = (data) => {
-  const symptoms = data.patient_provided_data?.symptoms ?? {};
+  const provided = data.patient_provided_data ?? {};
+  const symptoms = provided.symptoms ?? {};
 
   return {
     id: data.id, // collaboration_request_id
@@ -348,17 +346,16 @@ const mapCollaborationRequestDetail = (data) => {
     doctorNote: data.medical_case?.clinician_note,
 
     // 환자 제공 정보 - PatientDetailPage
-    // images가 절대경로 URL이 아니라 상대경로로 오는 것으로 보여서 일단 그대로 둠 (확인 필요...)
-    photos: symptoms.images ?? [],
+    photos: symptoms.images?.map((img) => resolveMediaUrl(img.image_url ?? img)) ?? [],
     symptomTags: symptoms.types ?? [],
     symptomArea: symptoms.areas?.join(', ') ?? '',
     symptomDate: symptoms.start_date
       ? `${formatDateOnly(symptoms.start_date)}${symptoms.onset_timing ? ` (${symptoms.onset_timing})` : ''}`
       : '',
     procedureAt: data.medical_case?.procedure_date ? formatDateOnly(data.medical_case.procedure_date) : '',
-    symptomLevel: symptoms.pain_level_label,
+    symptomLevel: symptoms.pain_level != null ? `${symptoms.pain_level}/5` : '',
     symptomDesc: symptoms.description,
-    sideEffects: data.patient_provided_data?.adverse_effects?.map((e) => e.translated_name) ?? [],
+    sideEffects: provided.adverse_effects?.map((e) => e.translated_name) ?? [],
     aiSummary: data.ai_translation_summary,
   };
 };

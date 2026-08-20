@@ -76,7 +76,9 @@ const CaseSelectCard = ({
           {rows.map(([label, value]) => (
             <div key={label} className="flex items-center justify-between gap-6">
               <span className="font-wantedsans text-xs font-medium text-[#181818]">{label}</span>
-              <span className="font-wantedsans text-xs font-normal text-[#686868]">{value}</span>
+              <span className="font-wantedsans text-xs font-normal text-[#686868]">
+                {Array.isArray(value) ? value.join(', ') : value}
+              </span>
             </div>
           ))}
         </div>
