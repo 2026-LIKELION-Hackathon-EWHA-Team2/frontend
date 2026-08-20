@@ -163,14 +163,14 @@ const ConsultAgreementPage = () => {
                 </span>
               )}
             </div>
-            <div className="flex items-center gap-2 rounded-[10px] bg-[#F5F5F5] px-3 py-2">
+            <div className="flex items-start gap-2 rounded-[10px] bg-[#F5F5F5] px-3 py-2">
               <span className="shrink-0 font-wantedsans text-xs font-bold leading-normal text-[#6B5DD6]">최종 판단</span>
               {isEditing ? (
-                <input
-                  type="text"
+                <textarea
                   value={judgmentDraft}
                   onChange={(e) => setJudgmentDraft(e.target.value)}
-                  className="min-w-0 flex-1 bg-transparent font-wantedsans text-xs font-medium leading-normal text-[#333333] outline-none"
+                  rows={3}
+                  className="min-w-0 flex-1 resize-none bg-transparent font-wantedsans text-xs font-medium leading-normal text-[#333333] outline-none"
                 />
               ) : (
                 <span className="font-wantedsans text-xs font-medium leading-normal text-[#333333]">
