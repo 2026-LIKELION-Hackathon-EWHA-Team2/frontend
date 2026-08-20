@@ -1,5 +1,7 @@
 // useCaseFormStore(프론트 상태) <-> selfsymptoms API 스펙 간 변환을 모아둔 파일
 
+import { formatDateOnly } from './format';
+
 // Step3SymptomDetail의 SYMPTOM_AREA_OPTIONS -> API area_type enum
 const AREA_TYPE_MAP = {
   face: 'FACE',
@@ -101,7 +103,7 @@ export const normalizeSymptomCaseForSelect = (item) => ({
   title: `Case #${item.symptom_case_id}`,
   hospitalName: item.diagnosed_hospital_name ?? null,
   thumbnails: item.images?.map((img) => img.image_url) ?? [],
-  recordedAt: item.created_at?.slice(0, 10).replaceAll('-', '.') ?? '',
+  recordedAt: formatDateOnly(item.created_at),
   symptoms: item.symptom_types?.map((s) => s.custom_symptom ?? s.symptom_name) ?? [],
   symptomStartedAt: item.symptom_start_date?.replaceAll('-', '.') ?? '',
 
