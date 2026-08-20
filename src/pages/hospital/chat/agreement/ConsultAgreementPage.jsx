@@ -39,6 +39,12 @@ const ConsultAgreementPage = () => {
   const [evidenceItems, setEvidenceItems] = useState([]);
   const [additionalOpinion, setAdditionalOpinion] = useState('');
 
+  // 추가 소견 원문보기/번역보기 토글 (편집 중엔 입력값 그대로 보여주므로 미노출)
+  const [showOriginalOpinion, setShowOriginalOpinion] = useState(false);
+  const hasOpinionTranslation =
+    !!agreement?.additionalOpinionOriginal &&
+    agreement.additionalOpinionOriginal !== agreement.additionalOpinionTranslated;
+
   const isFinal = agreement?.status === 'FINAL';
   const counterpartName =
     agreement?.reviews?.find((r) => r.hospital_name !== profile?.name)?.hospital_name ?? room?.hospital ?? '상대 병원';
@@ -48,6 +54,7 @@ const ConsultAgreementPage = () => {
     setJudgmentDraft(agreement.judgmentDraft ?? '');
     setEvidenceItems(agreement.evidenceItems ?? []);
     setAdditionalOpinion(agreement.additionalOpinion ?? '');
+    setShowOriginalOpinion(false);
     setIsEditing(true);
   };
 
@@ -234,10 +241,29 @@ const ConsultAgreementPage = () => {
 
           {/* 추가 소견 */}
           <div className="flex flex-col gap-2">
-            <h2 className="font-wantedsans text-[15px] font-medium text-[#181818]">추가 소견</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="font-wantedsans text-[15px] font-medium text-[#181818]">추가 소견</h2>
+              {!isEditing && hasOpinionTranslation && (
+                <span
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setShowOriginalOpinion((prev) => !prev)}
+                  onKeyDown={(e) => e.key === 'Enter' && setShowOriginalOpinion((prev) => !prev)}
+                  className="cursor-pointer font-wantedsans text-xs font-medium text-[#6B5DD6]"
+                >
+                  {showOriginalOpinion ? '번역보기' : '원문보기'}
+                </span>
+              )}
+            </div>
             <Textarea
               placeholder={isEditing ? '소견을 입력해 주세요' : '추가 소견이 없습니다'}
-              value={isEditing ? additionalOpinion : agreement?.additionalOpinion ?? ''}
+              value={
+                isEditing
+                  ? additionalOpinion
+                  : showOriginalOpinion && hasOpinionTranslation
+                    ? agreement.additionalOpinionOriginal
+                    : agreement?.additionalOpinion ?? ''
+              }
               onChange={isEditing ? (e) => setAdditionalOpinion(e.target.value) : undefined}
               readOnly={!isEditing}
             />

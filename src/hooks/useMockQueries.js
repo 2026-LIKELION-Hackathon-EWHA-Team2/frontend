@@ -199,7 +199,12 @@ const mapProcedureHistoryDetail = (data) => ({
     participants: data.final_agreement.reviews.map((r) => ({ name: r.hospital_name })),
     finalJudgement: data.final_agreement.judgment_draft,
     reasons: data.final_agreement.evidence_items.map((item) => ({ id: item.id, label: item.content })),
-    opinion: data.final_agreement.additional_opinion ?? '',
+    // 추가 소견은 원문(작성 병원 언어)과 번역본(로그인 환자 preferred_language)이 둘 다 받기
+    // ChatRoomPage와 동일하게 원문보기/번역보기 토글로 보여주도록
+    opinion: data.final_agreement.additional_opinion_display_content ?? data.final_agreement.additional_opinion ?? '',
+    opinionOriginal: data.final_agreement.additional_opinion_original_content ?? '',
+    opinionTranslated: data.final_agreement.additional_opinion_translated_content ?? '',
+    opinionTranslationStatus: data.final_agreement.additional_opinion_translation_status ?? null,
   },
 });
 
@@ -386,7 +391,12 @@ const mapAgreementDetail = (data) => ({
   chatRoomId: data.chat_room,
   judgmentDraft: data.judgment_draft,
   evidenceItems: data.evidence_items ?? [],
-  additionalOpinion: data.additional_opinion,
+  // 추가 소견은 원문(작성 병원 언어)과 번역본(display_language) 함께 받아서
+  // 환자측 인계서 화면과 동일하게 원문보기/번역보기 토글로 보여주기
+  additionalOpinion: data.additional_opinion_display_content || data.additional_opinion,
+  additionalOpinionOriginal: data.additional_opinion_original_content,
+  additionalOpinionTranslated: data.additional_opinion_translated_content,
+  additionalOpinionTranslationStatus: data.additional_opinion_translation_status,
   status: data.status,
   version: data.version,
   editedByName: data.edited_by_name,
