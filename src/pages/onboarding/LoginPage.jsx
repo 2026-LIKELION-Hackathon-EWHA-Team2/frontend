@@ -33,6 +33,9 @@ const LoginPage = () => {
             {
               userId: data.login_id,
               role,
+              // origin_hospital_id/partner_hospital_id와 매칭되는 건 로그인 응답의 최상위 id! -> ㅠㅠ 휴 
+              // (hospital_id 필드는 다른 값이라 못 씀 - 실제 응답으로 확인함: origin_hospital_id=5, 로그인 id=5, hospital_id=1)
+              hospitalId: data.id ?? null,
               accessToken: data.access,
               refreshToken: data.refresh,
             },

@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
+import useAuthStore from '../store/useAuthStore';
 import {
   MOCK_HANDOVER_DOCUMENT,
   MOCK_HOSPITAL_HOME, // ★ 다른 곳에서 안 쓰면 나중에 지워도 됨
@@ -268,8 +269,9 @@ const COLLABORATION_STATUS_MAP = {
 
 // 백엔드 응답 -> ConsultRequestListPage/HospitalHomePage/ChatListPage가 공통으로 쓰는 flat 형태로 변환
 // 원 병원/협진 병원 둘 다 같은 Case를 보게 되면서, '상대 병원' 표시와 '협진 시작하기' 노출 여부를
-// 로그인한 병원이 origin인지 partner인지로 직접 판별해야 함 (myHospitalId = 병원 프로필의 id)
-// gender/age/unreadCount는 이 API에 없는 필드라 매핑하지 않음 (undefined -> 컴포넌트에서 안 보이게 처리)
+// 로그인한 병원이 origin인지 partner인지로 직접 판별해야 함
+// myHospitalId = 로그인 응답의 hospital_id (useAuthStore) - 병원 프로필(hospital-profile API)의 id와는
+// 네임스페이스가 다른 값이라 그걸 쓰면 isOrigin/canAccept가 항상 false로 나옴!! -> 이게 예상 원인
 const mapCollaborationRequest = (item, myHospitalId) => {
   const isOrigin = item.origin_hospital_id === myHospitalId;
   return {
@@ -290,12 +292,15 @@ const mapCollaborationRequest = (item, myHospitalId) => {
 // 협진 Case 목록 - 케이스 조회/병원 홈/채팅 목록에서 공통으로 사용
 export const useConsultPatientsQuery = () => {
   const { data: profile } = useHospitalProfileQuery();
+  const hospitalId = useAuthStore((state) => state.hospitalId);
   return useQuery({
-    queryKey: ['consultPatients', profile?.id],
+    queryKey: ['consultPatients', hospitalId],
+    // hospitalId가 없어도(로그인 응답에 hospital_id가 안 내려오는 경우 등) 목록 자체는 떠야 하니
+    // enabled는 profile만 보도록!! hospitalId는 canAccept 비교용으로만 사용
     enabled: !!profile,
     queryFn: () =>
       getCollaborationRequestListApi().then((list) =>
-        list.map((item) => mapCollaborationRequest(item, profile.id))
+        list.map((item) => mapCollaborationRequest(item, hospitalId))
       ),
   });
 };
@@ -303,15 +308,16 @@ export const useConsultPatientsQuery = () => {
 // 병원 대시보드 - today_summary는 '오늘' 발생/전환된 건수라 전체 누적 건수와 다름에 유의
 export const useHospitalDashboardQuery = () => {
   const { data: profile } = useHospitalProfileQuery();
+  const hospitalId = useAuthStore((state) => state.hospitalId);
   return useQuery({
-    queryKey: ['hospitalDashboard', profile?.id],
+    queryKey: ['hospitalDashboard', hospitalId],
     enabled: !!profile,
     queryFn: () =>
       getHospitalDashboardApi().then((data) => ({
         todaySummary: data.today_summary,
         totalUnreadCount: data.total_unread_count,
         ongoingCollaborations: data.ongoing_collaborations.map((item) =>
-          mapCollaborationRequest(item, profile.id)
+          mapCollaborationRequest(item, hospitalId)
         ),
       })),
   });
@@ -630,4 +636,3 @@ export const useHandoverDocumentQuery = () =>
 // 협진 요청 상세
 export const useConsultRequestDetailQuery = () =>
   useQuery({ queryKey: ['consultRequestDetail'], queryFn: () => wait(MOCK_CONSULT_REQUEST_DETAIL) });
-

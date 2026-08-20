@@ -17,14 +17,16 @@ const getAuthStorage = () => {
   return raw ? JSON.parse(raw).state : null;
 };
 
+const PUBLIC_ENDPOINTS = ['/accounts/login/', '/accounts/signup/'];
 
-// 요청 인터셉터: 모든 요청에 access_token을 자동으로 헤더에 붙여줌
+// 요청 인터셉터: 모든 요청에 access_token을 자동으로 헤더에 붙여줌 (공개 엔드포인트는 제외)
 // -> 새 API 함수 만들 때 이 토큰 관련 코드를 따로 안 써도 됨! (accounts 관련 API 포함 전부 자동 적용 되도록)
 
 axiosInstance.interceptors.request.use(
   (config) => {
+    const isPublicEndpoint = PUBLIC_ENDPOINTS.some((path) => config.url?.includes(path));
     const authState = getAuthStorage();
-    if (authState?.accessToken) {
+    if (authState?.accessToken && !isPublicEndpoint) {
       config.headers.Authorization = `Bearer ${authState.accessToken}`;
     }
     return config;
@@ -42,9 +44,9 @@ axiosInstance.interceptors.response.use(
   (error) => {
     // 수정 -> 401이어도 '원래 로그인 상태였다가 만료된 경우'에만 세션만료 처리하도록 조건 추가했어요
     const hadAuthHeader = Boolean(error.config?.headers?.Authorization);
-    const isLoginRequest = error.config?.url?.includes('/accounts/login/');
+    const isPublicEndpoint = PUBLIC_ENDPOINTS.some((path) => error.config?.url?.includes(path));
 
-    if (error.response?.status === 401 && hadAuthHeader && !isLoginRequest) {
+    if (error.response?.status === 401 && hadAuthHeader && !isPublicEndpoint) {
       // access_token 만료(또는 유효하지 않음) -> 재발급 시도 없이 바로 로그인 상태 초기화
       // store의 logout()을 호출해서 메모리 상태 + storage + keepLoggedIn 플래그까지 한번에 정리
       useAuthStore.getState().logout();
