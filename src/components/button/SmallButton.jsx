@@ -17,7 +17,7 @@ const SmallButton = ({
   };
 
   // 공통 스타일
-  const baseStyles = 'flex w-fit items-center justify-center gap-1 rounded-lg border border-[#DADADA] cursor-pointer transition-colors';
+  const baseStyles = 'flex w-fit shrink-0 items-center justify-center gap-1 rounded-lg border border-[#DADADA] cursor-pointer transition-colors whitespace-nowrap';
 
   // 수정 버튼 
   if (variant === 'edit') {
