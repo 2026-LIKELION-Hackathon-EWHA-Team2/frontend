@@ -340,10 +340,4 @@ python manage.py test
 
 ---
 
-### 🎥 시연 영상
-
-
-
----
-
 ![footer](https://capsule-render.vercel.app/api?type=waving&height=150&color=0:7C3AED,50:8B5CF6,100:C4B5FD&section=footer)
