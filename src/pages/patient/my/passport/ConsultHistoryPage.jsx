@@ -68,7 +68,7 @@ const ConsultHistoryPage = () => {
                 <h2 className="font-wantedsans text-[15px] font-medium text-[#181818]">참여 병원</h2>
                 <div className="flex gap-3">
                   {participants.map((p) => (
-                    <HospitalReviewCard key={p.name} name={p.name} status="검토 완료" />
+                    <HospitalReviewCard key={p.name} name={p.name} status="completed" />
                   ))}
                 </div>
               </div>
