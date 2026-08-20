@@ -25,14 +25,39 @@ export const toApiGender = (displayValue) => GENDER_API_MAP[displayValue] ?? dis
 // 전화번호: 숫자만 입력받아서 010-1234-5678 형태로 자동 포맷
 // 국제번호(+81 등)도 고려해서 앞에 '+'는 그대로 유지 -> 음 근데 생각해보니까... 나라마다 양식이 달라서
 
-// ISO datetime 문자열('2026-08-15T05:00:00Z')을 화면 표시용 'YYYY.MM.DD'로 변환
-export const formatDateOnly = (isoString) => (isoString ? isoString.slice(0, 10).replaceAll('-', '.') : '');
+// 항상 일단 한국/일본 표준시로 변환 진행
+// 국제 표준시 +9 
+const KST_TIME_ZONE = 'Asia/Seoul';
 
-// ISO datetime 문자열을 화면 표시용 'YYYY.MM.DD HH:mm'로 변환 (초/타임존 표기는 생략)
+const getKstParts = (isoString) => {
+  const date = new Date(isoString);
+  if (Number.isNaN(date.getTime())) return null;
+
+  const parts = new Intl.DateTimeFormat('ko-KR', {
+    timeZone: KST_TIME_ZONE,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23', // hour12: false만 쓰면 일부 환경에서 자정이 '24:00'으로 나오는 이슈가 있어서 h23로 고정해둘게요!!
+  }).formatToParts(date);
+
+  return Object.fromEntries(parts.map(({ type, value }) => [type, value]));
+};
+
+// ISO datetime 문자열을 KST 기준 화면 표시용 'YYYY.MM.DD'로 변환
+export const formatDateOnly = (isoString) => {
+  if (!isoString) return '';
+  const p = getKstParts(isoString);
+  return p ? `${p.year}.${p.month}.${p.day}` : '';
+};
+
+// ISO datetime 문자열을 KST 기준 화면 표시용 'YYYY.MM.DD HH:mm'로 변환 (초는 생략)
 export const formatDateTime = (isoString) => {
   if (!isoString) return '';
-  const [date, time] = isoString.split('T');
-  return `${date.replaceAll('-', '.')} ${time?.slice(0, 5) ?? ''}`.trim();
+  const p = getKstParts(isoString);
+  return p ? `${p.year}.${p.month}.${p.day} ${p.hour}:${p.minute}` : '';
 };
 
 // 백엔드가 상대경로(예: 'media/symptom_images/2026/08/19/example.jpg')로 내려주는 미디어 파일 경로를
