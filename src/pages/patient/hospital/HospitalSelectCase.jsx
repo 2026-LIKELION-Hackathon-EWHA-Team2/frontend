@@ -37,7 +37,7 @@ const HospitalSelectCase = () => {
   }, [selectedId, setSelectedCaseId, resetHospitalMatch]);
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex h-[calc(100dvh-4.875rem)] flex-col bg-white">
       <Header title="병원" showBack rightSlot={<></>} />
 
       <PageContainer className="flex flex-1 flex-col pt-3 pb-10">
@@ -75,22 +75,22 @@ const HospitalSelectCase = () => {
             ))}
           </QueryState>
         </div>
-
-        <div className="mt-auto flex flex-col items-center gap-4 pt-8">
-          <p className="text-center font-wantedsans text-[11px] font-normal text-[#8C8C8C]">
-            현재 파일럿은 일본 지역 병원만 지원돼요
-          </p>
-
-          <div className="flex w-full flex-col gap-3">
-            <Button variant="primary" disabled={!selectedId} to="/patient/hospital/matching">
-              AI 추천 받기
-            </Button>
-            <Button variant="outline" to="/patient/hospital/network">
-              네트워크 병원 둘러보기
-            </Button>
-          </div>
-        </div>
       </PageContainer>
+
+      <div className="flex flex-col items-center gap-4 px-5.5 pb-6 pt-3">
+        <p className="text-center font-wantedsans text-[11px] font-normal text-[#8C8C8C]">
+          현재 파일럿은 일본 지역 병원만 지원돼요
+        </p>
+
+        <div className="flex w-full flex-col gap-3">
+          <Button variant="primary" disabled={!selectedId} to="/patient/hospital/matching">
+            AI 추천 받기
+          </Button>
+          <Button variant="outline" to="/patient/hospital/network">
+            네트워크 병원 둘러보기
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
