@@ -8,6 +8,7 @@ import useAuthStore from '../../../store/useAuthStore';
 import useSignupStore from '../../../store/useSignupStore';
 import { useSignupPatientMutation, useSignupHospitalMutation } from '../../../hooks/useMockQueries';
 import { toApiDateFormat } from '../../../utils/format'; // 'YYYY.MM.DD' → 'YYYY-MM-DD' 변환용
+import { SPECIALTY_CODE_MAP } from '../../../utils/specialty';
 
 const STEP_LABELS = ['정보 입력', '약관 동의', '가입 완료'];
 
@@ -40,7 +41,11 @@ const SignupPage = () => {
           login_id: hospitalInfo.userId,
           password: hospitalInfo.password,
           preferred_language: 'ja',
-          specialty_names: hospitalInfo.department,
+          // 목록에 있는 라벨은 정식 코드로, 직접 추가한 자유 텍스트는 CUSTOM 코드로 전송
+          specialties: hospitalInfo.department.map((label) => ({
+            specialty_code: SPECIALTY_CODE_MAP[label] ?? 'CUSTOM',
+            specialty_name: label,
+          })),
           country,
           city,
           address: hospitalInfo.hospitalAddress,
