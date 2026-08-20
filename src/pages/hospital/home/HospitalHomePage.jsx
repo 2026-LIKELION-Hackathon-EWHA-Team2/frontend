@@ -56,16 +56,14 @@ const HospitalHomePage = () => {
             />
 
             <div className="relative z-10 flex flex-col gap-5 px-5 pt-11 pb-5">
-              <div className="flex flex-col gap-2">
-                <h1 className="w-full whitespace-nowrap font-wantedsans text-[22px] font-medium leading-7.5 text-[#181818]">
-                  안녕하세요,
-                  <br />
-                  {profile.name} 님
-                </h1>
-                <p className="font-wantedsans text-sm font-normal pt-4 text-[#626262]">
-                  {profile.name}님 오늘의 협진 현황이에요
-                </p>
-              </div>
+              <h1 className="w-full whitespace-nowrap font-wantedsans text-[22px] font-medium leading-7.5 text-[#181818]">
+                {profile.name}님,
+                <br />
+                오늘의 협진 현황이에요
+              </h1>
+              <p className="font-wantedsans text-sm font-normal text-[#626262]">
+                오늘 협진 진행 상황을 한눈에 보여드려요
+              </p>
 
               <div className="-mx-1 flex gap-2">
                 {[

@@ -48,7 +48,7 @@ const ConsultRequestListPage = () => {
 
   return (
     <div className="flex h-[calc(100dvh-4.875rem)] flex-col bg-white">
-      <Header title="케이스 조회" showBack rightSlot={<></>} />
+      <Header title="전체 케이스 조회" showBack rightSlot={<></>} />
       <Tabs tabs={tabs} activeKey={activeTab} onChange={setActiveTab} className="mb-5 mt-0.63 px-5.5" />
       <SearchBar value={searchTerm} onChange={setSearchTerm} className="mb-6 mx-5.5" />
 
