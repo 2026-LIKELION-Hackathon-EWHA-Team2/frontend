@@ -142,11 +142,12 @@ const ConsultAgreementPage = () => {
             <div className="flex gap-3">
               <HospitalReviewCard
                 name={profile?.name ?? '우리 병원'}
-                status={agreement?.myReviewCompleted ? '검토 완료' : '검토 대기'}
+                isSelf
+                status={agreement?.myReviewCompleted ? 'completed' : 'waiting'}
               />
               <HospitalReviewCard
                 name={counterpartName}
-                status={agreement?.counterpartReviewCompleted ? '검토 완료' : '검토 대기'}
+                status={agreement?.counterpartReviewCompleted ? 'completed' : 'waiting'}
               />
             </div>
           </div>

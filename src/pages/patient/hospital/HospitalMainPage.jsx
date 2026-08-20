@@ -22,7 +22,7 @@ const HospitalMainPage = () => {
           </div>
 
           <p className="mt-5 text-center font-wantedsans text-2xl font-medium leading-normal text-[#181818]">
-            아직 연결된 병원이 없어요
+            병원 매칭을 시작해보세요
           </p>
           <p className="mt-3 text-center font-wantedsans text-[13px] font-medium leading-5 text-[#626262]">
             전문 분야와 거리를 기준으로

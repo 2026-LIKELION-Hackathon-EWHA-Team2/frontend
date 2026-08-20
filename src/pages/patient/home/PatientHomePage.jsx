@@ -69,22 +69,12 @@ const PatientHomePage = () => {
         {/* 빠른 실행 */}
         <section className="flex flex-col gap-4">
           <h2 className="font-wantedsans text-sm font-medium leading-4.5 text-[#181818]">빠른 실행</h2>
-          <div className="flex gap-3">
-            <QuickLaunch
-              title="증상 입력"
-              description={<>현재 증상을<br />자세히 입력하세요</>}
-              iconPath="/icons/home-camera-purple.svg"
-              className="flex-1"
-              onClick={() => navigate('/patient/case/upload', { state: { initialStep: 1 } })}
-            />
-            <QuickLaunch
-              title="진단서 등록"
-              description={<>진단서를<br />자세히 입력하세요</>}
-              iconPath="/icons/home-case-purple.svg"
-              className="flex-1"
-              onClick={() => navigate('/patient/case/upload', { state: { initialStep: 4 } })}
-            />
-          </div>
+          <QuickLaunch
+            title="시술 이력 보러 가기"
+            description={<>병원 방문 시, 시술 이력과 정보를<br />공유할 수 있는 나만의 의료 여권입니다.</>}
+            iconPath="/icons/home-passport.svg"
+            to="/patient/my/passport"
+          />
         </section>
 
         {/* 최근 케이스 */}
