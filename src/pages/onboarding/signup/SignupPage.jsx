@@ -8,6 +8,7 @@ import useAuthStore from '../../../store/useAuthStore';
 import useSignupStore from '../../../store/useSignupStore';
 import { useSignupPatientMutation, useSignupHospitalMutation } from '../../../hooks/useMockQueries';
 import { toApiDateFormat } from '../../../utils/format'; // 'YYYY.MM.DD' → 'YYYY-MM-DD' 변환용
+import { inferPreferredLanguage } from '../../../utils/country';
 
 const STEP_LABELS = ['정보 입력', '약관 동의', '가입 완료'];
 
@@ -39,7 +40,7 @@ const SignupPage = () => {
           name: hospitalInfo.hospitalName,
           login_id: hospitalInfo.userId,
           password: hospitalInfo.password,
-          preferred_language: 'ja',
+          preferred_language: inferPreferredLanguage(hospitalInfo.countryCity),
           specialty_names: hospitalInfo.department,
           country,
           city,
