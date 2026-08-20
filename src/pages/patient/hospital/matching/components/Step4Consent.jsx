@@ -48,7 +48,7 @@ const Step4Consent = ({ nextStep, prevStep }) => {
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex h-[calc(100dvh-4.875rem)] flex-col bg-white">
       <Header title="개인 정보 동의" showBack onBack={prevStep} rightSlot={<></>} />
 
       <PageContainer className="flex flex-1 flex-col">
@@ -72,17 +72,17 @@ const Step4Consent = ({ nextStep, prevStep }) => {
         <div className="mt-8">
           <ConsentCheckbox label="모두 동의합니다" checked={allChecked} onChange={toggleAll} />
         </div>
-
-        <div className="mt-30 pb-4">
-          <Button
-            variant="primary"
-            disabled={!allChecked || consentMutation.isPending}
-            onClick={handleSubmit}
-          >
-            {consentMutation.isPending ? '처리 중...' : '전송하기'}
-          </Button>
-        </div>
       </PageContainer>
+
+      <div className="px-5.5 pb-6 pt-3">
+        <Button
+          variant="primary"
+          disabled={!allChecked || consentMutation.isPending}
+          onClick={handleSubmit}
+        >
+          {consentMutation.isPending ? '처리 중...' : '전송하기'}
+        </Button>
+      </div>
     </div>
   );
 };

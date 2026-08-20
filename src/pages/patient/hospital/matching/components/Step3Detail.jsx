@@ -46,7 +46,7 @@ const Step3Detail = ({ nextStep, prevStep }) => {
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex h-[calc(100dvh-4.875rem)] flex-col bg-white">
       <Header title={hospital?.name ?? '병원 상세'} showBack onBack={prevStep}  rightSlot={<></>}/>
 
       <QueryState isLoading={false} isError={false} isEmpty={!hospital}>
@@ -114,13 +114,13 @@ const Step3Detail = ({ nextStep, prevStep }) => {
                   </div>
                 ))}
               </div>
-
-              <div className="mt-auto pt-8">
-                <Button variant="primary" disabled={selectRecommendation.isPending} onClick={handleSelect}>
-                  {selectRecommendation.isPending ? '신청 중...' : '이 병원으로 매칭 신청'}
-                </Button>
-              </div>
             </PageContainer>
+
+            <div className="px-5.5 pb-6 pt-3">
+              <Button variant="primary" disabled={selectRecommendation.isPending} onClick={handleSelect}>
+                {selectRecommendation.isPending ? '신청 중...' : '이 병원으로 매칭 신청'}
+              </Button>
+            </div>
           </>
         )}
       </QueryState>

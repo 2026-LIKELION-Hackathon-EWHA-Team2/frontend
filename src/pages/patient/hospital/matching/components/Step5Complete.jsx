@@ -11,7 +11,7 @@ const Step5Complete = ({ prevStep }) => {
   const partnerHospitalName = useHospitalMatchStore((state) => state.partnerHospitalName);
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex h-[calc(100dvh-4.875rem)] flex-col bg-white">
       <Header title="" showBack onBack={prevStep} rightSlot={<></>} />
 
       <PageContainer className="flex flex-1 flex-col pt-3 pb-10">
@@ -32,16 +32,16 @@ const Step5Complete = ({ prevStep }) => {
             으로 매칭이 완료되었습니다.
           </p>
         </div>
-
-        <div className="mb-16 flex flex-col items-center gap-4">
-          <p className="text-center font-wantedsans text-[11px] font-normal text-[#8C8C8C]">
-            동의한 개인 정보가 병원 진료에 활용될 수 있습니다.
-          </p>
-          <Button variant="primary" to="/patient/hospital/sync">
-            병원과 동기화하기
-          </Button>
-        </div>
       </PageContainer>
+
+      <div className="flex flex-col items-center gap-4 px-5.5 pb-6 pt-3">
+        <p className="text-center font-wantedsans text-[11px] font-normal text-[#8C8C8C]">
+          동의한 개인 정보가 병원 진료에 활용될 수 있습니다.
+        </p>
+        <Button variant="primary" to="/patient/hospital/sync">
+          병원과 동기화하기
+        </Button>
+      </div>
     </div>
   );
 };
