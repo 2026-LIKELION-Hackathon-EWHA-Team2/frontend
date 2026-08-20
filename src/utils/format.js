@@ -28,6 +28,13 @@ export const toApiGender = (displayValue) => GENDER_API_MAP[displayValue] ?? dis
 // ISO datetime 문자열('2026-08-15T05:00:00Z')을 화면 표시용 'YYYY.MM.DD'로 변환
 export const formatDateOnly = (isoString) => (isoString ? isoString.slice(0, 10).replaceAll('-', '.') : '');
 
+// ISO datetime 문자열을 화면 표시용 'YYYY.MM.DD HH:mm'로 변환 (초/타임존 표기는 생략)
+export const formatDateTime = (isoString) => {
+  if (!isoString) return '';
+  const [date, time] = isoString.split('T');
+  return `${date.replaceAll('-', '.')} ${time?.slice(0, 5) ?? ''}`.trim();
+};
+
 export const formatPhoneNumber = (value) => {
   const hasPlus = value.trim().startsWith('+');
   const digits = value.replace(/[^0-9]/g, '').slice(0, 15); // 숫자만, 최대 15자리

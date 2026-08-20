@@ -21,7 +21,8 @@ const ConsultPatientCard = ({ patient }) => {
           </Badge>
         </div>
         <p className="mb-0.5 font-wantedsans text-[11px] font-normal text-[#626262]">
-          {patient.name} ({patient.gender}, {patient.age}세)
+          {patient.name}
+          {(patient.gender || patient.age) && ` (${[patient.gender, patient.age && `${patient.age}세`].filter(Boolean).join(', ')})`}
         </p>
 
         <div className="mt-1.5 flex items-center gap-1">

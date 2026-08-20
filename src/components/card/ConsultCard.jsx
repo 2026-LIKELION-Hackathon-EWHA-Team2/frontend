@@ -52,7 +52,7 @@ const ConsultCard = ({
             <div className="flex items-center gap-1">
               <img src="/icons/case-hospital.svg" alt="Hospital" className="h-3 w-3" />
               <span className="font-wantedsans text-[10px] font-normal leading-3.5 text-[#686868]">
-                {hospitalName}과 협진
+                {hospitalName}와(과) 협진
               </span>
             </div>
             

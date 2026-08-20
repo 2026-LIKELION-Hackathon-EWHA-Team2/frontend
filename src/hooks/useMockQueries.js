@@ -1,12 +1,9 @@
 import { useMemo } from 'react';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import {
-  MOCK_CONSULT_PATIENTS,
   MOCK_HANDOVER_DOCUMENT,
   MOCK_HOSPITAL_HOME, // ★ 다른 곳에서 안 쓰면 나중에 지워도 됨
   MOCK_CONSULT_REQUEST_DETAIL,
-  MOCK_QUICK_CONSULT,
-  MOCK_AGREEMENT,
 } from '../mock/mockdata';
 
 import {
@@ -26,9 +23,23 @@ import {
   getCaseTransferDetailApi,
   getProcedureHistoryListApi,
   getProcedureHistoryDetailApi,
+  getReceivedCaseTransfersApi,
+  getReceivedCaseTransferDetailApi,
+  getCollaborationRequestListApi,
+  getCollaborationRequestDetailApi,
+  acceptCollaborationRequestApi,
+  getAgreementDetailApi,
+  updateAgreementApi,
+  reviewAgreementApi,
+  generateAgreementApi,
+  getHospitalDashboardApi,
+  getChatRoomListApi,
+  getChatMessagesApi,
+  sendChatMessageApi,
+  markChatRoomReadApi,
 } from '../apis/caseApi'
 import { getCountryName } from '../utils/country'
-import { formatDateOnly } from '../utils/format'
+import { formatDateOnly, formatDateTime } from '../utils/format'
 import { createSymptomCaseApi, getSymptomCaseListApi } from '../apis/symptomCaseApi';
 import {
   createMatchRequestApi,
@@ -90,7 +101,8 @@ export const useHospitalAccountsListQuery = (search = '') =>
     queryFn: () => getHospitalListApi(search),
   });
 
-//cases api
+// ------------------------------------------------------------
+// 환자측 cases api
 
 // Case 전송 건 생성 - 성공 시 REVIEW_REQUIRED 상태의 CaseTransfer 반환 (병원에 바로 전송되는 건 아님)
 // AI 매칭(useHospitalMatchStore의 selectedCaseId/selectedRecommendationId)이 이제 실제 값이라 호출 가능해짐
@@ -200,6 +212,300 @@ export const useProcedureHistoryDetailQuery = (medicalCaseId) =>
   });
 
 // ------------------------------------------------------------
+// 병원측 cases api
+
+// 통증 정도(1~5) -> 화면 표시용 한글 라벨. selfsymptoms 쪽 PAIN_LEVEL_MAP(라벨->숫자)의 역방향
+const PAIN_LEVEL_LABELS = ['없음', '약간', '보통', '심함', '매우 심함'];
+
+// 백엔드 응답 -> PatientDetailPage(CaseSummaryCard 등)가 기대하는 필드 형태로 변환
+// transmitted_data 하위 필드는 환자가 전송에 포함하지 않았으면 아예 없을 수 있어서 전부 옵셔널 체이닝 처리
+const mapReceivedCaseTransferDetail = (data) => {
+  const transmitted = data.transmitted_data ?? {};
+  const symptoms = transmitted.symptoms ?? {};
+
+  return {
+    id: data.id,
+    collaborationRequestId: data.collaboration_request_id, // transfer_id와 다른 값이라 별도로 보관
+    caseId: data.case_number?.replace(/^CASE-/, ''),
+    name: transmitted.patient_info?.name,
+    hospital: data.origin_hospital_name, // 시술받은 원 병원 (= 이 케이스를 보낸 쪽)
+    requestedAt: formatDateTime(data.transferred_at),
+    photos: symptoms.images?.map((img) => img.image_url ?? img) ?? [],
+    symptomTags: symptoms.types ?? [],
+    symptomArea: symptoms.areas?.join(', ') ?? '',
+    symptomDate: symptoms.start_date
+      ? `${formatDateOnly(symptoms.start_date)}${symptoms.onset_timing ? ` (${symptoms.onset_timing})` : ''}`
+      : '',
+    procedureAt: transmitted.procedure?.date ? formatDateOnly(transmitted.procedure.date) : '',
+    symptomLevel: PAIN_LEVEL_LABELS[(symptoms.pain_level ?? 1) - 1],
+    symptomDesc: symptoms.description,
+    sideEffects: transmitted.adverse_effects?.map((e) => e.translated_name) ?? [],
+    aiSummary: data.ai_translation_summary,
+  };
+};
+
+// 협진 병원 수신 Case 목록 (아직 연결된 화면 없음)
+export const useReceivedCaseTransfersQuery = () =>
+  useQuery({
+    queryKey: ['receivedCaseTransfers'],
+    queryFn: () => getReceivedCaseTransfersApi().then((list) => list.map(mapReceivedCaseTransferDetail)),
+  });
+
+// 협진 병원 수신 Case 상세 (아직 연결된 화면 없음 - PatientDetailPage는 협진 요청 상세 API를 씀)
+export const useReceivedCaseTransferDetailQuery = (transferId) =>
+  useQuery({
+    queryKey: ['receivedCaseTransferDetail', transferId],
+    enabled: !!transferId,
+    queryFn: () => getReceivedCaseTransferDetailApi(transferId).then(mapReceivedCaseTransferDetail),
+  });
+
+// 협진 요청 상태값(백엔드) -> 병원용 UI 상태값(utils/caseStatus.js의 CASE_STATUS_BADGE 키) 변환
+const COLLABORATION_STATUS_MAP = {
+  REQUESTED: 'new',
+  ACCEPTED: 'reviewing',
+  COMPLETED: 'done',
+};
+
+// 백엔드 응답 -> ConsultRequestListPage/HospitalHomePage/ChatListPage가 공통으로 쓰는 flat 형태로 변환
+// 원 병원/협진 병원 둘 다 같은 Case를 보게 되면서, '상대 병원' 표시와 '협진 시작하기' 노출 여부를
+// 로그인한 병원이 origin인지 partner인지로 직접 판별해야 함 (myHospitalId = 병원 프로필의 id)
+// gender/age/unreadCount는 이 API에 없는 필드라 매핑하지 않음 (undefined -> 컴포넌트에서 안 보이게 처리)
+const mapCollaborationRequest = (item, myHospitalId) => {
+  const isOrigin = item.origin_hospital_id === myHospitalId;
+  return {
+    id: item.id, // collaboration_request_id (chat_room_id/case_transfer_id와는 다른 값이라 별도로 보관)
+    chatRoomId: item.chat_room_id,
+    caseTransferId: item.case_transfer_id,
+    medicalCaseId: item.medical_case_id,
+    caseId: item.case_number?.replace(/^CASE-/, ''),
+    name: item.medical_case?.patient_name,
+    hospital: isOrigin ? item.partner_hospital_name : item.origin_hospital_name,
+    requestedAt: formatDateTime(item.requested_at),
+    status: COLLABORATION_STATUS_MAP[item.status],
+    // REQUESTED 건은 원/협진 병원 모두 목록에 뜨지만, 수락은 협진(상대) 병원만 가능
+    canAccept: item.status === 'REQUESTED' && item.partner_hospital_id === myHospitalId,
+  };
+};
+
+// 협진 Case 목록 - 케이스 조회/병원 홈/채팅 목록에서 공통으로 사용
+export const useConsultPatientsQuery = () => {
+  const { data: profile } = useHospitalProfileQuery();
+  return useQuery({
+    queryKey: ['consultPatients', profile?.id],
+    enabled: !!profile,
+    queryFn: () =>
+      getCollaborationRequestListApi().then((list) =>
+        list.map((item) => mapCollaborationRequest(item, profile.id))
+      ),
+  });
+};
+
+// 병원 대시보드 - today_summary는 '오늘' 발생/전환된 건수라 전체 누적 건수와 다름에 유의
+export const useHospitalDashboardQuery = () => {
+  const { data: profile } = useHospitalProfileQuery();
+  return useQuery({
+    queryKey: ['hospitalDashboard', profile?.id],
+    enabled: !!profile,
+    queryFn: () =>
+      getHospitalDashboardApi().then((data) => ({
+        todaySummary: data.today_summary,
+        totalUnreadCount: data.total_unread_count,
+        ongoingCollaborations: data.ongoing_collaborations.map((item) =>
+          mapCollaborationRequest(item, profile.id)
+        ),
+      })),
+  });
+};
+
+// 백엔드 응답 -> ConsultRequestDetail(협진 요청 상세) / PatientDetailPage(환자 정보 상세)가
+// 공통으로 쓰는 flat 형태로 변환. 두 화면이 같은 API를 쓴다고 문서에 명시돼 있어서 훅도 하나로 공유함
+// case_transfer_id가 null이면(전송 완료된 CaseTransfer 없음) patient_provided_data도 null이라
+// 환자 제공 정보 관련 필드는 전부 옵셔널 체이닝 처리!!
+const mapCollaborationRequestDetail = (data) => {
+  const symptoms = data.patient_provided_data?.symptoms ?? {};
+
+  return {
+    id: data.id, // collaboration_request_id
+    chatRoomId: data.chat_room_id, // 협진 시작(수락) 후 채팅방 이동은 이 값을 써야 함 (id 쓰면 안 됨!!)
+    caseTransferId: data.case_transfer_id,
+    caseId: data.case_number?.replace(/^CASE-/, ''),
+    name: data.patient_name,
+    hospital: data.procedure_hospital_name ?? data.origin_hospital_name,
+    requestedAt: formatDateTime(data.requested_at),
+    status: COLLABORATION_STATUS_MAP[data.status],
+
+    // 시술 정보 - ConsultRequestDetail
+    procedureName: data.medical_case?.procedure_name,
+    procedureArea: data.medical_case?.procedure_area,
+    procedureDate: formatDateOnly(data.medical_case?.procedure_date),
+    ingredients: data.medical_case?.ingredients?.map((i) => i.ingredient_name) ?? [],
+    doctorNote: data.medical_case?.clinician_note,
+
+    // 환자 제공 정보 - PatientDetailPage
+    // images가 절대경로 URL이 아니라 상대경로로 오는 것으로 보여서 일단 그대로 둠 (확인 필요...)
+    photos: symptoms.images ?? [],
+    symptomTags: symptoms.types ?? [],
+    symptomArea: symptoms.areas?.join(', ') ?? '',
+    symptomDate: symptoms.start_date
+      ? `${formatDateOnly(symptoms.start_date)}${symptoms.onset_timing ? ` (${symptoms.onset_timing})` : ''}`
+      : '',
+    procedureAt: data.medical_case?.procedure_date ? formatDateOnly(data.medical_case.procedure_date) : '',
+    symptomLevel: symptoms.pain_level_label,
+    symptomDesc: symptoms.description,
+    sideEffects: data.patient_provided_data?.adverse_effects?.map((e) => e.translated_name) ?? [],
+    aiSummary: data.ai_translation_summary,
+  };
+};
+
+// 협진 요청 상세 - ConsultRequestDetail.jsx / PatientDetailPage.jsx 공용
+export const useCollaborationRequestDetailQuery = (collaborationRequestId) =>
+  useQuery({
+    queryKey: ['collaborationRequestDetail', collaborationRequestId],
+    enabled: !!collaborationRequestId,
+    queryFn: () =>
+      getCollaborationRequestDetailApi(collaborationRequestId).then(mapCollaborationRequestDetail),
+  });
+
+// 협진 요청 수락 - ConsultRequestDetail.jsx '협진 시작하기' 클릭 시 호출
+export const useAcceptCollaborationRequestMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (collaborationRequestId) => acceptCollaborationRequestApi(collaborationRequestId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['consultPatients'] });
+      queryClient.invalidateQueries({ queryKey: ['collaborationRequestDetail'] });
+    },
+  });
+};
+
+const mapAgreementDetail = (data) => ({
+  id: data.id,
+  chatRoomId: data.chat_room,
+  judgmentDraft: data.judgment_draft,
+  evidenceItems: data.evidence_items ?? [],
+  additionalOpinion: data.additional_opinion,
+  status: data.status,
+  version: data.version,
+  editedByName: data.edited_by_name,
+  editedAt: formatDateTime(data.edited_at),
+  finalizedAt: formatDateTime(data.finalized_at),
+  reviews: data.reviews ?? [],
+  canEdit: data.can_edit,
+  requiresReReview: data.requires_re_review,
+  myReviewCompleted: data.my_review_completed,
+  counterpartReviewCompleted: data.counterpart_review_completed,
+  allReviewsCompleted: data.all_reviews_completed,
+  canFinalize: data.can_finalize,
+  primaryAction: data.primary_action,
+});
+
+// 합의안 상세 - 아직 생성된 합의안이 없으면(404) AI 초안 생성 API를 대신 호출
+export const useAgreementDetailQuery = (caseId, roomId) =>
+  useQuery({
+    queryKey: ['agreementDetail', caseId, roomId],
+    enabled: !!caseId && !!roomId,
+    queryFn: () =>
+      getAgreementDetailApi(caseId, roomId)
+        .then(mapAgreementDetail)
+        .catch((err) => {
+          if (err.response?.status === 404) {
+            return generateAgreementApi(caseId, roomId).then(mapAgreementDetail);
+          }
+          throw err;
+        }),
+  });
+
+// 합의안 수정 (판단 내용/주요 근거/추가 소견 중 변경된 필드만 전달)
+export const useUpdateAgreementMutation = (caseId, roomId) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (fields) => updateAgreementApi(caseId, roomId, fields),
+    onSuccess: (data) => {
+      queryClient.setQueryData(['agreementDetail', caseId, roomId], mapAgreementDetail(data));
+    },
+  });
+};
+
+// 합의안 검토 완료 / 최종 확정 - primary_action.code가 REVIEW/FINALIZE일 때 공통으로 호출
+export const useReviewAgreementMutation = (caseId, roomId) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => reviewAgreementApi(caseId, roomId),
+    onSuccess: (data) => {
+      queryClient.setQueryData(['agreementDetail', caseId, roomId], (old) => ({
+        ...old,
+        ...mapAgreementDetail(data),
+      }));
+      queryClient.invalidateQueries({ queryKey: ['chatRooms'] });
+      queryClient.invalidateQueries({ queryKey: ['collaborationRequestDetail'] });
+      queryClient.invalidateQueries({ queryKey: ['hospitalDashboard'] });
+    },
+  });
+};
+
+const mapChatRoom = (room) => ({
+  id: room.room_id,
+  caseId: room.case_number?.replace(/^CASE-/, ''),
+  name: room.patient_name,
+  hospital: room.counterpart_hospital_name,
+  lastMessageAt: formatDateTime(room.last_message_at),
+  unreadCount: room.unread_count,
+  chatStatus: room.chat_status,
+  statusLabel: room.chat_status_label,
+  canViewAgreement: room.can_view_agreement,
+  medicalCaseId: room.medical_case_id,
+});
+
+// status: undefined(전체) | 'IN_REVIEW' | 'COMPLETED'
+export const useChatRoomListQuery = (status) =>
+  useQuery({
+    queryKey: ['chatRooms', status],
+    queryFn: () => getChatRoomListApi(status).then((list) => list.map(mapChatRoom)),
+  });
+
+const mapChatMessage = (msg) => ({
+  id: msg.id,
+  senderHospitalId: msg.sender_hospital_id,
+  from: msg.sender_hospital_name,
+  original: msg.content,
+  translated: msg.display_content,
+  time: formatDateTime(msg.created_at)?.split(' ')[1],
+});
+
+export const useChatMessagesQuery = (caseId, roomId) =>
+  useQuery({
+    queryKey: ['chatMessages', caseId, roomId],
+    enabled: !!caseId && !!roomId,
+    queryFn: () => getChatMessagesApi(caseId, roomId).then((data) => data.messages.map(mapChatMessage)),
+  });
+
+export const useSendChatMessageMutation = (caseId, roomId) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (content) => sendChatMessageApi(caseId, roomId, content),
+    onSuccess: (msg) => {
+      queryClient.setQueryData(['chatMessages', caseId, roomId], (old = []) => [
+        ...old,
+        mapChatMessage(msg),
+      ]);
+      queryClient.invalidateQueries({ queryKey: ['chatRooms'] });
+    },
+  });
+};
+
+// 채팅방 읽음 처리 (lastReadMessageId 생략 시 최신까지 전체 읽음)
+export const useMarkChatRoomReadMutation = (roomId) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (lastReadMessageId) => markChatRoomReadApi(roomId, lastReadMessageId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['chatRooms'] });
+      queryClient.invalidateQueries({ queryKey: ['hospitalDashboard'] });
+    },
+  });
+};
+
+// ------------------------------------------------------------
 // selfsymptoms/ api
 
 // 증상 케이스 생성 (useCaseFormStore 값을 그대로 넘기면 내부에서 FormData로 변환)
@@ -220,7 +526,6 @@ export const useSymptomCaseListQuery = () =>
 
 // 환자 홈 피드 - 최근 케이스 목록
 // data를 useMemo로 감싸서 query.data가 안 바뀌면 배열/객체 참조도 그대로 유지되게 함
-// (매번 새 배열을 반환하면, 이 값을 useEffect 의존성으로 쓰는 화면에서 렌더링 무한루프가 남)
 export const useRecentSymptomCasesQuery = () => {
   const query = useSymptomCaseListQuery();
   const data = useMemo(() => query.data?.map(normalizeSymptomCaseForHome), [query.data]);
@@ -241,8 +546,6 @@ export const useSubmittedSymptomCaseListQuery = () => {
 // 케이스 동기화 Step2Select에서 사용
 // Case 전송 건 생성(POST /cases/transfers/) 전제조건이 '증상 Case가 HOSPITAL_SELECTED 상태'라서
 // (apis/caseApi.js의 createCaseTransferApi 주석 참고) AI 매칭까지 끝낸 케이스만 필터링해서 보여줘야 함
-// -> useSubmittedSymptomCaseListQuery(SUBMITTED)를 그대로 쓰면 매칭 끝난 케이스가 목록에 안 잡혀서
-//    Step2Select가 항상 '선택된 케이스를 찾을 수 없습니다'로 빠지는 문제가 있었음
 export const useHospitalSelectedSymptomCaseListQuery = () => {
   const query = useSymptomCaseListQuery();
   const data = useMemo(
@@ -320,74 +623,11 @@ export const useSelectNetworkHospitalMutation = () =>
 // 여기서부터는 아직 남은 hook들 - 아직 mock 유지
 // ------------------------------------------------------------
 
-// 2-2 협진요청함 / 2-3 환자조회에서 사용
-export const useConsultPatientsQuery = () =>
-  useQuery({ queryKey: ['consultPatients'], queryFn: () => wait(MOCK_CONSULT_PATIENTS) });
-
 // 협진 인계서
 export const useHandoverDocumentQuery = () =>
   useQuery({ queryKey: ['handoverDocument'], queryFn: () => wait(MOCK_HANDOVER_DOCUMENT) });
-
-// 케이스 조회 리스트에서 환자 한 명을 선택했을 때 쓰는 상세 조회
-// (협진 요청 상세 / 환자 정보 상세 보기 화면에서 공통으로 사용)
-export const useConsultPatientDetailQuery = (id) =>
-  useQuery({
-    queryKey: ['consultPatientDetail', id],
-    enabled: !!id, // id가 아직 없을 때(라우팅 진입 초기 등)는 요청 자체를 하지 않도록 막음
-    queryFn: () => wait(MOCK_CONSULT_PATIENTS.find((p) => p.id === id) ?? null),
-  });
 
 // 협진 요청 상세
 export const useConsultRequestDetailQuery = () =>
   useQuery({ queryKey: ['consultRequestDetail'], queryFn: () => wait(MOCK_CONSULT_REQUEST_DETAIL) });
 
-// 병원 신속 협진 - 메시지 목록
-export const useQuickConsultQuery = () =>
-  useQuery({ queryKey: ['quickConsult'], queryFn: () => wait(MOCK_QUICK_CONSULT) });
-
-// 병원 신속 협진 - 새 메시지 전송 (mock, 캐시에 바로 append)
-export const useSendQuickConsultMessage = () => {
-  const queryClient = useQueryClient();
-  return (text) =>
-    queryClient.setQueryData(['quickConsult'], (old) => {
-      if (!old) return old;
-      const myName = old.messages.find((m) => m.mine)?.from ?? old.messages[0]?.from;
-      const now = new Date();
-      const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-      return {
-        ...old,
-        messages: [...old.messages, { from: myName, text, textJa: text, time, mine: true }],
-      };
-    });
-};
-
-// 협진 합의 - AI 정리 초안 (useAgreementStore 초기화에 사용하는 형식)
-export const useAgreementDraftQuery = () =>
-  useQuery({ queryKey: ['agreementDraft'], queryFn: () => wait(MOCK_AGREEMENT) });
-
-// 케이스 조회 상세 - '협진 시작하기' 클릭 시 케이스 상태를 '신규 요청' -> '검토중'으로 변경 (mock, 캐시에 바로 반영)
-// 채팅 목록에는 이 상태가 되어야 카드가 나타남 (신규 요청 상태는 채팅방이 아직 없는 것으로 취급)
-export const useStartConsultCase = () => {
-  const queryClient = useQueryClient();
-  return (id) => {
-    queryClient.setQueryData(['consultPatients'], (old = []) =>
-      old.map((p) => (p.id === id ? { ...p, status: 'reviewing' } : p))
-    );
-    queryClient.setQueryData(['consultPatientDetail', id], (old) =>
-      old ? { ...old, status: 'reviewing' } : old
-    );
-  };
-};
-
-// 협진 합의 - 양측 병원이 모두 검토 완료했을 때 케이스 상태를 '완료'로 변경 (mock, 캐시에 바로 반영)
-export const useCompleteConsultCase = () => {
-  const queryClient = useQueryClient();
-  return (id) => {
-    queryClient.setQueryData(['consultPatients'], (old = []) =>
-      old.map((p) => (p.id === id ? { ...p, status: 'done' } : p))
-    );
-    queryClient.setQueryData(['consultPatientDetail', id], (old) =>
-      old ? { ...old, status: 'done' } : old
-    );
-  };
-};
