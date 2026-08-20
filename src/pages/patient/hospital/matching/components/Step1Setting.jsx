@@ -75,7 +75,7 @@ const Step1Setting = ({ nextStep }) => {
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex h-[calc(100dvh-4.875rem)] flex-col bg-white">
       <Header title="AI 추천 병원 설정" showBack rightSlot={<></>} />
 
       <PageContainer className="flex flex-1 flex-col pt-3 pb-10">
@@ -102,13 +102,13 @@ const Step1Setting = ({ nextStep }) => {
             />
           ))}
         </div>
-
-        <div className="mt-40">
-          <Button variant="primary" disabled={createMatchRequest.isPending} onClick={handleSubmit}>
-            {createMatchRequest.isPending ? '추천받는 중...' : 'AI로 추천받기'}
-          </Button>
-        </div>
       </PageContainer>
+
+      <div className="px-5.5 pb-6 pt-3">
+        <Button variant="primary" disabled={createMatchRequest.isPending} onClick={handleSubmit}>
+          {createMatchRequest.isPending ? '추천받는 중...' : 'AI로 추천받기'}
+        </Button>
+      </div>
     </div>
   );
 };
