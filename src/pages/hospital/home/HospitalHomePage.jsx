@@ -67,7 +67,7 @@ const HospitalHomePage = () => {
                 </p>
               </div>
 
-              <div className=" flex justify-center gap-2">
+              <div className="-mx-1 flex gap-2">
                 {[
                   ['신규 요청', counts.new],
                   ['검토중', counts.reviewing],
@@ -75,7 +75,7 @@ const HospitalHomePage = () => {
                 ].map(([label, count]) => (
                   <div
                     key={label}
-                    className="flex w-29 shrink-0 flex-col items-start rounded-lg bg-[#FEFEFE] px-3 py-1.5 shadow-[0_2px_4px_0_rgba(0,0,0,0.04)]"
+                    className="flex flex-1 flex-col items-start rounded-lg bg-[#FEFEFE] px-3 py-1.5 shadow-[0_2px_4px_0_rgba(0,0,0,0.04)]"
                   >
                     <p className="self-stretch font-wantedsans text-xs font-medium leading-normal text-[#333]">
                       {label}
