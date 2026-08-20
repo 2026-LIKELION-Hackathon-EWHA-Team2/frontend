@@ -35,6 +35,15 @@ export const formatDateTime = (isoString) => {
   return `${date.replaceAll('-', '.')} ${time?.slice(0, 5) ?? ''}`.trim();
 };
 
+// 백엔드가 상대경로(예: 'media/symptom_images/2026/08/19/example.jpg')로 내려주는 미디어 파일 경로를
+// 절대 URL로 변환. 이미 절대 URL이면 그대로 둠. 경로 자체에 'media/'가 이미 포함돼 있어서 따로 붙이지 않음
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+export const resolveMediaUrl = (path) => {
+  if (!path) return '';
+  if (/^https?:\/\//.test(path)) return path;
+  return `${API_BASE_URL.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
+};
+
 export const formatPhoneNumber = (value) => {
   const hasPlus = value.trim().startsWith('+');
   const digits = value.replace(/[^0-9]/g, '').slice(0, 15); // 숫자만, 최대 15자리
