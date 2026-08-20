@@ -8,11 +8,11 @@ import SmallButton from '../../../components/button/SmallButton';
 import {
   useChatMessagesQuery,
   useChatRoomListQuery,
-  useHospitalProfileQuery,
   useSendChatMessageMutation,
   useMarkChatRoomReadMutation,
 } from '../../../hooks/useMockQueries';
 import useToastStore from '../../../store/useToastStore';
+import useAuthStore from '../../../store/useAuthStore';
 
 const ChatRoomPage = () => {
   const { caseId, roomId } = useParams();
@@ -21,7 +21,9 @@ const ChatRoomPage = () => {
 
   const { data: messages, isLoading, isError } = useChatMessagesQuery(caseId, roomId);
   const { data: rooms } = useChatRoomListQuery();
-  const { data: profile } = useHospitalProfileQuery();
+  // profile.id(hospital-profile API)는 senderHospitalId와 네임스페이스가 달라서
+  // 로그인 응답의 hospital_id(useAuthStore)를 써야 정확히 매칭될 거 같아요
+  const hospitalId = useAuthStore((state) => state.hospitalId);
   const sendMessage = useSendChatMessageMutation(caseId, roomId);
   const markRead = useMarkChatRoomReadMutation(roomId);
   const room = rooms?.find((r) => String(r.id) === roomId);
@@ -72,8 +74,7 @@ const ChatRoomPage = () => {
 
           <div className="flex flex-1 flex-col-reverse gap-4 overflow-y-auto px-5 py-4">
             {[...(messages ?? [])].reverse().map((msg) => {
-              // senderHospitalId 기준 비교가 profile.id와 매칭되지 않아(네임스페이스 다름 추정) 병원명으로 비교
-              const mine = msg.from === profile?.name;
+              const mine = msg.senderHospitalId === hospitalId;
               const showOriginal = originalShown.has(msg.id);
               const displayText = mine ? msg.original : showOriginal ? msg.original : msg.translated;
 
