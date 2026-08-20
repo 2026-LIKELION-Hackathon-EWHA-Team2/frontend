@@ -8,13 +8,18 @@ import { useHospitalAccountsListQuery } from '../../../../hooks/useMockQueries';
 const normalizeHospital = (h) => ({
   id: h.hospital_id, // ★ hospital_id → id
   name: h.name,
+  country: h.country, // 국내(KR) 병원만 노출하기 위해 필요 -> 요거..말씀하시는 거 맞겠지 흠
   // specialties 배열에서 이름만 뽑아 콤마로 이어붙임
   department: h.specialties?.map((s) => s.specialty_name).join(', ') || '',
 });
 
 const Step4Certificate = () => {
   const { data: rawHospitals, isLoading, isError } = useHospitalAccountsListQuery();
-  const hospitals = useMemo(() => rawHospitals?.map(normalizeHospital), [rawHospitals]);
+  // '시술 받은 병원'은 국내(KR) 병원만 검색 대상으로 보여줌 -> 수정 완
+  const hospitals = useMemo(
+    () => rawHospitals?.map(normalizeHospital).filter((h) => h.country === 'KR'),
+    [rawHospitals]
+  );
   const { setHospital, diagnosisFile, setDiagnosisFile } = useCaseFormStore();
 
   const [hospitalQuery, setHospitalQuery] = useState('');
