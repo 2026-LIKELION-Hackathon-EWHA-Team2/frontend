@@ -7,6 +7,7 @@ import useAuthStore from '../../../../store/useAuthStore';
 import useSignupStore from '../../../../store/useSignupStore';
 import { MOCK_PATIENT, MOCK_HOSPITALS } from '../../../../mock/mockdata';
 import { formatBirthDate, isBirthDateComplete } from '../../../../utils/format';
+import { SPECIALTY_CODE_MAP } from '../../../../utils/specialty';
 
 // 입력 예시(placeholder)는 mockdata.js에 이미 있는 값을 그대로 재사용
 const mockHospital = MOCK_HOSPITALS[0];
@@ -40,7 +41,7 @@ const HOSPITAL_SUB_STEPS = [
 ];
 
 // 전문 분야 (병원 상세 정보 화면에서 다중 선택 토글로 선택)
-const SPECIALTY_OPTIONS = ['여드름·흉터', '색소', '리프팅', '보톡스·필러', '가슴·바디', '눈', '코', '윤곽', '제모'];
+const SPECIALTY_OPTIONS = Object.keys(SPECIALTY_CODE_MAP);
 
 // 비밀번호 규칙: 8자 이상 + 영문/숫자/특수문자 중 2가지 이상 조합
 const getPasswordError = (password) => {
