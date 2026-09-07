@@ -5,7 +5,6 @@ import {
   createCaseTransferApi,
   reviewCaseTransferApi,
   sendCaseTransferApi,
-  getUnsentCaseTransfersApi,
   getCaseTransferDetailApi,
   getProcedureHistoryListApi,
   getProcedureHistoryDetailApi,
@@ -41,14 +40,7 @@ export const useSendCaseTransferMutation = () => {
   });
 };
 
-// 미전송 Case 목록
-export const useUnsentCaseTransfersQuery = () =>
-  useQuery({
-    queryKey: ['unsentCaseTransfers'],
-    queryFn: () => getUnsentCaseTransfersApi(),
-  });
-
-// 환자 전송 Case 상세 - CaseSyncPage의 AI 검토/전송 동의/전송 완료 화면 재진입 시 사용 예정
+// 환자 전송 Case 상세 - CaseSyncPage의 AI 검토/전송 동의/전송 완료 화면 재진입(새로고침) 시 상태 복구용!!
 export const useCaseTransferDetailQuery = (transferId) =>
   useQuery({
     queryKey: ['caseTransferDetail', transferId],

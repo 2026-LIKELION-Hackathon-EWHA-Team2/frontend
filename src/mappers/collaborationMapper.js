@@ -2,43 +2,14 @@
 
 import { formatDateOnly, formatDateTime, resolveMediaUrl } from '../utils/format';
 
-// 백엔드 응답 -> PatientDetailPage(CaseSummaryCard 등)가 기대하는 필드 형태로 변환
-// transmitted_data 하위 필드는 환자가 전송에 포함하지 않았으면 아예 없을 수 있어서 전부 옵셔널 체이닝 처리
-export const mapReceivedCaseTransferDetail = (data) => {
-  const transmitted = data.transmitted_data ?? {};
-  const symptoms = transmitted.symptoms ?? {};
-
-  return {
-    id: data.id,
-    collaborationRequestId: data.collaboration_request_id, // transfer_id와 다른 값이라 별도로 보관
-    caseId: data.case_number?.replace(/^CASE-/, ''),
-    name: transmitted.patient_info?.name,
-    hospital: data.origin_hospital_name, // 시술받은 원 병원 (= 이 케이스를 보낸 쪽)
-    requestedAt: formatDateTime(data.transferred_at),
-    photos: symptoms.images?.map((img) => resolveMediaUrl(img.image_url ?? img)) ?? [],
-    symptomTags: symptoms.types ?? [],
-    symptomArea: symptoms.areas?.join(', ') ?? '',
-    symptomDate: symptoms.start_date
-      ? `${formatDateOnly(symptoms.start_date)}${symptoms.onset_timing ? ` (${symptoms.onset_timing})` : ''}`
-      : '',
-    procedureAt: transmitted.procedure?.date ? formatDateOnly(transmitted.procedure.date) : '',
-    symptomLevel: symptoms.pain_level != null ? `${symptoms.pain_level}/5` : '',
-    symptomDesc: symptoms.description,
-    sideEffects: transmitted.adverse_effects?.map((e) => e.translated_name) ?? [],
-    aiSummary: data.ai_translation_summary,
-  };
-};
-
-// 협진 요청 상태값(백엔드) -> 병원용 UI 상태값(utils/caseStatus.js의 CASE_STATUS_BADGE 키) 변환
+// 협진 요청 상태값(백엔드) -> 병원용 UI 상태값 변환
 export const COLLABORATION_STATUS_MAP = {
   REQUESTED: 'new',
   ACCEPTED: 'reviewing',
   COMPLETED: 'done',
 };
 
-// 백엔드 응답 -> ConsultRequestListPage/HospitalHomePage/ChatListPage가 공통으로 쓰는 flat 형태로 변환
-// 원 병원/협진 병원 둘 다 같은 Case를 보게 되면서, '상대 병원' 표시와 '협진 시작하기' 노출 여부를
-// 로그인한 병원이 origin인지 partner인지로 직접 판별해야 함
+// 백엔드 응답 -> ConsultRequestListPage/HospitalHomePage/ChatListPage가 공통으로 쓰는 형태로 변환
 // myHospitalId = 로그인 응답의 hospital_id (useAuthStore) - 병원 프로필(hospital-profile API)의 id와는
 // 네임스페이스가 다른 값이라 그걸 쓰면 isOrigin/canAccept가 항상 false로 나옴!! -> 이게 예상 원인
 export const mapCollaborationRequest = (item, myHospitalId) => {
@@ -58,8 +29,8 @@ export const mapCollaborationRequest = (item, myHospitalId) => {
   };
 };
 
-// 백엔드 응답 -> ConsultRequestDetail(협진 요청 상세) / PatientDetailPage(환자 정보 상세)가
-// 공통으로 쓰는 flat 형태로 변환. 두 화면이 같은 API를 쓴다고 문서에 명시돼 있어서 훅도 하나로 공유함
+// 백엔드 응답 -> ConsultRequestDetail / PatientDetailPage가 공통으로 쓰는 형태로 변환.
+// 두 화면이 같은 API를 쓴다고 문서에 명시돼 있어서 훅도 하나로 공유함
 // patient_provided_data는 연결된 CaseTransfer가 없으면 빈 객체({})로 오고, 있어도 항목별로
 // 환자 동의 여부에 따라 통째로 빠질 수 있어서 전부 옵셔널 체이닝 처리!!
 export const mapCollaborationRequestDetail = (data) => {

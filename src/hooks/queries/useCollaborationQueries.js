@@ -3,34 +3,13 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import useAuthStore from '../../store/useAuthStore';
 import {
-  getReceivedCaseTransfersApi,
-  getReceivedCaseTransferDetailApi,
   getCollaborationRequestListApi,
   getCollaborationRequestDetailApi,
   acceptCollaborationRequestApi,
   getHospitalDashboardApi,
 } from '../../apis/caseApi';
-import {
-  mapReceivedCaseTransferDetail,
-  mapCollaborationRequest,
-  mapCollaborationRequestDetail,
-} from '../../mappers/collaborationMapper';
+import { mapCollaborationRequest, mapCollaborationRequestDetail } from '../../mappers/collaborationMapper';
 import { useHospitalProfileQuery } from './useUserQueries';
-
-// 협진 병원 수신 Case 목록 (아직 연결된 화면 없음)
-export const useReceivedCaseTransfersQuery = () =>
-  useQuery({
-    queryKey: ['receivedCaseTransfers'],
-    queryFn: () => getReceivedCaseTransfersApi().then((list) => list.map(mapReceivedCaseTransferDetail)),
-  });
-
-// 협진 병원 수신 Case 상세 (아직 연결된 화면 없음 - PatientDetailPage는 협진 요청 상세 API를 씀)
-export const useReceivedCaseTransferDetailQuery = (transferId) =>
-  useQuery({
-    queryKey: ['receivedCaseTransferDetail', transferId],
-    enabled: !!transferId,
-    queryFn: () => getReceivedCaseTransferDetailApi(transferId).then(mapReceivedCaseTransferDetail),
-  });
 
 // 협진 Case 목록 - 케이스 조회/병원 홈/채팅 목록에서 공통으로 사용
 export const useConsultPatientsQuery = () => {
