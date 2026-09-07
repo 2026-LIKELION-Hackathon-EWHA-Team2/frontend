@@ -14,9 +14,9 @@ import {
   useAgreementDetailQuery,
   useUpdateAgreementMutation,
   useReviewAgreementMutation,
-  useChatRoomListQuery,
-  useHospitalProfileQuery,
-} from '../../../../hooks/useMockQueries';
+} from '../../../../hooks/queries/useAgreementQueries';
+import { useChatRoomListQuery } from '../../../../hooks/queries/useChatQueries';
+import { useHospitalProfileQuery } from '../../../../hooks/queries/useUserQueries';
 import useToastStore from '../../../../store/useToastStore';
 
 const AI_SUMMARY_NOTE = 'AI는 초안 정리만 수행하며,\n최종 의료 판단과 후속 조치는 양측 의료진이 직접 확인합니다.';

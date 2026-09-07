@@ -6,7 +6,7 @@ import Button from '../../../../../components/button/Button';
 import LevelBarCard from '../../../../../components/card/LevelBarCard';
 import useHospitalMatchStore from '../../../../../store/useHospitalMatchStore';
 import useToastStore from '../../../../../store/useToastStore';
-import { useCreateMatchRequestMutation } from '../../../../../hooks/useMockQueries';
+import { useCreateMatchRequestMutation } from '../../../../../hooks/queries/useMatchingQueries';
 
 // LevelBarCard 기준, 표시 퍼센트는 (value-1)/4*100 => 5=100%,4=75%,3=50%,2=25%,1=0%
 const PERCENT_LABELS = ['0', '25', '50', '75', '100'];

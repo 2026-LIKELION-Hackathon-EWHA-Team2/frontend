@@ -8,7 +8,7 @@ import PageContainer from '../../../components/layout/PageContainer';
 import Badge from '../../../components/Badge';
 import CaseSummaryCard from '../../../components/card/CaseSummaryCard';
 import QueryState from '../../../components/state/QueryState';
-import { useCollaborationRequestDetailQuery } from '../../../hooks/useMockQueries';
+import { useCollaborationRequestDetailQuery } from '../../../hooks/queries/useCollaborationQueries';
 
 const InfoRow = ({ icon, label, value }) => (
   <div className="flex items-start gap-2 pt-1">

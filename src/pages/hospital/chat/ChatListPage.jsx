@@ -9,7 +9,7 @@ import ChatCard from '../../../components/card/ChatCard';
 import Badge from '../../../components/Badge';
 import SmallButton from '../../../components/button/SmallButton';
 import Tabs from '../../../components/Tabs';
-import { useChatRoomListQuery } from '../../../hooks/useMockQueries';
+import { useChatRoomListQuery } from '../../../hooks/queries/useChatQueries';
 
 const TABS = [
   { key: 'all', label: '전체' },

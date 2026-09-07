@@ -6,7 +6,8 @@ import PageContainer from '../../../components/layout/PageContainer';
 import QueryState from '../../../components/state/QueryState';
 import ConsultPatientCard from '../../../components/card/ConsultPatientCard';
 import useAuthStore from '../../../store/useAuthStore';
-import { useHospitalProfileQuery, useHospitalDashboardQuery } from '../../../hooks/useMockQueries';
+import { useHospitalProfileQuery } from '../../../hooks/queries/useUserQueries';
+import { useHospitalDashboardQuery } from '../../../hooks/queries/useCollaborationQueries';
 
 const HospitalHomePage = () => {
   const navigate = useNavigate();

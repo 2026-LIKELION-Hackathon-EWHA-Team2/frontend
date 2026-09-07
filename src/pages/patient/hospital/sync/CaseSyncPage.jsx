@@ -18,7 +18,7 @@ import {
   useCreateCaseTransferMutation,
   useReviewCaseTransferMutation,
   useSendCaseTransferMutation,
-} from '../../../../hooks/useMockQueries';
+} from '../../../../hooks/queries/useCaseTransferQueries';
 import { getCountryName } from '../../../../utils/country';
 import { toApiGender, toApiDateFormat } from '../../../../utils/format';
 

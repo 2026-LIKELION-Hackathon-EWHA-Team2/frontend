@@ -6,7 +6,7 @@ import Step2Terms from './components/Step2Terms';
 import Step3Complete from './components/Step3Complete';
 import useAuthStore from '../../../store/useAuthStore';
 import useSignupStore from '../../../store/useSignupStore';
-import { useSignupPatientMutation, useSignupHospitalMutation } from '../../../hooks/useMockQueries';
+import { useSignupPatientMutation, useSignupHospitalMutation } from '../../../hooks/queries/useUserQueries';
 import { toApiDateFormat } from '../../../utils/format'; // 'YYYY.MM.DD' → 'YYYY-MM-DD' 변환용
 import { inferPreferredLanguage } from '../../../utils/country';
 import { SPECIALTY_CODE_MAP } from '../../../utils/specialty';

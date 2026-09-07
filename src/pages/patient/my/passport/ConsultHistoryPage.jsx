@@ -9,7 +9,7 @@ import Textarea from '../../../../components/Textarea';
 import ResultActionButton from '../../../../components/button/ResultActionButton';
 import HospitalReviewCard from '../../../../components/card/HospitalReviewCard';
 import useGnbOverrideStore from '../../../../store/useGnbOverrideStore';
-import { useProcedureHistoryDetailQuery } from '../../../../hooks/useMockQueries';
+import { useProcedureHistoryDetailQuery } from '../../../../hooks/queries/useCaseTransferQueries';
 
 // 근거 tone('경미'/'없음'/'권장' 등)을 문장으로 자연스럽게 이어붙이기 위한 어미 처리
 // tone이 없는(사용자가 직접 추가한) 근거는 label만 표시
