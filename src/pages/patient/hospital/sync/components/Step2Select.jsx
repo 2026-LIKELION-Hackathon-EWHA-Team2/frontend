@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import useCaseSyncStore from '../../../../../store/useCaseSyncStore';
-import { useHospitalSelectedSymptomCaseListQuery } from '../../../../../hooks/useMockQueries';
+import { useHospitalSelectedSymptomCaseListQuery } from '../../../../../hooks/queries/useSymptomCaseQueries';
 import QueryState from '../../../../../components/state/QueryState';
 
 const Step2Select = () => {

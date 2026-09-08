@@ -7,7 +7,7 @@ import Input from '../../components/Input';
 import Button from '../../components/button/Button';
 import CheckSquare from '../../components/Checksquare';
 import useAuthStore from '../../store/useAuthStore';
-import { useLoginMutation } from '../../hooks/useMockQueries';
+import { useLoginMutation } from '../../hooks/queries/useUserQueries';
 
 const LoginPage = () => {
   const navigate = useNavigate();

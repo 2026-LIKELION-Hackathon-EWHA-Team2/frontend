@@ -1,6 +1,6 @@
-// useCaseFormStore(프론트 상태) <-> selfsymptoms API 스펙 간 변환을 모아둔 파일
+// useCaseFormStore(프론트) <-> selfsymptoms API 간 변환을 모아둔 파일
 
-import { formatDateOnly } from './format';
+import { formatDateOnly } from '../utils/format';
 
 // Step3SymptomDetail의 SYMPTOM_AREA_OPTIONS -> API area_type enum
 const AREA_TYPE_MAP = {
@@ -36,7 +36,6 @@ const PAIN_LEVEL_MAP = {
   '매우 심함': 5,
 };
 
-// symptomArea(선택된 area id 배열) + customArea(직접 입력 텍스트) -> areas JSON 배열
 // DateDropdown은 항상 'YYYY.MM.DD' 형식으로 저장됨 -> API가 요구하는 'YYYY-MM-DD'로 변환
 const toApiDate = (value = '') => value.trim().replaceAll('.', '-');
 
@@ -46,7 +45,7 @@ const buildAreas = (symptomArea = [], customArea = '') => {
   return areas;
 };
 
-// checkedSymptoms(체크박스 id + 기타 증상 텍스트가 섞여있는 배열) -> symptom_types JSON 배열
+// checkedSymptoms(체크박스 id + 기타 증상 텍스트가 섞여있는 배열) -> symptom_types 배열
 const buildSymptomTypes = (checkedSymptoms = []) =>
   checkedSymptoms.map((value) =>
     SYMPTOM_TYPE_MAP[value]
@@ -55,7 +54,7 @@ const buildSymptomTypes = (checkedSymptoms = []) =>
   );
 
 // useCaseFormStore 값들을 그대로 받아서 실제 API에 보낼 multipart/form-data로 변환
-// photos, diagnosisFile은 { file, previewUrl } 형태로 실제 File 객체를 들고 있어야 해서 추가!
+// photos, diagnosisFile은 실제 File 객체를 들고 있어야 해서 추가!
 export const buildSymptomCaseFormData = ({
   hospital,
   diagnosisFile,
@@ -109,7 +108,7 @@ export const normalizeSymptomCaseForSelect = (item) => ({
 
   diagnosisAttached: Boolean(item.diagnosis_document_url),
   diagnosisName: item.diagnosis_document_url ? decodeURIComponent(item.diagnosis_document_url.split('/').pop()) : '',
-  
+
   procedureName: '',
   procedureArea: '',
   procedureDate: '',

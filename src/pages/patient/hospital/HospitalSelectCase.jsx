@@ -6,7 +6,7 @@ import PageContainer from '../../../components/layout/PageContainer';
 import QueryState from '../../../components/state/QueryState';
 import Button from '../../../components/button/Button';
 import CaseSelectCard from '../../../components/card/CaseSelectCard';
-import { useSubmittedSymptomCaseListQuery } from '../../../hooks/useMockQueries';
+import { useSubmittedSymptomCaseListQuery } from '../../../hooks/queries/useSymptomCaseQueries';
 import useHospitalMatchStore from '../../../store/useHospitalMatchStore';
 
 const HospitalSelectCase = () => {

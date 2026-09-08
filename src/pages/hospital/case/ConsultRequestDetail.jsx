@@ -12,7 +12,7 @@ import {
   useCollaborationRequestDetailQuery,
   useAcceptCollaborationRequestMutation,
   useConsultPatientsQuery,
-} from '../../../hooks/useMockQueries';
+} from '../../../hooks/queries/useCollaborationQueries';
 import useToastStore from '../../../store/useToastStore';
 
 // 섹션(아이콘 + 텍스트)
