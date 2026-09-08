@@ -7,6 +7,8 @@ import PatientShell from './components/layout/PatientShell';
 import HospitalShell from './components/layout/HospitalShell';
 import Toast from './components/Toast';
 
+import ProtectedRoute from './components/auth/ProtectedRoute';
+
 // [온보딩]
 import SplashPage from './pages/onboarding/SplashPage';
 import SelectRolePage from './pages/onboarding/SelectRolePage';
@@ -85,7 +87,10 @@ function App() {
             </Route>
 
             {/* Patient 라우트 */}
-            <Route path="/patient" element={<PatientShell />}>
+            <Route path="/patient" element={
+              <ProtectedRoute requiredRole="patient">
+              <PatientShell />
+            </ProtectedRoute> }>
               <Route path="home" element={<PatientHomePage />} />
               
               {/* 케이스 */}
@@ -107,7 +112,10 @@ function App() {
             </Route>
 
             {/* Hospital 라우트 */}
-            <Route path="/hospital" element={<HospitalShell />}>
+            <Route path="/hospital" element={
+              <ProtectedRoute requiredRole="hospital">
+                <HospitalShell />
+                </ProtectedRoute>}>
               <Route path="home" element={<HospitalHomePage />} />
 
               {/* 케이스 탭 */}
