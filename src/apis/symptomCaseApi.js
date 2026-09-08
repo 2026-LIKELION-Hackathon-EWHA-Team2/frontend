@@ -2,7 +2,7 @@ import axiosInstance from './axiosInstance';
 
 // 증상 케이스 생성 (최종 제출까지 한번에 처리 -> 생성된 케이스 status는 항상 SUBMITTED)
 // POST /api/selfsymptoms/symptom-cases/
-// body: multipart/form-data (formData는 utils/symptomCaseMapper.js의 buildSymptomCaseFormData로 생성)
+// body: multipart/form-data (formData는 mappers/symptomCaseMapper.js의 buildSymptomCaseFormData로 생성)
 export const createSymptomCaseApi = (formData) =>
   axiosInstance
     .post('/api/selfsymptoms/symptom-cases/', formData, {

@@ -8,7 +8,8 @@ import Button from '../../../components/button/Button';
 import QuickLaunch from '../../../components/button/QuickLaunch';
 import Badge from '../../../components/Badge';
 import QueryState from '../../../components/state/QueryState';
-import { usePatientProfileQuery, useRecentSymptomCasesQuery } from '../../../hooks/useMockQueries'; // 연동
+import { usePatientProfileQuery } from '../../../hooks/queries/useUserQueries';
+import { useRecentSymptomCasesQuery } from '../../../hooks/queries/useSymptomCaseQueries'; // 연동
 import { getPatientCaseBadge } from '../../../utils/caseStatus'; // status badge 변환 적용
 
 const PatientHomePage = () => {

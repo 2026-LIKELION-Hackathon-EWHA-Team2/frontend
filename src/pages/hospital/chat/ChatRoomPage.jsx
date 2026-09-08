@@ -10,7 +10,7 @@ import {
   useChatRoomListQuery,
   useSendChatMessageMutation,
   useMarkChatRoomReadMutation,
-} from '../../../hooks/useMockQueries';
+} from '../../../hooks/queries/useChatQueries';
 import useToastStore from '../../../store/useToastStore';
 import useAuthStore from '../../../store/useAuthStore';
 

@@ -4,7 +4,8 @@ import Header from '../../../../components/layout/Header';
 import PageContainer from '../../../../components/layout/PageContainer';
 import QueryState from '../../../../components/state/QueryState';
 import ProcedureHistoryCard from '../../../../components/card/ProcedureHistoryCard';
-import { usePatientProfileQuery, useProcedureHistoryQuery } from '../../../../hooks/useMockQueries';
+import { usePatientProfileQuery } from '../../../../hooks/queries/useUserQueries';
+import { useProcedureHistoryQuery } from '../../../../hooks/queries/useCaseTransferQueries';
 import { formatDateOnly } from '../../../../utils/format';
 
 const MedicalPassportPage = () => {

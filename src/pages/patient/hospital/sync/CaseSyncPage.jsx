@@ -5,7 +5,7 @@
 // step 내부 컨텐츠만 갈아끼우는 구조로 제작했어요! 
 // step: 0 = 인트로, 1 = 환자 식별 정보, 2 = 케이스 선택 확인, 3 = AI 검토, 4 = 전송 동의, 5 = 전송 완료
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../../../components/layout/Header';
 import PageContainer from '../../../../components/layout/PageContainer';
@@ -18,7 +18,8 @@ import {
   useCreateCaseTransferMutation,
   useReviewCaseTransferMutation,
   useSendCaseTransferMutation,
-} from '../../../../hooks/useMockQueries';
+  useCaseTransferDetailQuery,
+} from '../../../../hooks/queries/useCaseTransferQueries';
 import { getCountryName } from '../../../../utils/country';
 import { toApiGender, toApiDateFormat } from '../../../../utils/format';
 
@@ -53,11 +54,12 @@ const CaseSyncPage = () => {
     setProcedureDate,
     setMedications,
     setDoctorNote,
+    setAgreements,
     setIsSent,
     reset,
   } = useCaseSyncStore();
 
-  // '병원과 동기화하기' 버튼으로 이 페이지에 진입할 때 매칭 store 값을 그대로 승계받기!
+  // '병원과 동기화하기' 버튼으로 이 페이지에 진입할 때 매칭 store 값을 그대로 이어받기!
   const {
     selectedCaseId: matchedCaseId,
     selectedHospitalId,
@@ -75,9 +77,71 @@ const CaseSyncPage = () => {
   const nextStep = () => setStep((prev) => prev + 1);
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 0));
 
-  // 'AI로 구조화하기' 클릭 시 실제 Case 전송 건 생성 API를 호출 (진단서 AI 분석·구조화가 여기서 일어남)
+  // 새로고침 했을 때, localStorage에 남아있는 transferId로 전송 건을 이어가기 위한 복구 로직
+  // recoveredRef: 한 번만 적용하기 위한 표시일 뿐 화면에 안 쓰이는 값이라 ref로 관리
+  const recoveredRef = useRef(false);
+  const { data: recoveredTransfer, isError: recoveryFailed } = useCaseTransferDetailQuery(transferId);
+
+  useEffect(() => {
+    if (recoveredRef.current || !transferId) return; // 이미 처리했거나, 애초에 이어갈 건이 없으면 아무것도 안 함
+
+    if (recoveryFailed) {
+      // 상세 조회 자체가 실패 - 이어갈 수 없으니 그냥 처음부터 다시 시작하게 함
+      recoveredRef.current = true;
+      reset();
+      return;
+    }
+    if (!recoveredTransfer) return; // 아직 응답 기다리는 중
+
+    recoveredRef.current = true;
+
+    const structured = recoveredTransfer.structured_data;
+    if (structured) {
+      setProcedureName(structured.procedure?.name ?? '');
+      setProcedurePart(structured.procedure?.area ?? '');
+      setProcedureDate(structured.procedure?.date ?? '');
+      setMedications(structured.ingredients ?? []);
+      setDoctorNote(structured.clinician_note ?? '');
+    }
+
+    if (recoveredTransfer.status === 'REVIEW_REQUIRED') {
+      // AI 구조화까지만 끝난 상태 - '케이스 검토' 화면부터 다시 보여줌
+      setStep(3);
+    } else if (recoveredTransfer.status === 'READY_TO_TRANSFER') {
+      // 검토까지는 이미 끝난 상태라서 동의 체크도 이미 완료된 걸로 표시
+      setAgreements([true, true, true]);
+      setStep(4);
+    } else if (recoveredTransfer.status === 'TRANSFERRED') {
+      // 이미 전송까지 끝난 건 - 완료 화면 보여줌 (재전송 방지)
+      setIsSent(true);
+      setStep(5);
+    } else {
+      // PROCESSING(아직 AI 처리중) / PROCESSING_FAILED - 이어서 보여줄 화면이 없어서 처음부터 다시 시작
+      showToast(
+        recoveredTransfer.status === 'PROCESSING_FAILED'
+          ? 'AI 구조화에 실패한 이전 요청이 있어요. 다시 시작해주세요.'
+          : '이전 요청이 아직 처리 중이에요. 다시 시작해주세요.'
+      );
+      reset();
+    }
+  }, [
+    transferId,
+    recoveredTransfer,
+    recoveryFailed,
+    reset,
+    setAgreements,
+    setDoctorNote,
+    setIsSent,
+    setMedications,
+    setProcedureDate,
+    setProcedureName,
+    setProcedurePart,
+    showToast,
+  ]);
+
+  // 'AI로 구조화하기' 클릭 시 실제 Case 전송 건 생성 API를 호출 (진단서 AI 분석/구조화가 여기서 일어남)
   // 응답의 structured_data를 Step3AiReview가 보여줄 store 필드에 반영하고, transferId를 저장해둬야
-  // 이후 검토(review)·전송(send) 단계에서 진짜 CaseTransfer를 가리킬 수 있음
+  // 이후 검토(review)/전송(send) 단계에서 진짜 CaseTransfer를 가리킬 수 있음
   const handleStructure = () => {
     createTransferMutation.mutate(
       {
@@ -227,7 +291,7 @@ const CaseSyncPage = () => {
 
       <PageContainer className={current.containerClassName}>
         {current.subtitle && (
-          <p className="mb-[1.75rem] text-[#626262] font-wantedsans text-center text-[0.625rem] font-normal leading-normal">
+          <p className="mb-7 text-[#626262] font-wantedsans text-center text-[0.625rem] font-normal leading-normal">
             {current.subtitle}
           </p>
         )}
@@ -239,7 +303,7 @@ const CaseSyncPage = () => {
         {current.content}
       </PageContainer>
 
-      <div className="flex flex-col px-[1.375rem] pb-[0.625rem] pt-[0.3rem]">
+      <div className="flex flex-col px-5.5 pb-2.5 pt-[0.3rem]">
         <Button variant="primary" disabled={current.disabled} onClick={current.onClick}>
           {current.buttonLabel}
         </Button>

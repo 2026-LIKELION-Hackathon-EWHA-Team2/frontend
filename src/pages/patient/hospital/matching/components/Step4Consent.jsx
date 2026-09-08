@@ -7,7 +7,7 @@ import Button from '../../../../../components/button/Button';
 import ConsentCheckbox from '../../../../../components/checkbox/ConsentCheckbox';
 import useHospitalMatchStore from '../../../../../store/useHospitalMatchStore';
 import useToastStore from '../../../../../store/useToastStore';
-import { useConsentMatchRequestMutation } from '../../../../../hooks/useMockQueries';
+import { useConsentMatchRequestMutation } from '../../../../../hooks/queries/useMatchingQueries';
 
 const CONSENT_ITEMS = [
   { key: 'provide', label: '이 병원에 개인 정보를 제공하는 것에 동의합니다. (필수)' },

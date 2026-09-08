@@ -8,7 +8,7 @@ import QueryState from '../../../../components/state/QueryState';
 import HospitalCard from '../../../../components/card/HospitalCard';
 import SmallButton from '../../../../components/button/SmallButton';
 import SortModal from '../../../../components/modal/SortModal';
-import { useNetworkHospitalsQuery } from '../../../../hooks/useMockQueries';
+import { useNetworkHospitalsQuery } from '../../../../hooks/queries/useMatchingQueries';
 import useHospitalMatchStore from '../../../../store/useHospitalMatchStore';
 
 const SORT_OPTIONS = [
