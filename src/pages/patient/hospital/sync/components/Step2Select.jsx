@@ -6,7 +6,7 @@ import { useHospitalSelectedSymptomCaseListQuery } from '../../../../../hooks/qu
 import QueryState from '../../../../../components/state/QueryState';
 
 const Step2Select = () => {
-  const { data: cases = [], isLoading, isError } = useHospitalSelectedSymptomCaseListQuery();
+  const { data: cases = [], isLoading, isError, error } = useHospitalSelectedSymptomCaseListQuery();
   const { selectedCaseId, setLinkedDiagnosis } = useCaseSyncStore();
 
   const selectedCase = cases.find((c) => c.id === selectedCaseId);
@@ -28,6 +28,7 @@ const Step2Select = () => {
     <QueryState
       isLoading={isLoading}
       isError={isError}
+      error={error}
       isEmpty={!isLoading && !isError && !selectedCase}
       emptyProps={{ title: '선택된 케이스를 찾을 수 없습니다', description: '이전 단계에서 케이스를 다시 선택해주세요' }}
     >

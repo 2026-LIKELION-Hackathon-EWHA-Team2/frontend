@@ -25,7 +25,7 @@ const NetworkListPage = () => {
   const navigate = useNavigate();
   const { sortOrder, setSortOrder } = useHospitalMatchStore();
   // 정렬은 클라이언트에서 다시 하지 않고 서버 sort 파라미터로 처리 (백엔드가 이미 정렬된 배열을 줌)
-  const { data: hospitals, isLoading, isError } = useNetworkHospitalsQuery(sortOrder);
+  const { data: hospitals, isLoading, isError, error } = useNetworkHospitalsQuery(sortOrder);
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [draftSortOrder, setDraftSortOrder] = useState(sortOrder);
@@ -50,7 +50,7 @@ const NetworkListPage = () => {
         </div>
 
         <div className="mt-3 flex flex-col gap-2.5">
-          <QueryState isLoading={isLoading} isError={isError} isEmpty={!hospitals?.length}>
+          <QueryState isLoading={isLoading} isError={isError} error={error} isEmpty={!hospitals?.length}>
             {hospitals?.map((hospital) => (
               <HospitalCard
                 key={hospital.hospital_id}

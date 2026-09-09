@@ -21,7 +21,7 @@ const InfoRow = ({ icon, label, value }) => (
 const PatientDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { data: patient, isLoading, isError } = useCollaborationRequestDetailQuery(id);
+  const { data: patient, isLoading, isError, error } = useCollaborationRequestDetailQuery(id);
 
   return (
     <>
@@ -31,6 +31,7 @@ const PatientDetailPage = () => {
         <QueryState
           isLoading={isLoading}
           isError={isError || (!isLoading && !patient)}
+          error={error}
           errorMessage="해당 환자 정보를 찾을 수 없습니다"
         >
         <CaseSummaryCard

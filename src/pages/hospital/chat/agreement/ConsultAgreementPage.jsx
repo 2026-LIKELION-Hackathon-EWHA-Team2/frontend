@@ -25,7 +25,7 @@ const ConsultAgreementPage = () => {
   const { caseId, roomId } = useParams();
   const showToast = useToastStore((s) => s.showToast);
 
-  const { data: agreement, isLoading, isError } = useAgreementDetailQuery(caseId, roomId);
+  const { data: agreement, isLoading, isError, error } = useAgreementDetailQuery(caseId, roomId);
   const { data: profile } = useHospitalProfileQuery();
   // 상대 병원 이름은 합의안 응답의 reviews(검토를 완료한 병원만 존재)에 없을 수 있어 채팅방 목록에서 보조로 가져옴
   const { data: rooms } = useChatRoomListQuery();
@@ -102,7 +102,7 @@ const ConsultAgreementPage = () => {
     <div className="flex min-h-screen flex-col">
       <Header title="협진 합의" showBack rightSlot={<></>} />
 
-      <QueryState isLoading={isLoading} isError={isError} isEmpty={!agreement}>
+      <QueryState isLoading={isLoading} isError={isError} error={error} isEmpty={!agreement}>
         <PageContainer className="flex flex-col gap-6 pt-1 pb-8">
           <p className="text-center font-wantedsans text-xs font-medium leading-normal text-[#8C8C8C]">
             양측 의료진이 협진 내용을 합의하고 최종 의견을 확정합니다.

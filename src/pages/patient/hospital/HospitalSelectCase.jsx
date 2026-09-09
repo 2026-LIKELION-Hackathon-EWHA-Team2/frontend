@@ -11,7 +11,7 @@ import useHospitalMatchStore from '../../../store/useHospitalMatchStore';
 
 const HospitalSelectCase = () => {
   // 병원 매칭 전(SUBMITTED) 상태인 케이스만 필터링해서 내려주는 훅
-  const { data: cases, isLoading, isError } = useSubmittedSymptomCaseListQuery();
+  const { data: cases, isLoading, isError, error } = useSubmittedSymptomCaseListQuery();
   const [selectedId, setSelectedId] = useState(null);
   const setSelectedCaseId = useHospitalMatchStore((state) => state.setSelectedCaseId);
   const resetHospitalMatch = useHospitalMatchStore((state) => state.reset);
@@ -59,7 +59,7 @@ const HospitalSelectCase = () => {
         </div>
 
         <div className="mt-8.5 flex flex-col gap-3">
-          <QueryState isLoading={isLoading} isError={isError} isEmpty={!cases?.length}>
+          <QueryState isLoading={isLoading} isError={isError} error={error} isEmpty={!cases?.length}>
             {cases?.map((item) => (
               <CaseSelectCard
                 key={item.id}
