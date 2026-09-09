@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
+import useToastStore from './store/useToastStore';
 
 // Shell 컴포넌트 불러오기
 import OnboardingShell from './components/layout/OnboardingShell';
@@ -49,16 +50,17 @@ import ConsultAgreementPage from './pages/hospital/chat/agreement/ConsultAgreeme
 // 로그인 페이지로 부드럽게 이동시키는 역할만 하는 컴포넌트 추가!
 const SessionExpiredHandler = () => {
   const navigate = useNavigate();
+  const showToast = useToastStore((state) => state.showToast);
  
   useEffect(() => {
     const handleSessionExpired = () => {
       navigate('/login');
-      alert('세션이 만료되었어요! 다시 로그인해주세요');
+      showToast('세션이 만료되었어요! 다시 로그인해주세요', 4000);
     };
  
     window.addEventListener('auth:sessionExpired', handleSessionExpired);
     return () => window.removeEventListener('auth:sessionExpired', handleSessionExpired);
-  }, [navigate]);
+  }, [navigate, showToast]);
  
   return null;
 };

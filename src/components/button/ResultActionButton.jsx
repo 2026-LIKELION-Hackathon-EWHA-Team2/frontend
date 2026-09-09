@@ -1,10 +1,13 @@
 // 2-4 인계 서류 페이지에 있는 공유하기, 다운로드 버튼
+import useToastStore from "../../store/useToastStore";
 
 const ResultActionButton = ({ 
   variant = 'share', // 'share' (공유하기) | 'download' (다운로드)
   onClick, 
   className = '' 
 }) => {
+
+  const showToast = useToastStore((state) => state.showToast);
 
   const handleClick = (e) => {
     if (onClick) onClick(e);
@@ -20,7 +23,7 @@ const ResultActionButton = ({
           url: window.location.href,
         }).catch(console.error);
       } else {
-        alert('공유하기 기능이 지원되지 않는 브라우저입니다.');
+        showToast('공유하기 기능이 지원되지 않는 브라우저입니다.');
       }
     }
   };
