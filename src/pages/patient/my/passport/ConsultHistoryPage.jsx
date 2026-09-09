@@ -23,7 +23,7 @@ const ConsultHistoryPage = () => {
   const setOverridePath = useGnbOverrideStore((state) => state.setOverridePath);
   const clearOverridePath = useGnbOverrideStore((state) => state.clearOverridePath);
 
-  const { data: procedure, isLoading, isError } = useProcedureHistoryDetailQuery(id);
+  const { data: procedure, isLoading, isError, error } = useProcedureHistoryDetailQuery(id);
   const { participants, finalJudgement, reasons, opinion, opinionOriginal, opinionTranslated } =
     procedure?.agreement ?? {};
 
@@ -46,6 +46,7 @@ const ConsultHistoryPage = () => {
         <QueryState
           isLoading={isLoading}
           isError={isError}
+          error={error}
           isEmpty={!procedure}
           emptyProps={{ title: '협진 결과 인계서를 찾을 수 없어요' }}
           errorMessage="완료된 시술 이력을 찾을 수 없어요"

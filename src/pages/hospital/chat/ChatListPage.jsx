@@ -23,7 +23,7 @@ const STATUS_TONE = { IN_REVIEW: 'blue', COMPLETED: 'mint' };
 const ChatListPage = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('all');
-  const { data: chats, isLoading, isError } = useChatRoomListQuery(STATUS_PARAM[activeTab]);
+  const { data: chats, isLoading, isError, error } = useChatRoomListQuery(STATUS_PARAM[activeTab]);
 
   return (
     <>
@@ -34,6 +34,7 @@ const ChatListPage = () => {
         <QueryState
           isLoading={isLoading}
           isError={isError}
+          error={error}
           isEmpty={!chats?.length}
           emptyProps={{ title: '진행 중인 채팅이 없어요' }}
         >
