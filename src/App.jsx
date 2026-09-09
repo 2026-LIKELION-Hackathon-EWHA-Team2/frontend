@@ -8,6 +8,7 @@ import HospitalShell from './components/layout/HospitalShell';
 import Toast from './components/Toast';
 
 import ProtectedRoute from './components/auth/ProtectedRoute';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // [온보딩]
 import SplashPage from './pages/onboarding/SplashPage';
@@ -74,7 +75,8 @@ function App() {
       <div className="min-h-screen w-full bg-[#F1F3F5]">
         {/* 모바일 웹 표준 레이아웃 컨테이너 */}
         <div className="max-w-md mx-auto min-h-screen bg-white relative">
-      
+        {/* 렌더링 중 예외가 발생해도 화면 전체가 백지가 되지 않도록 최상단을 ErrorBoundary로 감쌈 */}
+        <ErrorBoundary>
           <Routes>
 
             {/* Onboarding 라우트 */}
@@ -85,7 +87,7 @@ function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
             </Route>
-
+           
             {/* Patient 라우트 */}
             <Route path="/patient" element={
               <ProtectedRoute requiredRole="patient">
@@ -130,7 +132,7 @@ function App() {
             </Route>
             
           </Routes>
-
+          </ErrorBoundary>
           {/* 페이지 이동 후에도 유지되도록 라우트 밖(최상단)에서 한 번만 렌더링 */}
           <Toast />
         </div>
