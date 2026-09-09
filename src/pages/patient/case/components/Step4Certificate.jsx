@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import useCaseFormStore from '../../../../store/useCaseFormStore';
-import { useHospitalAccountsListQuery } from '../../../../hooks/useMockQueries'; // accounts 병원 목록 API 적용
+import { useHospitalAccountsListQuery } from '../../../../hooks/queries/useUserQueries'; // accounts 병원 목록 API 적용
 
 // 필드명 맞추기 위한 함수...
 const normalizeHospital = (h) => ({

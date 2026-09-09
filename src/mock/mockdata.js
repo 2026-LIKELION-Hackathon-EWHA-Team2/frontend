@@ -248,19 +248,6 @@ export const MOCK_RECENT_CASES = [
   { id: '2026-0708', status: 'AI 분석 완료', tone: 'blue', date: '2026.07.08' },
 ];
 
-// 협진 인계서 (2-4-1 상세수술이력 - 상세보기 클릭 시)
-export const MOCK_HANDOVER_DOCUMENT = {
-  fromHospital: 'Tokyo Medical',
-  toHospital: 'ABC Beauty Clinic',
-  reason: '눈썹 문신(2025.06.10) 시술 부위의 부작용(붉음, 경미한 부기)에 대한 자국 병원 확인 요청',
-  transferType: '확인 서명',
-  doctorNote:
-    '시술 부위에 경미한 발적과 부기가 관찰되나, 문신 시술 후 흔히 나타나는 정상적인 초기 반응으로 판단됨. 냉찜질과 자외선 차단 권장. 5일 이상 붉음 지속 또는 통증·삼출액 동반 시 추가 확인 필요.',
-  registeredBy: 'ABC Beauty Clinic 담당의',
-  registeredAt: '2026. 07. 28',
-  confirmedAt: '2026. 07. 31',
-};
-
 // 병원측 - 협진 요청함 / 환자 조회 / 채팅 목록 (환자 케이스 하나당 협진 상대 병원과의 채팅방 1개)
 // 협진 요청 상세랑 환자 케이스 상세 때문에 필드 데이터 추가했어요@.@
 export const MOCK_CONSULT_PATIENTS = [
@@ -495,24 +482,6 @@ export const MOCK_CONSULT_PATIENTS = [
 export const MOCK_HOSPITAL_HOME = {
   hospitalName: 'Seoul Beauty Clinic',
   doctorName: 'Dr. Kim',
-};
-
-// 협진 요청 상세 (2-3 환자케이스보기 -> 화살표로 이어지는 협진 요청 상세 화면)
-export const MOCK_CONSULT_REQUEST_DETAIL = {
-  patientName: 'Anna Kim',
-  caseId: '2026-0708',
-  consultType: '이마 보톡스 상담',
-  hospital: 'Seoul Beauty Clinic',
-  requestedAt: '2026.08.03 09:20',
-  fromHospital: 'Tokyo Medical',
-  toHospital: 'ABC Beauty Clinic',
-  transferType: '확인 서명',
-  reason: '눈썹 문신(2025.06.10) 시술 부위의 부작용(붉음, 경한 부기)에 대한 자국 병원 확인 요청',
-  doctorNote:
-    '시술 부위에 경미한 발적과 부기가 관찰되나, 문신 시술 후 흔히 나타나는 정상적인 초기 반응으로 판단됨. 냉찜질과 자외선 차단 권장. 5일 이상 붉음 지속 또는 통증·삼출액 동반 시 추가 확인 필요.',
-  registeredBy: 'ABC Beauty Clinic 담당의',
-  registeredAt: '2026. 07. 28',
-  confirmedAt: '2026. 07. 31',
 };
 
 // 병원 신속 협진 - 메시지 목록

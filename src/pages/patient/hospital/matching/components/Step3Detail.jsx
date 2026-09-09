@@ -7,7 +7,7 @@ import Badge from '../../../../../components/Badge';
 import Button from '../../../../../components/button/Button';
 import useHospitalMatchStore from '../../../../../store/useHospitalMatchStore';
 import useToastStore from '../../../../../store/useToastStore';
-import { useSelectMatchRecommendationMutation } from '../../../../../hooks/useMockQueries';
+import { useSelectMatchRecommendationMutation } from '../../../../../hooks/queries/useMatchingQueries';
 
 const INFO_ROWS = [
   { key: 'address', icon: '/icons/location-black.svg', label: '주소' },

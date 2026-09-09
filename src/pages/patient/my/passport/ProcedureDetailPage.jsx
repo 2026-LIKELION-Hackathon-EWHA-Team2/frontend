@@ -6,7 +6,7 @@ import PageContainer from '../../../../components/layout/PageContainer';
 import QueryState from '../../../../components/state/QueryState';
 import ConsultCard from '../../../../components/card/ConsultCard';
 import Button from '../../../../components/button/Button';
-import { useProcedureHistoryDetailQuery } from '../../../../hooks/useMockQueries';
+import { useProcedureHistoryDetailQuery } from '../../../../hooks/queries/useCaseTransferQueries';
 
 const ProcedureDetailPage = () => {
   const { id } = useParams();

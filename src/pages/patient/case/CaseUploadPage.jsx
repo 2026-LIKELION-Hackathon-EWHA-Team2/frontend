@@ -12,7 +12,7 @@ import ProgressSteps from '../../../components/ProgressSteps';
 import Button from '../../../components/button/Button';
 import useCaseFormStore from '../../../store/useCaseFormStore';
 import useToastStore from '../../../store/useToastStore';
-import { useCreateSymptomCaseMutation } from '../../../hooks/useMockQueries';
+import { useCreateSymptomCaseMutation } from '../../../hooks/queries/useSymptomCaseQueries';
 
 import Step0Intro from './components/Step0Intro';
 import Step1Photo from './components/Step1Photo';
@@ -51,7 +51,7 @@ const CaseUploadPage = () => {
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 0));
 
   // 완료 처리: 폼 전체 값을 넘겨서 등록 -> 성공하면 폼 초기화 + 홈 화면으로 이동
-  // useCreateSymptomCaseMutation 내부(hooks/useMockQueries.js -> utils/symptomCaseMapper.js)를 거쳐서
+  // useCreateSymptomCaseMutation 내부(hooks/queries/useSymptomCaseQueries.js -> mappers/symptomCaseMapper.js)를 거쳐서
   // 이 값들을 실제 API 스펙(multipart/form-data)으로 변환해서 보내도록 했습니당!!! 
   const handleComplete = () => {
     createCase(

@@ -6,7 +6,7 @@ import PageContainer from '../../../../components/layout/PageContainer';
 import QueryState from '../../../../components/state/QueryState';
 import Badge from '../../../../components/Badge';
 import Button from '../../../../components/button/Button';
-import { useNetworkHospitalDetailQuery, useSelectNetworkHospitalMutation } from '../../../../hooks/useMockQueries';
+import { useNetworkHospitalDetailQuery, useSelectNetworkHospitalMutation } from '../../../../hooks/queries/useMatchingQueries';
 import useHospitalMatchStore from '../../../../store/useHospitalMatchStore';
 import useToastStore from '../../../../store/useToastStore';
 

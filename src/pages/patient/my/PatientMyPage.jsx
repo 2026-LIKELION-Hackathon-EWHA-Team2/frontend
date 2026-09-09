@@ -4,7 +4,7 @@ import Header from '../../../components/layout/Header';
 import PageContainer from '../../../components/layout/PageContainer';
 import QueryState from '../../../components/state/QueryState';
 import ListButton from '../../../components/button/ListButton';
-import { usePatientProfileQuery } from '../../../hooks/useMockQueries';
+import { usePatientProfileQuery } from '../../../hooks/queries/useUserQueries';
 
 const getInfoRows = (patient) => [
   { icon: '/icons/profile-name.svg', label: '이름', value: patient.name },

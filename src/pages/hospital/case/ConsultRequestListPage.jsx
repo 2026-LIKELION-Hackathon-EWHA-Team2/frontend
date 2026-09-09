@@ -12,7 +12,7 @@ import SearchBar from '../../../components/SearchBar';
 import ChatCard from '../../../components/card/ChatCard';
 import QueryState from '../../../components/state/QueryState'
 import NewRequestModal from '../../../components/modal/NewRequestModal';
-import { useConsultPatientsQuery } from '../../../hooks/useMockQueries';
+import { useConsultPatientsQuery } from '../../../hooks/queries/useCollaborationQueries';
 import { CASE_STATUS_BADGE, getCaseStatusCounts } from '../../../utils/caseStatus';
 
 const ConsultRequestListPage = () => {
