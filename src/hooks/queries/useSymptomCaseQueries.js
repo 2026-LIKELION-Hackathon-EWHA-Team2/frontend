@@ -1,4 +1,12 @@
-// 환자 - 증상 케이스(selfsymptoms) 관련 쿼리
+/*
+ * [어흥콘 리팩토링] hooks/useMockQueries.js에서 증상 케이스(selfsymptoms) 관련 훅만 모아 분리했어요.
+ * -> 목록 조회 API(getSymptomCaseListApi)는 딱 하나뿐인데, 그걸 쓰는 화면은 세 개예요
+ *   (환자 홈 최근 케이스 / AI매칭 시작 전 케이스 선택 / 케이스 동기화 케이스 선택)
+ *   그래서 useSymptomCaseListQuery로 원본을 한 번만 받아오고, 화면마다 필요한 status로 필터링해서
+ *   보여주는 파생 훅만 그 위에 얹었습니다
+ *   -> react-query가 같은 쿼리키(['symptomCases'])로 캐시를 공유해서, 화면 세 개가 동시에 떠도
+ *      네트워크 요청은 한 번만 보내집니다!
+ */
 
 import { useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';

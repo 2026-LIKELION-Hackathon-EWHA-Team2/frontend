@@ -1,4 +1,10 @@
-// useCaseFormStore(프론트) <-> selfsymptoms API 간 변환을 모아둔 파일
+/*
+ * [어흥콘 리팩토링] 원래 utils/symptomCaseMapper.js였는데 mappers/로 이동
+ * -> utils/와 같은 진짜 범용 유틸(날짜 포맷, 국가명 변환)이랑 다르게
+ *   이 파일은 API의 필드명이 뭔지를 알아야 하는 도메인 지식이 들어있어서,
+ *   성격이 같은 mappers/ 쪽으로 옮기는 게 더 정확하다고 판단했습니다
+ * -> useCaseFormStore <-> selfsymptoms API 간 변환을 모아둔 파일
+ */
 
 import { formatDateOnly } from '../utils/format';
 

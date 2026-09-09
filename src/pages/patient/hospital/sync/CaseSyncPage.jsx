@@ -77,7 +77,19 @@ const CaseSyncPage = () => {
   const nextStep = () => setStep((prev) => prev + 1);
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 0));
 
-  // 새로고침 했을 때, localStorage에 남아있는 transferId로 전송 건을 이어가기 위한 복구 로직
+  /*
+   * [어흥콘 리팩토링] 새로고침해도 진행 중이던 케이스 전송을 이어갈 수 있게 만든 복구 로직
+   * -> 기존에는 2단계에서 'AI로 구조화하기'를 누르는 순간 백엔드에 CaseTransfer가 이미
+   *   만들어지는데, 그 이후 화면에 보여주는 내용(시술정보/약물/동의 체크 등)은 로컬 상태에만 있고
+   *   CaseTransfer를 안 받아오고 있었어요!! 그래서 3~4단계에서 새로고침하면 화면은 처음으로 돌아가는데 
+   *   서버엔 이미 만든 CaseTransfer가 남아있는 상태가 되어서,,
+   *   사용자가 모르고 처음부터 다시 하면 유령 데이터(백지 상태)가 만들어지는 거였어요
+   * -> localStorage에 남겨둔 transferId로 서버에 지금 페이지가 어떤 상황인지 물어보고,
+   *    그 상태(REVIEW_REQUIRED / READY_TO_TRANSFER / TRANSFERRED)에 맞는 단계로
+   *    자동으로 이어가게 구현했어요!
+   * -> 근데 이 로직은 'AI로 구조화하기'를 이미 성공한 뒤부터만 동작하고,
+   *    AI 매칭이랑은 관계가 없다는 점,, 알아두시면 좋아요
+   */
   // recoveredRef: 한 번만 적용하기 위한 표시일 뿐 화면에 안 쓰이는 값이라 ref로 관리
   const recoveredRef = useRef(false);
   const { data: recoveredTransfer, isError: recoveryFailed } = useCaseTransferDetailQuery(transferId);

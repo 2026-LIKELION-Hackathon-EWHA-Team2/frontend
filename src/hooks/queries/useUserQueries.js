@@ -1,4 +1,7 @@
-// 로그인/회원가입, 내 정보(프로필) 관련 쿼리
+/*
+ * [어흥콘 리팩토링] hooks/useMockQueries.js에서 로그인/회원가입/내 정보(프로필) 조회 
+ * 관련 훅만 분리했어요.
+ */
 
 import { useQuery, useMutation } from '@tanstack/react-query';
 import {

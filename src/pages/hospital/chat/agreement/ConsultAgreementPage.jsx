@@ -133,9 +133,14 @@ const ConsultAgreementPage = () => {
               </div>
             </div>
           ) : agreement?.requiresReReview ? (
-            // 합의안이 최신 버전으로 수정됐는데 이 병원은 아직 그 버전을 검토 안 한 상태!
-            // 전에 검토완료 눌렀어도 그건 수정 전 옛날 버전 기준이라 지금은 무효
-            // -> 양쪽 병원이 같은 최신 버전을 검토완료해야 최종 합의로 넘어가므로, 다시 검토해달라고 안내 (보라색 박스 속 내용을 수정)
+            /*
+             * [어흥콘 리팩토링] 합의안 수정 후 재검토 로직 만든 부분!! 
+             * -> requiresReReview는 "이 병원이 최신 버전을 아직 검토 안 했는지"를 백엔드가
+             *   계산해서 주는 값이에요. true면 이 주황 배너로 재검토가 필요하다고 안내하게 만들었습니다!
+             *   (모달창이나 토스트도 생각해봤는데, 이왕 보라색 배너 띄운 거 재사용하면 좋을 것 같아서...)
+             * -> 최종 확정 여부(양쪽 다 검토완료했는지) 자체는 프론트에서 판단하는 게 아니고,
+             *   백엔드가 이미 판단해서 내려주는 걸 그대로 따릅니다~
+             */
             <div className="flex items-center gap-3 rounded-[10px] bg-[#F7E6D3] p-4">
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#9E580A]">
                 <img src="/icons/edit.svg" alt="" className="h-5 w-5" />

@@ -1,4 +1,10 @@
-// 환자측 - 케이스를 병원으로 전송하는 흐름 + 시술 이력(여권) 관련 쿼리
+/*
+ * [어흥콘 리팩토링] hooks/useMockQueries.js에서 케이스를 병원으로 전송하는 흐름과 시술 이력
+ * (여권)' 관련 훅만 분리했어요.
+ * -> useCaseTransferDetailQuery는 예전엔 만들어만 두고 아무 화면도 안 부르던 훅이었는데,
+ *   CaseSyncPage 새로고침 복구 기능을 만들면서 실제로 연결했어요. 
+ *   어떻게 쓰는지는 CaseSyncPage.jsx의 복구 로직 주석 참고하시면 됩니다!!
+ */
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
