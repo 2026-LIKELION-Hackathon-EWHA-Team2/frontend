@@ -7,6 +7,7 @@ import Input from '../../components/Input';
 import Button from '../../components/button/Button';
 import CheckSquare from '../../components/Checksquare';
 import useAuthStore from '../../store/useAuthStore';
+import useToastStore from '../../store/useToastStore'
 import { useLoginMutation } from '../../hooks/queries/useUserQueries';
 
 const LoginPage = () => {
@@ -19,6 +20,8 @@ const LoginPage = () => {
   const [keepLoggedIn, setKeepLoggedIn] = useState(true);
 
   const isFilled = userId.trim() !== '' && password.trim() !== '';
+
+  const showToast = useToastStore((state) => state.showToast);
 
   const handleLogin = () => {
     loginMutation.mutate(
@@ -47,7 +50,7 @@ const LoginPage = () => {
         // 로그인 실패 처리 추가 (아이디/비번 틀림 등)
         onError: (error) => {
           console.error(error);
-          alert('아이디 또는 비밀번호를 확인해주세요.');
+          showToast('아이디 또는 비밀번호를 확인해주세요.');
         },
       }
     );
