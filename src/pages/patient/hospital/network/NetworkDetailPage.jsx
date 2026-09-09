@@ -25,7 +25,7 @@ const NetworkDetailPage = () => {
     useHospitalMatchStore();
   const showToast = useToastStore((state) => state.showToast);
   const selectNetworkHospital = useSelectNetworkHospitalMutation();
-  const { data: hospital, isLoading, isError } = useNetworkHospitalDetailQuery(id);
+  const { data: hospital, isLoading, isError, error } = useNetworkHospitalDetailQuery(id);
 
   // 이 화면(네트워크 직접 선택)도 선택 API를 호출하면 서버가 match_request/recommendation을
   // 새로 만들어줘서, 이후로는 AI 추천 병원을 선택했을 때와 완전히 동일한 흐름(동의 -> 전송)을 탄다
@@ -57,7 +57,7 @@ const NetworkDetailPage = () => {
     <div className="flex h-[calc(100dvh-4.875rem)] flex-col bg-white">
       <Header title={hospital?.name ?? '병원 상세'} showBack rightSlot={<></>} />
 
-      <QueryState isLoading={isLoading} isError={isError} isEmpty={!isLoading && !hospital}>
+      <QueryState isLoading={isLoading} isError={isError} error={error} isEmpty={!isLoading && !hospital}>
         {hospital && (
           <>
             <p className="mt-1 text-center font-wantedsans text-xs font-medium leading-normal text-[#626262]">

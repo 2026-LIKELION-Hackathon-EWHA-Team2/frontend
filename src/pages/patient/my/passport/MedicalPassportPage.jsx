@@ -10,7 +10,7 @@ import { formatDateOnly } from '../../../../utils/format';
 
 const MedicalPassportPage = () => {
   const { data: patient } = usePatientProfileQuery();
-  const { data: procedures, isLoading, isError } = useProcedureHistoryQuery();
+  const { data: procedures, isLoading, isError, error } = useProcedureHistoryQuery();
 
   return (
     <>
@@ -68,6 +68,7 @@ const MedicalPassportPage = () => {
           <QueryState
             isLoading={isLoading}
             isError={isError}
+            error={error}
             isEmpty={!procedures?.length}
             emptyProps={{ title: '등록된 시술 이력이 없어요' }}
           >

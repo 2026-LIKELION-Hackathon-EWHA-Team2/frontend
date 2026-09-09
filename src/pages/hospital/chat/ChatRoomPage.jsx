@@ -19,7 +19,7 @@ const ChatRoomPage = () => {
   const navigate = useNavigate();
   const showToast = useToastStore((state) => state.showToast);
 
-  const { data: messages, isLoading, isError } = useChatMessagesQuery(caseId, roomId);
+  const { data: messages, isLoading, isError, error } = useChatMessagesQuery(caseId, roomId);
   const { data: rooms } = useChatRoomListQuery();
   // profile.id(hospital-profile API)는 senderHospitalId와 네임스페이스가 달라서
   // 로그인 응답의 hospital_id(useAuthStore)를 써야 정확히 매칭될 거 같아요
@@ -60,7 +60,7 @@ const ChatRoomPage = () => {
       <Header title="병원 간 메시지" showBack rightSlot={<></>} />
 
       <div className="flex flex-1 flex-col overflow-hidden">
-        <QueryState isLoading={isLoading} isError={isError} isEmpty={false}>
+        <QueryState isLoading={isLoading} isError={isError} error={error} isEmpty={false}>
           <div className="flex shrink-0 flex-col gap-4 px-5 pt-3 pb-2">
             <div className="flex items-center justify-between">
               <span className="font-wantedsans text-sm font-bold text-[#181818]">{room?.hospital}</span>

@@ -14,14 +14,14 @@ const getInfoRows = (patient) => [
 ];
 
 const PatientMyPage = () => {
-  const { data: patient, isLoading, isError } = usePatientProfileQuery();
+  const { data: patient, isLoading, isError, error } = usePatientProfileQuery();
 
   return (
     <>
       <Header title="프로필" showBack rightSlot={<></>} />
 
       <PageContainer className="flex flex-col gap-6 pt-6 pb-10">
-        <QueryState isLoading={isLoading} isError={isError} isEmpty={!patient}>
+        <QueryState isLoading={isLoading} isError={isError} error={error} isEmpty={!patient}>
           {patient && (
             <>
               <section className="flex items-center gap-4 rounded-[10px] border border-[#EDEDF1] bg-white px-4 py-6 shadow-[-1px_-1px_10px_0_rgba(192,192,192,0.01),1px_1px_20px_0_rgba(192,192,192,0.40)]">

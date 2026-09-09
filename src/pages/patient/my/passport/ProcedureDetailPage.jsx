@@ -12,7 +12,7 @@ const ProcedureDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { data: procedure, isLoading, isError } = useProcedureHistoryDetailQuery(id);
+  const { data: procedure, isLoading, isError, error } = useProcedureHistoryDetailQuery(id);
 
   return (
     <>
@@ -22,6 +22,7 @@ const ProcedureDetailPage = () => {
         <QueryState
           isLoading={isLoading}
           isError={isError}
+          error={error}
           isEmpty={!procedure}
           emptyProps={{ title: '시술 이력을 찾을 수 없어요' }}
           errorMessage="완료된 시술 이력을 찾을 수 없어요"

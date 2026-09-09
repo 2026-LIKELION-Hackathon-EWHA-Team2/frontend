@@ -14,7 +14,7 @@ const HospitalHomePage = () => {
   const queryClient = useQueryClient();
   const logout = useAuthStore((state) => state.logout);
   const { data: profile } = useHospitalProfileQuery();
-  const { data: dashboard, isLoading, isError } = useHospitalDashboardQuery();
+  const { data: dashboard, isLoading, isError, error } = useHospitalDashboardQuery();
 
   const ongoing = dashboard?.ongoingCollaborations;
   const counts = {
@@ -97,6 +97,7 @@ const HospitalHomePage = () => {
           <QueryState
             isLoading={isLoading}
             isError={isError}
+            error={error}
             isEmpty={!ongoing?.length}
             emptyProps={{ title: '진행 중인 협진이 없어요' }}
           >

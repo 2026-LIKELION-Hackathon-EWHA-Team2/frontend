@@ -17,7 +17,7 @@ const PatientHomePage = () => {
   const queryClient = useQueryClient();
   const logout = useAuthStore((state) => state.logout);
   const { data: patient } = usePatientProfileQuery();
-  const { data: cases, isLoading, isError } = useRecentSymptomCasesQuery();
+  const { data: cases, isLoading, isError, error } = useRecentSymptomCasesQuery();
 
   const handleLogoClick = () => {
     // 임시 로그아웃 처리
@@ -85,6 +85,7 @@ const PatientHomePage = () => {
           <QueryState
             isLoading={isLoading}
             isError={isError}
+            error={error}
             isEmpty={!cases?.length}
             emptyProps={{ title: '아직 등록된 케이스가 없어요' }}
           >
