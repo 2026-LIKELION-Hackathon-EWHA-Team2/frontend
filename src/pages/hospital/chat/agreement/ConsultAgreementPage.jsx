@@ -142,11 +142,11 @@ const ConsultAgreementPage = () => {
              *   백엔드가 이미 판단해서 내려주는 걸 그대로 따릅니다~
              */
             <div className="flex items-center gap-3 rounded-[10px] bg-[#F7E6D3] p-4">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#9E580A]">
-                <img src="/icons/edit.svg" alt="" className="h-5 w-5" />
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#CF740CFF]">
+                <img src="/icons/edit.svg" alt="" className="h-5 w-5 brightness-0 invert" />
               </div>
               <div className="flex flex-col gap-1">
-                <p className="font-wantedsans text-base font-bold leading-normal text-[#9E580A]">다시 검토가 필요해요</p>
+                <p className="font-wantedsans text-base font-bold leading-normal text-[#CF740CFF]">다시 검토가 필요해요</p>
                 <p className="whitespace-pre-line font-wantedsans text-xs font-medium leading-normal text-[#626262]">
                   {agreement.editedByName
                     ? `${agreement.editedByName}님이 합의안을 수정했어요 (${agreement.editedAt}).\n수정된 내용을 확인하고 다시 검토완료해주세요.`
