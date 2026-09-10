@@ -1,4 +1,10 @@
-// 병원측 - 협진 요청(수신 Case, 협진 요청 목록/상세, 대시보드) 관련 쿼리
+/*
+ * [어흥콘 리팩토링] hooks/useMockQueries.js에서 병원측 협진 요청(목록/상세/수락/대시보드) 관련
+ * 훅만 분리했어요.
+ * -> useConsultPatientsQuery/useHospitalDashboardQuery가 useUserQueries.js의
+ *   useHospitalProfileQuery를 가져다 쓰는데(로그인한 병원 프로필이 있어야 조회 가능해서),
+ *   이렇게 도메인 파일끼리 서로 import하는 건 억지로 안 끊었습니다
+ */
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import useAuthStore from '../../store/useAuthStore';

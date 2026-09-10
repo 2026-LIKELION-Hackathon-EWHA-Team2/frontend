@@ -1,4 +1,7 @@
-// 환자 - AI 병원 매칭 / 네트워크 병원 직접 둘러보기 관련 쿼리
+/*
+ * [어흥콘 리팩토링] hooks/useMockQueries.js에서 AI 매칭/네트워크 병원 관련 훅만 분리했어요.
+ */
+
 import { useQuery, useMutation } from '@tanstack/react-query';
 import {
   createMatchRequestApi,

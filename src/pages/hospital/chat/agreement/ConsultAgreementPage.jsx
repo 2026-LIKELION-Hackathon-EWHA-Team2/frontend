@@ -132,7 +132,30 @@ const ConsultAgreementPage = () => {
                 </p>
               </div>
             </div>
+          ) : agreement?.requiresReReview ? (
+            /*
+             * [어흥콘 리팩토링] 합의안 수정 후 재검토 로직 만든 부분!! 
+             * -> requiresReReview는 "이 병원이 최신 버전을 아직 검토 안 했는지"를 백엔드가
+             *   계산해서 주는 값이에요. true면 이 주황 배너로 재검토가 필요하다고 안내하게 만들었습니다!
+             *   (모달창이나 토스트도 생각해봤는데, 이왕 보라색 배너 띄운 거 재사용하면 좋을 것 같아서...)
+             * -> 최종 확정 여부(양쪽 다 검토완료했는지) 자체는 프론트에서 판단하는 게 아니고,
+             *   백엔드가 이미 판단해서 내려주는 걸 그대로 따릅니다~
+             */
+            <div className="flex items-center gap-3 rounded-[10px] bg-[#F7E6D3] p-4">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#CF740CFF]">
+                <img src="/icons/edit.svg" alt="" className="h-5 w-5 brightness-0 invert" />
+              </div>
+              <div className="flex flex-col gap-1">
+                <p className="font-wantedsans text-base font-bold leading-normal text-[#CF740CFF]">다시 검토가 필요해요</p>
+                <p className="whitespace-pre-line font-wantedsans text-xs font-medium leading-normal text-[#626262]">
+                  {agreement.editedByName
+                    ? `${agreement.editedByName}님이 합의안을 수정했어요 (${agreement.editedAt}).\n수정된 내용을 확인하고 다시 검토완료해주세요.`
+                    : '합의안이 수정됐어요.\n수정된 내용을 확인하고 다시 검토완료해주세요.'}
+                </p>
+              </div>
+            </div>
           ) : (
+            // 수정 이력은 있지만 이미 최신 버전 기준으로 검토완료된 상태 -> 참고용으로만 작게 안내
             agreement?.editedByName && (
               <div className="flex items-center gap-1.5">
                 <img src="/icons/check-lightpurple.svg" alt="" className="h-4 w-4 shrink-0" />

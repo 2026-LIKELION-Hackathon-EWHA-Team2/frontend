@@ -1,4 +1,7 @@
-// 협진 채팅 관련 쿼리
+/*
+ * [어흥콘 리팩토링] hooks/useMockQueries.js에서 협진 채팅(목록/메시지/전송/읽음처리) 관련 훅만
+ * 분리했어요. 다른 도메인 대비 특별히 복잡한 부분은 없습니당
+ */
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {

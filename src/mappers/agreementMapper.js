@@ -1,4 +1,11 @@
-// 협진 합의안 관련 API 응답 -> 화면 모델 변환
+/*
+ * [어흥콘 리팩토링] hooks/useMockQueries.js 안에 있던 응답 매핑 함수를 mappers로 옮겼습니다
+ * 'API 응답 필드명(백엔드) -> 화면이 기대하는 필드명(프론트)' 변환만 담당하는 순수 함수라서, 
+ * hook과 분리해두면 어떤 필드가 왜 이렇게 바뀌는지 찾을 때 훅 코드까지 읽을 필요 없음!
+ * -> requiresReReview, myReviewCompleted, counterpartReviewCompleted 필드가 '합의안
+ *   수정 시 상대 병원 재검토 필요' 로직의 핵심! 여기서는 백엔드가 계산해서 준 값을 그대로
+ *   옮겨 담기만 하고, 판단 로직 자체는 프론트에 없습니다`
+ */
 
 import { formatDateTime } from '../utils/format';
 

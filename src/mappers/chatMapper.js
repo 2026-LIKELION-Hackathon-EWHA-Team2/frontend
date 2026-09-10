@@ -1,4 +1,7 @@
-// 협진 채팅 관련 API 응답 -> 화면 모델 변환
+/*
+ * [어흥콘 리팩토링] hooks/useMockQueries.js에서 매핑 함수 분리
+ * -> 협진 채팅 관련 API 응답 -> 화면 모델 변환
+ */
 
 import { formatDateTime } from '../utils/format';
 

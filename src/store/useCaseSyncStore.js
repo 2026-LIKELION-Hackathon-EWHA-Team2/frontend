@@ -85,8 +85,14 @@ const useCaseSyncStore = create(
     {
       name: "case-sync-storage",
       storage: createJSONStorage(() => localStorage),
-      // 환자 이름/시술 정보 같은 실제 의료 정보는 localStorage에 남기지 않고,
-      // 새로고침 복구에 필요한 transferId 하나만 저장 -> 내용은 매번 서버에서 새로 받아옴 (CaseSyncPage 참고)
+      /*
+       * [어흥콘 리팩토링] transferId만 골라서 저장하는 이유
+       * -> 새로고침해도 진행 중이던 케이스 전송 건을 이어갈 수 있게 하려면 뭔가는 남겨둬야 하는데,
+       *   환자 이름/시술 정보/의료진 소견은 의료 정보라 통째로 localStorage에 남기는 건 위험하다 생각했어요
+       *   그래서 어떤 전송 건을 이어가야 하는지 가리키는 transferId만 남기고,
+       *   나머지 내용은 매번 서버 응답으로 새로 채우게 했어요.
+       *   -> 실제로 복구해서 화면에 다시 채우는 코드는 CaseSyncPage.jsx에 있어요!
+       */
       partialize: (state) => ({ transferId: state.transferId }),
     }
   )

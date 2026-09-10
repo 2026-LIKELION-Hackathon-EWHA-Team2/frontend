@@ -79,7 +79,7 @@ const HospitalSelectCase = () => {
 
       <div className="flex flex-col items-center gap-4 px-5.5 pb-6 pt-3">
         <p className="text-center font-wantedsans text-[11px] font-normal text-[#8C8C8C]">
-          현재 파일럿은 일본 지역 병원만 지원돼요
+          현재 파일럿은 일본/중국/미국 병원만 지원돼요
         </p>
 
         <div className="flex w-full flex-col gap-3">

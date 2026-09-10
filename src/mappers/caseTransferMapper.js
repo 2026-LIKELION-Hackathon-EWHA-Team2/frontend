@@ -1,4 +1,7 @@
-// 환자 시술 이력(메디컬 패스포트) 관련 API 응답 -> 화면 모델 변환
+/*
+ * [어흥콘 리팩토링] hooks/useMockQueries.js에서 매핑 함수 분리
+ * -> 환자 시술 이력(여권) 관련 API 응답 -> 화면 모델 변환
+ */
 
 import { getCountryName } from '../utils/country';
 import { formatDateOnly } from '../utils/format';
