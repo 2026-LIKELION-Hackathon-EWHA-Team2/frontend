@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import useToastStore from './store/useToastStore';
+import LoadingState from './components/state/LoadingState';
 
 // Shell 컴포넌트 불러오기
 import OnboardingShell from './components/layout/OnboardingShell';
@@ -11,39 +12,50 @@ import Toast from './components/Toast';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 
+// [어흥콘 리팩토링] 페이지 단위 lazy loading
+// -> 지금 당장 안 쓰는 페이지 코드까지 초기 진입 시 전부 다운로드되던 문제 해결
+// -> Shell/Toast 같은 공용 레이아웃만 정적 import로 남기고, 나머지 페이지는 lazy()로 전환
+
 // [온보딩]
-import SplashPage from './pages/onboarding/SplashPage';
-import SelectRolePage from './pages/onboarding/SelectRolePage';
-import LoginPage from './pages/onboarding/LoginPage';
-import SignupPage from './pages/onboarding/signup/SignupPage'; // 회원가입 퍼널
+const SplashPage = lazy(() => import('./pages/onboarding/SplashPage'));
+const SelectRolePage = lazy(() => import('./pages/onboarding/SelectRolePage'));
+const LoginPage = lazy(() => import('./pages/onboarding/LoginPage'));
+const SignupPage = lazy(() => import('./pages/onboarding/signup/SignupPage')); // 회원가입 퍼널
 
 // [환자]
-import PatientHomePage from './pages/patient/home/PatientHomePage';
+const PatientHomePage = lazy(() => import('./pages/patient/home/PatientHomePage'));
 // 환자 - 케이스 등록
-import CaseUploadPage from './pages/patient/case/CaseUploadPage'; // 케이스 등록 퍼널
+const CaseUploadPage = lazy(() => import('./pages/patient/case/CaseUploadPage')); // 케이스 등록 퍼널
 // 환자 - 마이페이지
-import PatientMyPage from './pages/patient/my/PatientMyPage';
-import MedicalPassportPage from './pages/patient/my/passport/MedicalPassportPage';
-import ProcedureDetailPage from './pages/patient/my/passport/ProcedureDetailPage';
-import PatientConsultHistoryPage from './pages/patient/my/passport/ConsultHistoryPage';
+const PatientMyPage = lazy(() => import('./pages/patient/my/PatientMyPage'));
+const MedicalPassportPage = lazy(() => import('./pages/patient/my/passport/MedicalPassportPage'));
+const ProcedureDetailPage = lazy(() => import('./pages/patient/my/passport/ProcedureDetailPage'));
+const PatientConsultHistoryPage = lazy(() => import('./pages/patient/my/passport/ConsultHistoryPage'));
 // 환자 - 병원 매칭 및 네트워크
-import HospitalMainPage from './pages/patient/hospital/HospitalMainPage';
-import HospitalSelectCase from './pages/patient/hospital/HospitalSelectCase'; // 케이스 선택 - AI 추천/네트워크 둘러보기 분기점
-import AiMatchingPage from './pages/patient/hospital/matching/AiMatchingPage'; // AI 매칭 퍼널
-import NetworkListPage from './pages/patient/hospital/network/NetworkListPage';
-import NetworkDetailPage from './pages/patient/hospital/network/NetworkDetailPage';
-import PatientCaseSyncPage from './pages/patient/hospital/sync/CaseSyncPage'; // 케이스 동기화 퍼널
+const HospitalMainPage = lazy(() => import('./pages/patient/hospital/HospitalMainPage'));
+const HospitalSelectCase = lazy(() => import('./pages/patient/hospital/HospitalSelectCase')); // 케이스 선택 - AI 추천/네트워크 둘러보기 분기점
+const AiMatchingPage = lazy(() => import('./pages/patient/hospital/matching/AiMatchingPage')); // AI 매칭 퍼널
+const NetworkListPage = lazy(() => import('./pages/patient/hospital/network/NetworkListPage'));
+const NetworkDetailPage = lazy(() => import('./pages/patient/hospital/network/NetworkDetailPage'));
+const PatientCaseSyncPage = lazy(() => import('./pages/patient/hospital/sync/CaseSyncPage')); // 케이스 동기화 퍼널
 
 // [병원]
-import HospitalHomePage from './pages/hospital/home/HospitalHomePage';
+const HospitalHomePage = lazy(() => import('./pages/hospital/home/HospitalHomePage'));
 // 병원 - 케이스 (환자 조회 + 협진 요청)
-import ConsultRequestListPage from './pages/hospital/case/ConsultRequestListPage';
-import HospitalPatientDetailPage from './pages/hospital/case/PatientDetailPage';
-import ConsultRequestDetail from './pages/hospital/case/ConsultRequestDetail';
+const ConsultRequestListPage = lazy(() => import('./pages/hospital/case/ConsultRequestListPage'));
+const HospitalPatientDetailPage = lazy(() => import('./pages/hospital/case/PatientDetailPage'));
+const ConsultRequestDetail = lazy(() => import('./pages/hospital/case/ConsultRequestDetail'));
 // 병원 - 채팅
-import ChatListPage from './pages/hospital/chat/ChatListPage';
-import ChatRoomPage from './pages/hospital/chat/ChatRoomPage';
-import ConsultAgreementPage from './pages/hospital/chat/agreement/ConsultAgreementPage'; // AI 합의서 퍼널
+const ChatListPage = lazy(() => import('./pages/hospital/chat/ChatListPage'));
+const ChatRoomPage = lazy(() => import('./pages/hospital/chat/ChatRoomPage'));
+const ConsultAgreementPage = lazy(() => import('./pages/hospital/chat/agreement/ConsultAgreementPage')); // AI 합의서 퍼널
+
+// Suspense fallback - 페이지 chunk 로딩 중 보여줄 화면 - 기존 LoadingState 재사용했어요!! 
+const RouteFallback = () => (
+  <div className="flex min-h-[60vh] items-center justify-center">
+    <LoadingState />
+  </div>
+);
 
 // axiosInstance(response interceptor)가 access_token 만료(401) 시
 // window.dispatchEvent(new CustomEvent('auth:sessionExpired'))로 쏘는 이벤트를 받아서
@@ -79,6 +91,8 @@ function App() {
         <div className="max-w-md mx-auto min-h-screen bg-white relative">
         {/* 렌더링 중 예외가 발생해도 화면 전체가 백지가 되지 않도록 최상단을 ErrorBoundary로 감쌈 */}
         <ErrorBoundary>
+        {/* 페이지 chunk 로딩 중엔 RouteFallback(LoadingState) 보여줌 */}
+        <Suspense fallback={<RouteFallback />}>
           <Routes>
 
             {/* Onboarding 라우트 */}
@@ -134,6 +148,7 @@ function App() {
             </Route>
             
           </Routes>
+          </Suspense>
           </ErrorBoundary>
           {/* 페이지 이동 후에도 유지되도록 라우트 밖(최상단)에서 한 번만 렌더링 */}
           <Toast />
