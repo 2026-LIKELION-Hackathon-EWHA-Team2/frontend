@@ -8,10 +8,15 @@ import useAuthStore from '../../../store/useAuthStore';
 import useSignupStore from '../../../store/useSignupStore';
 import { useSignupPatientMutation, useSignupHospitalMutation } from '../../../hooks/queries/useUserQueries';
 import { toApiDateFormat } from '../../../utils/format'; // 'YYYY.MM.DD' → 'YYYY-MM-DD' 변환용
-import { inferPreferredLanguage } from '../../../utils/country';
+import { inferPreferredLanguage, getCountryCode } from '../../../utils/country';
 import { SPECIALTY_CODE_MAP } from '../../../utils/specialty';
 
 const STEP_LABELS = ['정보 입력', '약관 동의', '가입 완료'];
+
+// [어흥콘 리팩토링] 위도/경도는 백엔드 규칙상 둘 다 보내거나 둘 다 생략해야 해서,
+// 둘 다 채워져 있을 때만 필드를 포함시키게 만들었어요
+const buildCoordinateFields = (latitude, longitude) =>
+  latitude != null && longitude != null ? { latitude, longitude } : {};
 
 const SignupPage = () => {
   const [step, setStep] = useState(1);
@@ -50,6 +55,7 @@ const SignupPage = () => {
           country,
           city,
           address: hospitalInfo.hospitalAddress,
+          ...buildCoordinateFields(hospitalInfo.latitude, hospitalInfo.longitude),
           phone: hospitalInfo.phone,
           website: hospitalInfo.website,
           terms_agreed: terms.service,
@@ -73,6 +79,9 @@ const SignupPage = () => {
           login_id: patientInfo.userId,
           password: patientInfo.password,
           address: patientInfo.address,
+          ...buildCoordinateFields(patientInfo.latitude, patientInfo.longitude),
+          // [어흥콘 리팩토링] 한글 -> 코드 변환 로직
+          residence_country: getCountryCode(patientInfo.residenceCountry),
           phone: patientInfo.phone,
           birth_date: toApiDateFormat(patientInfo.birth), // 'YYYY.MM.DD' → 'YYYY-MM-DD' 변환해서 전송
           passport_number: patientInfo.passportNumber,

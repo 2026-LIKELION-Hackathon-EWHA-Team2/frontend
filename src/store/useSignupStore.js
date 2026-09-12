@@ -9,6 +9,9 @@ const initialPatientInfo = {
   userId: '',
   password: '',
   address: '',
+  latitude: null, // 주소 검색(구글맵)으로 선택 시 채워짐 - 둘 다 있거나 둘 다 null이어야 함
+  longitude: null,
+  residenceCountry: '', // 거주 국가 (대한민국/일본/미국/중국 중 선택) - AI 매칭 시 residence_country로 전송
   phone: '',
   birth: '',
   passportNumber: '',
@@ -21,6 +24,8 @@ const initialHospitalInfo = {
   department: [], // 전문 분야 (다중 선택)
   countryCity: '',
   hospitalAddress: '',
+  latitude: null, // 병원 주소 검색(구글맵)으로 선택 시 채워짐 - 둘 다 있거나 둘 다 null이어야 함
+  longitude: null,
   phone: '',
   website: '',
 };
