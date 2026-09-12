@@ -23,7 +23,19 @@ const VARIANT_STYLES = {
 
 const Input = forwardRef(
   (
-    { label, id, error, helperText, variant = 'auth', className = '', type = 'text', icon, onIconClick, ...inputProps },
+    {
+      label,
+      id,
+      error,
+      helperText,
+      variant = 'auth',
+      className = '',
+      type = 'text',
+      icon,
+      iconClassName = '',
+      onIconClick,
+      ...inputProps
+    },
     ref
   ) => {
     const inputId = id ?? inputProps.name;
@@ -64,7 +76,7 @@ const Input = forwardRef(
               onClick={onIconClick}
               className="absolute right-3.5 top-1/2 -translate-y-1/2 flex items-center justify-center"
             >
-              <img src={icon} className="w-5 h-5" alt="" />
+              <img src={icon} className={`w-5 h-5 transition-transform duration-200 ease-in-out ${iconClassName}`} alt="" />
             </button>
           )}
         </div>

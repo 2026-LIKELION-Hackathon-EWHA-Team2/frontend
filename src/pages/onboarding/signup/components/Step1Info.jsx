@@ -1,6 +1,6 @@
 // [1/3] 회원가입 - 정보 입력 화면 (환자 / 병원 공용, role에 따라 필드 분기)
 
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import Input from '../../../../components/Input';
 import Button from '../../../../components/button/Button';
 import useAuthStore from '../../../../store/useAuthStore';
@@ -8,6 +8,7 @@ import useSignupStore from '../../../../store/useSignupStore';
 import { MOCK_PATIENT, MOCK_HOSPITALS } from '../../../../mock/mockdata';
 import { formatBirthDate, isBirthDateComplete } from '../../../../utils/format';
 import { SPECIALTY_CODE_MAP } from '../../../../utils/specialty';
+import { RESIDENCE_COUNTRY_OPTIONS } from '../../../../utils/country';
 
 // 입력 예시(placeholder)는 mockdata.js에 이미 있는 값을 그대로 재사용
 const mockHospital = MOCK_HOSPITALS[0];
@@ -74,9 +75,12 @@ const Step1Info = ({ onNext }) => {
 
   // 전문 분야 (병원 상세 정보 화면에서만 노출되는 다중 선택 토글)
   const showSpecialty = isHospital && subStep === 1;
+  // 거주 국가 (환자만 입력 - AI 매칭 API가 요구하는 residence_country 필수값)
+  const showResidenceCountry = !isHospital;
   const [customSpecialty, setCustomSpecialty] = useState('');
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [customOptions, setCustomOptions] = useState([]);
+  const [showCountryList, setShowCountryList] = useState(false);
   const specialtyOptions = [...SPECIALTY_OPTIONS, ...customOptions];
   const selectedSpecialties = info.department ?? [];
 
@@ -109,7 +113,8 @@ const Step1Info = ({ onNext }) => {
     visibleFields.every((field) => info[field.name]?.trim()) &&
     !passwordError &&
     isBirthValid &&
-    (!showSpecialty || selectedSpecialties.length > 0);
+    (!showSpecialty || selectedSpecialties.length > 0) &&
+    (!showResidenceCountry || !!info.residenceCountry);
 
   // 생년월일 자동 포맷 적용
   const handleChange = (name) => (e) => {
@@ -183,25 +188,70 @@ const Step1Info = ({ onNext }) => {
           const isBirthField = field.name === 'birth';
 
           return (
-            <Input
-              key={field.name}
-              label={field.label}
-              name={field.name}
-              type={field.type ?? 'text'}
-              placeholder={field.placeholder}
-              value={info[field.name]}
-              onChange={handleChange(field.name)}
-              icon={field.icon}
-              // 생년월일 8자리가 아직 안 채워졌으면 에러 문구 표시 (password 에러랑 겹치지 않게 분기)
-              error={
-                field.name === 'password'
-                  ? passwordError
-                  : isBirthField && info.birth && !isBirthDateComplete(info.birth)
-                    ? '생년월일 8자리를 모두 입력해주세요. (예: 1992.05.20)'
-                    : undefined
-              }
-              maxLength={isBirthField ? 10 : undefined} // 생년월일만 길이 제한 (YYYY.MM.DD = 10자)
-            />
+            <Fragment key={field.name}>
+              <Input
+                label={field.label}
+                name={field.name}
+                type={field.type ?? 'text'}
+                placeholder={field.placeholder}
+                value={info[field.name]}
+                onChange={handleChange(field.name)}
+                icon={field.icon}
+                // 생년월일 8자리가 아직 안 채워졌으면 에러 문구 표시 (password 에러랑 겹치지 않게 분기)
+                error={
+                  field.name === 'password'
+                    ? passwordError
+                    : isBirthField && info.birth && !isBirthDateComplete(info.birth)
+                      ? '생년월일 8자리를 모두 입력해주세요. (예: 1992.05.20)'
+                      : undefined
+                }
+                maxLength={isBirthField ? 10 : undefined} // 생년월일만 길이 제한 (YYYY.MM.DD = 10자)
+              />
+
+              {/*
+                [어흥콘 리팩토링] 환자 회원가입 창에서 거주 국가 선택 UI를 제작했어요
+                 AI 매칭 API가 환자 프로필의 거주 국가를 필수로 요구해서...
+                 회원가입 화면에 거주 국가 선택창을 추가했습니다
+                 어차피 선택지 4개뿐이라 직접 입력 안 시키고 선택창으로 만들어봤어여
+                (병원 회원가입은 국가/도시 입력창이 이미 있어서 거기서 서버에 보내도록 했습니다)                 
+              */}
+              {showResidenceCountry && field.name === 'password' && (
+                <div className="relative flex flex-col">
+                  <Input
+                    label="거주 국가"
+                    name="residenceCountry"
+                    value={info.residenceCountry}
+                    placeholder="대한민국"
+                    readOnly
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => setShowCountryList((prev) => !prev)}
+                    onFocus={() => setShowCountryList(true)}
+                    icon="/icons/arrow-down-gray.svg"
+                    iconClassName={showCountryList ? 'rotate-180' : ''}
+                    onIconClick={() => setShowCountryList((prev) => !prev)}
+                  />
+
+                  {showCountryList && (
+                    <ul className="absolute top-full z-10 mt-1 w-full overflow-hidden rounded-[0.625rem] border border-[#EDEDF1] bg-white shadow-md">
+                      {RESIDENCE_COUNTRY_OPTIONS.map((country) => (
+                        <li key={country}>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setInfo({ residenceCountry: country });
+                              setShowCountryList(false);
+                            }}
+                            className="w-full px-3.5 py-2.5 text-left font-wantedsans text-sm font-medium text-[#181818] hover:bg-[#FAFAFA]"
+                          >
+                            {country}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )}
+            </Fragment>
           );
         })}
       </div>

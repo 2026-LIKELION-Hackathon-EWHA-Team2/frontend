@@ -8,7 +8,7 @@ import useAuthStore from '../../../store/useAuthStore';
 import useSignupStore from '../../../store/useSignupStore';
 import { useSignupPatientMutation, useSignupHospitalMutation } from '../../../hooks/queries/useUserQueries';
 import { toApiDateFormat } from '../../../utils/format'; // 'YYYY.MM.DD' → 'YYYY-MM-DD' 변환용
-import { inferPreferredLanguage } from '../../../utils/country';
+import { inferPreferredLanguage, getCountryCode } from '../../../utils/country';
 import { SPECIALTY_CODE_MAP } from '../../../utils/specialty';
 
 const STEP_LABELS = ['정보 입력', '약관 동의', '가입 완료'];
@@ -73,6 +73,10 @@ const SignupPage = () => {
           login_id: patientInfo.userId,
           password: patientInfo.password,
           address: patientInfo.address,
+          // [어흥콘 리팩토링] Step1Info.jsx에서 고른 거주 국가는 화면에 "대한민국"처럼 한글로
+          // 저장돼 있는데, 백엔드는 'KR' 같은 국가 코드로 받아야 해서 여기서 변환해서 보내요.
+          // (residence_country는 AI 매칭 때 어느 나라 네트워크 병원을 찾을지 기준이 되는 값)
+          residence_country: getCountryCode(patientInfo.residenceCountry),
           phone: patientInfo.phone,
           birth_date: toApiDateFormat(patientInfo.birth), // 'YYYY.MM.DD' → 'YYYY-MM-DD' 변환해서 전송
           passport_number: patientInfo.passportNumber,

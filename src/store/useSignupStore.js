@@ -9,6 +9,7 @@ const initialPatientInfo = {
   userId: '',
   password: '',
   address: '',
+  residenceCountry: '', // 거주 국가 (대한민국/일본/미국/중국 중 선택) - AI 매칭 시 residence_country로 전송
   phone: '',
   birth: '',
   passportNumber: '',
