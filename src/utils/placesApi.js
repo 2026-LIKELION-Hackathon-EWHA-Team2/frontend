@@ -26,17 +26,18 @@ export const fetchAddressSuggestions = async (input, regionCodes) => {
   }));
 };
 
-// 선택한 placeId로 상세 정보(좌표) 조회
+// 선택한 placeId로 상세 정보(포맷된 주소, 좌표) 조회
 export const fetchPlaceDetail = async (placeId) => {
   const res = await fetch(`https://places.googleapis.com/v1/places/${placeId}`, {
     headers: {
       'X-Goog-Api-Key': PLACES_API_KEY,
-      'X-Goog-FieldMask': 'location',
+      'X-Goog-FieldMask': 'formattedAddress,location',
     },
   });
   if (!res.ok) throw new Error('주소 상세 조회에 실패했습니다.');
   const data = await res.json();
   return {
+    formattedAddress: data.formattedAddress,
     latitude: data.location?.latitude,
     longitude: data.location?.longitude,
   };
