@@ -1,6 +1,6 @@
 // [1/3] 회원가입 - 정보 입력 화면 (환자 / 병원 공용, role에 따라 필드 분기)
 
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import Input from '../../../../components/Input';
 import Button from '../../../../components/button/Button';
 import useAuthStore from '../../../../store/useAuthStore';
@@ -9,6 +9,8 @@ import { MOCK_PATIENT, MOCK_HOSPITALS } from '../../../../mock/mockdata';
 import { formatBirthDate, isBirthDateComplete } from '../../../../utils/format';
 import { SPECIALTY_CODE_MAP } from '../../../../utils/specialty';
 import { RESIDENCE_COUNTRY_OPTIONS } from '../../../../utils/country';
+import { fetchAddressSuggestions, fetchPlaceDetail, roundCoordinate } from '../../../../utils/placesApi';
+import useClickOutside from '../../../../hooks/useClickOutside';
 
 // 입력 예시(placeholder)는 mockdata.js에 이미 있는 값을 그대로 재사용
 const mockHospital = MOCK_HOSPITALS[0];
@@ -83,6 +85,74 @@ const Step1Info = ({ onNext }) => {
   const [showCountryList, setShowCountryList] = useState(false);
   const specialtyOptions = [...SPECIALTY_OPTIONS, ...customOptions];
   const selectedSpecialties = info.department ?? [];
+
+  // 환자는 'address', 병원은 'hospitalAddress' 필드에 구글 Places 주소 검색을 붙임
+  const addressFieldName = isHospital ? 'hospitalAddress' : 'address';
+  const showAddressField = visibleFields.some((f) => f.name === addressFieldName);
+  const addressQuery = info[addressFieldName];
+
+  const [addressSuggestions, setAddressSuggestions] = useState([]);
+  const [showAddressSuggestions, setShowAddressSuggestions] = useState(false);
+  // 목록에서 방금 선택해서 텍스트가 바뀐 건지(재검색 스킵), 사용자가 타이핑해서 바뀐 건지 구분용
+  const justSelectedAddressRef = useRef(false);
+  // 주소/국가 드롭다운 영역을 감싸는 ref - 바깥을 클릭하면 각각의 드롭다운을 닫기 위함
+  const addressBoxRef = useRef(null);
+  const countryBoxRef = useRef(null);
+  useClickOutside(addressBoxRef, () => setShowAddressSuggestions(false));
+  useClickOutside(countryBoxRef, () => setShowCountryList(false));
+
+  /*
+   * [어흥콘 리팩토링] 주소 입력창에 구글 Places 주소 검색 연동
+   * 회원가입 시 주소를 자유 텍스트로만 받지 않고, 구글 Places API를 통해
+   * 실제 주소 후보를 검색해서 선택하도록 구현했어요
+   * 주소 입력할 때 자동완성 드롭다운 UI를 구현했어요
+   * (구글에서 자체 제공하는 UI가 있었는데 연동중에 문제가 있어서 못 썼다는 아주 슬픈 이야기)
+   */
+  useEffect(() => {
+    if (!showAddressField) return;
+
+    if (justSelectedAddressRef.current) {
+      // 방금 목록에서 선택해서 채워진 텍스트 - 이건 재검색하면 안 됨
+      justSelectedAddressRef.current = false;
+      return;
+    }
+
+    if (!addressQuery || addressQuery.trim().length < 2) {
+      setAddressSuggestions([]);
+      setShowAddressSuggestions(false);
+      return;
+    }
+
+    let cancelled = false;
+    const timer = setTimeout(() => {
+      fetchAddressSuggestions(addressQuery, ['kr', 'jp', 'us', 'cn'])
+        .then((results) => {
+          if (cancelled) return;
+          setAddressSuggestions(results);
+          setShowAddressSuggestions(results.length > 0);
+        })
+        .catch((err) => console.error('[Step1Info] 주소 검색 실패', err));
+    }, 300);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [showAddressField, addressQuery]);
+
+  const handleSelectAddress = (suggestion) => {
+    justSelectedAddressRef.current = true;
+    setShowAddressSuggestions(false);
+    fetchPlaceDetail(suggestion.placeId)
+      .then(({ formattedAddress, latitude, longitude }) => {
+        setInfo({
+          [addressFieldName]: formattedAddress,
+          latitude: latitude != null ? roundCoordinate(latitude) : null,
+          longitude: longitude != null ? roundCoordinate(longitude) : null,
+        });
+      })
+      .catch((err) => console.error('[Step1Info] 주소 상세 조회 실패', err));
+  };
 
   const toggleSpecialty = (label) => {
     setInfo({
@@ -189,24 +259,42 @@ const Step1Info = ({ onNext }) => {
 
           return (
             <Fragment key={field.name}>
-              <Input
-                label={field.label}
-                name={field.name}
-                type={field.type ?? 'text'}
-                placeholder={field.placeholder}
-                value={info[field.name]}
-                onChange={handleChange(field.name)}
-                icon={field.icon}
-                // 생년월일 8자리가 아직 안 채워졌으면 에러 문구 표시 (password 에러랑 겹치지 않게 분기)
-                error={
-                  field.name === 'password'
-                    ? passwordError
-                    : isBirthField && info.birth && !isBirthDateComplete(info.birth)
-                      ? '생년월일 8자리를 모두 입력해주세요. (예: 1992.05.20)'
-                      : undefined
-                }
-                maxLength={isBirthField ? 10 : undefined} // 생년월일만 길이 제한 (YYYY.MM.DD = 10자)
-              />
+              <div className="relative" ref={field.name === addressFieldName ? addressBoxRef : undefined}>
+                <Input
+                  label={field.label}
+                  name={field.name}
+                  type={field.type ?? 'text'}
+                  placeholder={field.placeholder}
+                  value={info[field.name]}
+                  onChange={handleChange(field.name)}
+                  icon={field.icon}
+                  // 생년월일 8자리가 아직 안 채워졌으면 에러 문구 표시 (password 에러랑 겹치지 않게 분기)
+                  error={
+                    field.name === 'password'
+                      ? passwordError
+                      : isBirthField && info.birth && !isBirthDateComplete(info.birth)
+                        ? '생년월일 8자리를 모두 입력해주세요. (예: 1992.05.20)'
+                        : undefined
+                  }
+                  maxLength={isBirthField ? 10 : undefined} // 생년월일만 길이 제한 (YYYY.MM.DD = 10자)
+                />
+
+                {field.name === addressFieldName && showAddressSuggestions && (
+                  <ul className="absolute top-full z-10 mt-1 w-full overflow-hidden rounded-[0.625rem] border border-[#EDEDF1] bg-white shadow-md">
+                    {addressSuggestions.map((suggestion) => (
+                      <li key={suggestion.placeId}>
+                        <button
+                          type="button"
+                          onClick={() => handleSelectAddress(suggestion)}
+                          className="w-full px-3.5 py-2.5 text-left font-wantedsans text-sm font-medium text-[#181818] hover:bg-[#FAFAFA]"
+                        >
+                          {suggestion.text}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
 
               {/*
                 [어흥콘 리팩토링] 환자 회원가입 창에서 거주 국가 선택 UI를 제작했어요
@@ -216,7 +304,7 @@ const Step1Info = ({ onNext }) => {
                 (병원 회원가입은 국가/도시 입력창이 이미 있어서 거기서 서버에 보내도록 했습니다)                 
               */}
               {showResidenceCountry && field.name === 'password' && (
-                <div className="relative flex flex-col">
+                <div className="relative flex flex-col" ref={countryBoxRef}>
                   <Input
                     label="거주 국가"
                     name="residenceCountry"

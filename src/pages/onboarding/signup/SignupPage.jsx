@@ -13,6 +13,11 @@ import { SPECIALTY_CODE_MAP } from '../../../utils/specialty';
 
 const STEP_LABELS = ['정보 입력', '약관 동의', '가입 완료'];
 
+// [어흥콘 리팩토링] 위도/경도는 백엔드 규칙상 둘 다 보내거나 둘 다 생략해야 해서,
+// 둘 다 채워져 있을 때만 필드를 포함시키게 만들었어요
+const buildCoordinateFields = (latitude, longitude) =>
+  latitude != null && longitude != null ? { latitude, longitude } : {};
+
 const SignupPage = () => {
   const [step, setStep] = useState(1);
   const [signupError, setSignupError] = useState('');
@@ -50,6 +55,7 @@ const SignupPage = () => {
           country,
           city,
           address: hospitalInfo.hospitalAddress,
+          ...buildCoordinateFields(hospitalInfo.latitude, hospitalInfo.longitude),
           phone: hospitalInfo.phone,
           website: hospitalInfo.website,
           terms_agreed: terms.service,
@@ -73,9 +79,8 @@ const SignupPage = () => {
           login_id: patientInfo.userId,
           password: patientInfo.password,
           address: patientInfo.address,
-          // [어흥콘 리팩토링] Step1Info.jsx에서 고른 거주 국가는 화면에 "대한민국"처럼 한글로
-          // 저장돼 있는데, 백엔드는 'KR' 같은 국가 코드로 받아야 해서 여기서 변환해서 보내요.
-          // (residence_country는 AI 매칭 때 어느 나라 네트워크 병원을 찾을지 기준이 되는 값)
+          ...buildCoordinateFields(patientInfo.latitude, patientInfo.longitude),
+          // [어흥콘 리팩토링] 한글 -> 코드 변환 로직
           residence_country: getCountryCode(patientInfo.residenceCountry),
           phone: patientInfo.phone,
           birth_date: toApiDateFormat(patientInfo.birth), // 'YYYY.MM.DD' → 'YYYY-MM-DD' 변환해서 전송
