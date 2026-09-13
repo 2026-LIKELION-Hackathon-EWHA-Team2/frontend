@@ -8,6 +8,7 @@ import Button from '../../../../../components/button/Button';
 import useHospitalMatchStore from '../../../../../store/useHospitalMatchStore';
 import useToastStore from '../../../../../store/useToastStore';
 import { useSelectMatchRecommendationMutation } from '../../../../../hooks/queries/useMatchingQueries';
+import { formatDistance } from '../../../../../utils/format';
 
 const INFO_ROWS = [
   { key: 'address', icon: '/icons/location-black.svg', label: '주소' },
@@ -69,7 +70,7 @@ const Step3Detail = ({ nextStep, prevStep }) => {
                 <div className="flex items-center gap-1">
                   <img src="/icons/location-black.svg" alt="" className="h-3 w-3" />
                   <span className="font-wantedsans text-[10px] font-medium leading-normal text-[#626262]">
-                    {recommendation.distance_km}km
+                    {formatDistance(recommendation.distance_km)}
                   </span>
                 </div>
                 {hospital.collaboration_count > 0 && (

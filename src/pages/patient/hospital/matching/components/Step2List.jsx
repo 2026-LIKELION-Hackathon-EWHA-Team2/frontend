@@ -5,6 +5,7 @@ import PageContainer from '../../../../../components/layout/PageContainer';
 import QueryState from '../../../../../components/state/QueryState';
 import HospitalCard from '../../../../../components/card/HospitalCard';
 import useHospitalMatchStore from '../../../../../store/useHospitalMatchStore';
+import { formatDistance } from '../../../../../utils/format';
 
 const Step2List = ({ nextStep, prevStep }) => {
   // Step1Setting에서 매칭 요청 응답(recommendations)을 그대로 store에 저장해뒀으므로
@@ -35,7 +36,7 @@ const Step2List = ({ nextStep, prevStep }) => {
                 image={recommendation.hospital.image_url}
                 name={recommendation.hospital.name}
                 department={recommendation.hospital.specialties.map((s) => s.specialty_name).join(', ')}
-                distance={`${recommendation.distance_km}km`}
+                distance={formatDistance(recommendation.distance_km)}
                 onDetailClick={() => handleDetailClick(recommendation)}
               />
             ))}

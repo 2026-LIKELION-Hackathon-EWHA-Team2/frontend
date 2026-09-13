@@ -1,6 +1,6 @@
 // [1/3] 회원가입 - 정보 입력 화면 (환자 / 병원 공용, role에 따라 필드 분기)
 
-import { useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import Input from '../../../../components/Input';
 import Button from '../../../../components/button/Button';
 import useAuthStore from '../../../../store/useAuthStore';
@@ -8,6 +8,9 @@ import useSignupStore from '../../../../store/useSignupStore';
 import { MOCK_PATIENT, MOCK_HOSPITALS } from '../../../../mock/mockdata';
 import { formatBirthDate, isBirthDateComplete } from '../../../../utils/format';
 import { SPECIALTY_CODE_MAP } from '../../../../utils/specialty';
+import { fetchAddressSuggestions, fetchPlaceDetail, roundCoordinate } from '../../../../utils/placesApi';
+import useClickOutside from '../../../../hooks/useClickOutside';
+import CountrySelect from '../../../../components/CountrySelect';
 
 // 입력 예시(placeholder)는 mockdata.js에 이미 있는 값을 그대로 재사용
 const mockHospital = MOCK_HOSPITALS[0];
@@ -27,17 +30,16 @@ const HOSPITAL_FIELDS = [
   { name: 'hospitalName', label: '병원명', placeholder: mockHospital.name },
   { name: 'userId', label: '아이디', placeholder: 'aftor123' },
   { name: 'password', label: '비밀번호', placeholder: '비밀번호 입력', type: 'password' },
-  // 국가, 도시 라벨 파싱 로직이랑 일치시켰어요!
-  { name: 'countryCity', label: '도시, 국가', placeholder: 'Tokyo, Japan' },
   { name: 'hospitalAddress', label: '병원 주소', placeholder: '', icon: '/icons/search-gray.svg' },
   { name: 'phone', label: '연락처', placeholder: '+81-3-1234-5678 형식으로 입력' },
   { name: 'website', label: '웹사이트', placeholder: mockHospital.website },
 ];
 
 // 병원 계정은 계정 정보(1) -> 병원 상세 정보(2) 두 화면으로 나눠서 입력
+// 국가 선택(CountrySelect)은 필드 목록이 아니라 전문 분야처럼 화면에 직접 그려 넣어서, 이 목록엔 안 들어있음
 const HOSPITAL_SUB_STEPS = [
   ['hospitalName', 'userId', 'password'],
-  ['countryCity', 'hospitalAddress', 'phone', 'website'],
+  ['hospitalAddress', 'phone', 'website'],
 ];
 
 // 전문 분야 (병원 상세 정보 화면에서 다중 선택 토글로 선택)
@@ -74,11 +76,81 @@ const Step1Info = ({ onNext }) => {
 
   // 전문 분야 (병원 상세 정보 화면에서만 노출되는 다중 선택 토글)
   const showSpecialty = isHospital && subStep === 1;
+  // 거주 국가 - 환자는 'residenceCountry'(AI 매칭 API의 residence_country 필수값),
+  // 병원은 'country' 필드에 저장. 둘 다 같은 CountrySelect 컴포넌트를 씀
+  const showResidenceCountry = !isHospital;
+  const showHospitalCountry = isHospital && subStep === 1;
   const [customSpecialty, setCustomSpecialty] = useState('');
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [customOptions, setCustomOptions] = useState([]);
   const specialtyOptions = [...SPECIALTY_OPTIONS, ...customOptions];
   const selectedSpecialties = info.department ?? [];
+
+  // 환자는 'address', 병원은 'hospitalAddress' 필드에 구글 Places 주소 검색을 붙임
+  const addressFieldName = isHospital ? 'hospitalAddress' : 'address';
+  const showAddressField = visibleFields.some((f) => f.name === addressFieldName);
+  const addressQuery = info[addressFieldName];
+
+  const [addressSuggestions, setAddressSuggestions] = useState([]);
+  const [showAddressSuggestions, setShowAddressSuggestions] = useState(false);
+  // 목록에서 방금 선택해서 텍스트가 바뀐 건지(재검색 스킵), 사용자가 타이핑해서 바뀐 건지 구분용
+  const justSelectedAddressRef = useRef(false);
+  // 주소 드롭다운 영역을 감싸는 ref - 바깥을 클릭하면 닫기 위함 (국가 선택 드롭다운은 CountrySelect 내부에서 자체 처리)
+  const addressBoxRef = useRef(null);
+  useClickOutside(addressBoxRef, () => setShowAddressSuggestions(false));
+
+  /*
+   * [어흥콘 리팩토링] 주소 입력창에 구글 Places 주소 검색 연동
+   * 회원가입 시 주소를 자유 텍스트로만 받지 않고, 구글 Places API를 통해
+   * 실제 주소 후보를 검색해서 선택하도록 구현했어요
+   * 주소 입력할 때 자동완성 드롭다운 UI를 구현했어요
+   * (구글에서 자체 제공하는 UI가 있었는데 연동중에 문제가 있어서 못 썼다는 아주 슬픈 이야기)
+   */
+  useEffect(() => {
+    if (!showAddressField) return;
+
+    if (justSelectedAddressRef.current) {
+      // 방금 목록에서 선택해서 채워진 텍스트 - 이건 재검색하면 안 됨
+      justSelectedAddressRef.current = false;
+      return;
+    }
+
+    if (!addressQuery || addressQuery.trim().length < 2) {
+      setAddressSuggestions([]);
+      setShowAddressSuggestions(false);
+      return;
+    }
+
+    let cancelled = false;
+    const timer = setTimeout(() => {
+      fetchAddressSuggestions(addressQuery, ['kr', 'jp', 'us', 'cn'])
+        .then((results) => {
+          if (cancelled) return;
+          setAddressSuggestions(results);
+          setShowAddressSuggestions(results.length > 0);
+        })
+        .catch((err) => console.error('[Step1Info] 주소 검색 실패', err));
+    }, 300);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [showAddressField, addressQuery]);
+
+  const handleSelectAddress = (suggestion) => {
+    justSelectedAddressRef.current = true;
+    setShowAddressSuggestions(false);
+    fetchPlaceDetail(suggestion.placeId)
+      .then(({ formattedAddress, latitude, longitude }) => {
+        setInfo({
+          [addressFieldName]: formattedAddress,
+          latitude: latitude != null ? roundCoordinate(latitude) : null,
+          longitude: longitude != null ? roundCoordinate(longitude) : null,
+        });
+      })
+      .catch((err) => console.error('[Step1Info] 주소 상세 조회 실패', err));
+  };
 
   const toggleSpecialty = (label) => {
     setInfo({
@@ -109,7 +181,9 @@ const Step1Info = ({ onNext }) => {
     visibleFields.every((field) => info[field.name]?.trim()) &&
     !passwordError &&
     isBirthValid &&
-    (!showSpecialty || selectedSpecialties.length > 0);
+    (!showSpecialty || selectedSpecialties.length > 0) &&
+    (!showResidenceCountry || !!info.residenceCountry) &&
+    (!showHospitalCountry || !!info.country);
 
   // 생년월일 자동 포맷 적용
   const handleChange = (name) => (e) => {
@@ -179,29 +253,67 @@ const Step1Info = ({ onNext }) => {
           </div>
         )}
 
+        {showHospitalCountry && (
+          <CountrySelect label="국가" value={info.country} onChange={(country) => setInfo({ country })} />
+        )}
+
         {visibleFields.map((field) => {
           const isBirthField = field.name === 'birth';
 
           return (
-            <Input
-              key={field.name}
-              label={field.label}
-              name={field.name}
-              type={field.type ?? 'text'}
-              placeholder={field.placeholder}
-              value={info[field.name]}
-              onChange={handleChange(field.name)}
-              icon={field.icon}
-              // 생년월일 8자리가 아직 안 채워졌으면 에러 문구 표시 (password 에러랑 겹치지 않게 분기)
-              error={
-                field.name === 'password'
-                  ? passwordError
-                  : isBirthField && info.birth && !isBirthDateComplete(info.birth)
-                    ? '생년월일 8자리를 모두 입력해주세요. (예: 1992.05.20)'
-                    : undefined
-              }
-              maxLength={isBirthField ? 10 : undefined} // 생년월일만 길이 제한 (YYYY.MM.DD = 10자)
-            />
+            <Fragment key={field.name}>
+              <div className="relative" ref={field.name === addressFieldName ? addressBoxRef : undefined}>
+                <Input
+                  label={field.label}
+                  name={field.name}
+                  type={field.type ?? 'text'}
+                  placeholder={field.placeholder}
+                  value={info[field.name]}
+                  onChange={handleChange(field.name)}
+                  icon={field.icon}
+                  // 생년월일 8자리가 아직 안 채워졌으면 에러 문구 표시 (password 에러랑 겹치지 않게 분기)
+                  error={
+                    field.name === 'password'
+                      ? passwordError
+                      : isBirthField && info.birth && !isBirthDateComplete(info.birth)
+                        ? '생년월일 8자리를 모두 입력해주세요. (예: 1992.05.20)'
+                        : undefined
+                  }
+                  maxLength={isBirthField ? 10 : undefined} // 생년월일만 길이 제한 (YYYY.MM.DD = 10자)
+                />
+
+                {field.name === addressFieldName && showAddressSuggestions && (
+                  <ul className="absolute top-full z-10 mt-1 w-full overflow-hidden rounded-[0.625rem] border border-[#EDEDF1] bg-white shadow-md">
+                    {addressSuggestions.map((suggestion) => (
+                      <li key={suggestion.placeId}>
+                        <button
+                          type="button"
+                          onClick={() => handleSelectAddress(suggestion)}
+                          className="w-full px-3.5 py-2.5 text-left font-wantedsans text-sm font-medium text-[#181818] hover:bg-[#FAFAFA]"
+                        >
+                          {suggestion.text}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              {/*
+                [어흥콘 리팩토링] 환자 회원가입 창에서 거주 국가 선택 UI를 제작했어요
+                 AI 매칭 API가 환자 프로필의 거주 국가를 필수로 요구해서...
+                 회원가입 화면에 거주 국가 선택창을 추가했습니다
+                 어차피 선택지 4개뿐이라 직접 입력 안 시키고 선택창으로 만들어봤어여
+                260914 - 병원 회원가입 창에서도 도시 없애버리고 UI 재사용!
+              */}
+              {showResidenceCountry && field.name === 'password' && (
+                <CountrySelect
+                  label="거주 국가"
+                  value={info.residenceCountry}
+                  onChange={(residenceCountry) => setInfo({ residenceCountry })}
+                />
+              )}
+            </Fragment>
           );
         })}
       </div>

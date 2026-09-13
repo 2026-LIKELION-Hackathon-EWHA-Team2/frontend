@@ -8,10 +8,15 @@ import useAuthStore from '../../../store/useAuthStore';
 import useSignupStore from '../../../store/useSignupStore';
 import { useSignupPatientMutation, useSignupHospitalMutation } from '../../../hooks/queries/useUserQueries';
 import { toApiDateFormat } from '../../../utils/format'; // 'YYYY.MM.DD' → 'YYYY-MM-DD' 변환용
-import { inferPreferredLanguage } from '../../../utils/country';
+import { inferPreferredLanguage, getCountryCode } from '../../../utils/country';
 import { SPECIALTY_CODE_MAP } from '../../../utils/specialty';
 
 const STEP_LABELS = ['정보 입력', '약관 동의', '가입 완료'];
+
+// [어흥콘 리팩토링] 위도/경도는 백엔드 규칙상 둘 다 보내거나 둘 다 생략해야 해서,
+// 둘 다 채워져 있을 때만 필드를 포함시키게 만들었어요
+const buildCoordinateFields = (latitude, longitude) =>
+  latitude != null && longitude != null ? { latitude, longitude } : {};
 
 const SignupPage = () => {
   const [step, setStep] = useState(1);
@@ -33,23 +38,21 @@ const SignupPage = () => {
     setSignupError('');
 
     if (isHospital) {
-      // countryCity 입력칸이 한 칸으로 되어있어서 split 처리함
-      const [city = '', country = ''] = hospitalInfo.countryCity.split(',').map((s) => s.trim());
-
       signupHospitalMutation.mutate(
         {
           name: hospitalInfo.hospitalName,
           login_id: hospitalInfo.userId,
           password: hospitalInfo.password,
-          preferred_language: inferPreferredLanguage(hospitalInfo.countryCity),
+          preferred_language: inferPreferredLanguage(hospitalInfo.country),
           // 목록에 있는 라벨은 정식 코드로, 직접 추가한 자유 텍스트는 CUSTOM 코드로 전송
           specialties: hospitalInfo.department.map((label) => ({
             specialty_code: SPECIALTY_CODE_MAP[label] ?? 'CUSTOM',
             specialty_name: label,
           })),
-          country,
-          city,
+          country: getCountryCode(hospitalInfo.country),
+          // [어흥콘 리팩토링] city는 백엔드에서 선택으로 바뀌어서, 화면에서 안 받는 대신 그냥 생략함
           address: hospitalInfo.hospitalAddress,
+          ...buildCoordinateFields(hospitalInfo.latitude, hospitalInfo.longitude),
           phone: hospitalInfo.phone,
           website: hospitalInfo.website,
           terms_agreed: terms.service,
@@ -73,6 +76,9 @@ const SignupPage = () => {
           login_id: patientInfo.userId,
           password: patientInfo.password,
           address: patientInfo.address,
+          ...buildCoordinateFields(patientInfo.latitude, patientInfo.longitude),
+          // [어흥콘 리팩토링] 한글 -> 코드 변환 로직
+          residence_country: getCountryCode(patientInfo.residenceCountry),
           phone: patientInfo.phone,
           birth_date: toApiDateFormat(patientInfo.birth), // 'YYYY.MM.DD' → 'YYYY-MM-DD' 변환해서 전송
           passport_number: patientInfo.passportNumber,

@@ -72,6 +72,12 @@ export const resolveMediaUrl = (path) => {
   return `${API_BASE_URL.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
 };
 
+// [어흥콘 리팩토링] 병원 추천/네트워크 목록의 distance_km를 소수점 둘째 자리까지 반올림!!
+export const formatDistance = (distanceKm) => {
+  const num = Number(distanceKm);
+  return Number.isNaN(num) ? '' : `${num.toFixed(2)}km`;
+};
+
 export const formatPhoneNumber = (value) => {
   const hasPlus = value.trim().startsWith('+');
   const digits = value.replace(/[^0-9]/g, '').slice(0, 15); // 숫자만, 최대 15자리

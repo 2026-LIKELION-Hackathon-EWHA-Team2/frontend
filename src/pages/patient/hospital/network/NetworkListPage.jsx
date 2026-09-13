@@ -10,6 +10,7 @@ import SmallButton from '../../../../components/button/SmallButton';
 import SortModal from '../../../../components/modal/SortModal';
 import { useNetworkHospitalsQuery } from '../../../../hooks/queries/useMatchingQueries';
 import useHospitalMatchStore from '../../../../store/useHospitalMatchStore';
+import { formatDistance } from '../../../../utils/format';
 
 const SORT_OPTIONS = [
   { value: 'distance', label: '거리순으로 보기' },
@@ -57,7 +58,7 @@ const NetworkListPage = () => {
                 image={hospital.image_url}
                 name={hospital.name}
                 department={hospital.specialties.map((s) => s.specialty_name).join(', ')}
-                distance={`${hospital.distance_km}km`}
+                distance={formatDistance(hospital.distance_km)}
                 onDetailClick={() => navigate(`/patient/hospital/network/${hospital.hospital_id}`)}
               />
             ))}
