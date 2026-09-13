@@ -25,7 +25,7 @@ const useAuthStore = create(
       // 매칭되는 값이 이거임 - hospital_id 필드나 hospital-profile API의 id는 다른 값이라 쓰면 안 됨!! 겨우 찾았다...
       hospitalId: null,
       accessToken: '',
-      refreshToken: '', // refresh 엔드포인트 따로 없고, accessToken 유효기간 길게 잡아서 만료 시 그냥 로그아웃되는 걸로!
+      refreshToken: '', // [어흥콘 리팩토링] 이제 refresh 엔드포인트가 생겨서 access_token 만료 시 이 값으로 재발급 시도함
 
       setRole: (role) => set({ role }),
 
@@ -34,6 +34,13 @@ const useAuthStore = create(
         localStorage.setItem('keepLoggedIn', String(keepLoggedIn));
         // 그 다음 상태를 저장해야 dynamicStorage가 올바른 storage에 씀 (순서 중요!)
         set({ isLoggedIn: true, userId, role, hospitalId: hospitalId ?? null, accessToken, refreshToken });
+      },
+
+      // [어흥콘 리팩토링] refresh token 재발급 성공 시 access/refresh 토큰만 교체하는 액션 추가
+      // -> ROTATE_REFRESH_TOKENS=True라 재발급 성공 시 access, refresh 둘 다 새 값으로 갈아끼워야 함
+      // -> 로그인 정보(userId, role 등)는 그대로 유지하고 토큰만 갱신 ~.~
+      setTokens: ({ accessToken, refreshToken }) => {
+        set({ accessToken, refreshToken });
       },
 
       logout: () => {
