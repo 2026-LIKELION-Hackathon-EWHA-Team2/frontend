@@ -38,22 +38,19 @@ const SignupPage = () => {
     setSignupError('');
 
     if (isHospital) {
-      // countryCity 입력칸이 한 칸으로 되어있어서 split 처리함
-      const [city = '', country = ''] = hospitalInfo.countryCity.split(',').map((s) => s.trim());
-
       signupHospitalMutation.mutate(
         {
           name: hospitalInfo.hospitalName,
           login_id: hospitalInfo.userId,
           password: hospitalInfo.password,
-          preferred_language: inferPreferredLanguage(hospitalInfo.countryCity),
+          preferred_language: inferPreferredLanguage(hospitalInfo.country),
           // 목록에 있는 라벨은 정식 코드로, 직접 추가한 자유 텍스트는 CUSTOM 코드로 전송
           specialties: hospitalInfo.department.map((label) => ({
             specialty_code: SPECIALTY_CODE_MAP[label] ?? 'CUSTOM',
             specialty_name: label,
           })),
-          country,
-          city,
+          country: getCountryCode(hospitalInfo.country),
+          // [어흥콘 리팩토링] city는 백엔드에서 선택으로 바뀌어서, 화면에서 안 받는 대신 그냥 생략함
           address: hospitalInfo.hospitalAddress,
           ...buildCoordinateFields(hospitalInfo.latitude, hospitalInfo.longitude),
           phone: hospitalInfo.phone,

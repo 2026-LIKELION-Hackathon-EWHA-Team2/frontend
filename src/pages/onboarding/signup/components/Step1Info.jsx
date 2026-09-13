@@ -8,9 +8,9 @@ import useSignupStore from '../../../../store/useSignupStore';
 import { MOCK_PATIENT, MOCK_HOSPITALS } from '../../../../mock/mockdata';
 import { formatBirthDate, isBirthDateComplete } from '../../../../utils/format';
 import { SPECIALTY_CODE_MAP } from '../../../../utils/specialty';
-import { RESIDENCE_COUNTRY_OPTIONS } from '../../../../utils/country';
 import { fetchAddressSuggestions, fetchPlaceDetail, roundCoordinate } from '../../../../utils/placesApi';
 import useClickOutside from '../../../../hooks/useClickOutside';
+import CountrySelect from '../../../../components/CountrySelect';
 
 // 입력 예시(placeholder)는 mockdata.js에 이미 있는 값을 그대로 재사용
 const mockHospital = MOCK_HOSPITALS[0];
@@ -30,17 +30,16 @@ const HOSPITAL_FIELDS = [
   { name: 'hospitalName', label: '병원명', placeholder: mockHospital.name },
   { name: 'userId', label: '아이디', placeholder: 'aftor123' },
   { name: 'password', label: '비밀번호', placeholder: '비밀번호 입력', type: 'password' },
-  // 국가, 도시 라벨 파싱 로직이랑 일치시켰어요!
-  { name: 'countryCity', label: '도시, 국가', placeholder: 'Tokyo, Japan' },
   { name: 'hospitalAddress', label: '병원 주소', placeholder: '', icon: '/icons/search-gray.svg' },
   { name: 'phone', label: '연락처', placeholder: '+81-3-1234-5678 형식으로 입력' },
   { name: 'website', label: '웹사이트', placeholder: mockHospital.website },
 ];
 
 // 병원 계정은 계정 정보(1) -> 병원 상세 정보(2) 두 화면으로 나눠서 입력
+// 국가 선택(CountrySelect)은 필드 목록이 아니라 전문 분야처럼 화면에 직접 그려 넣어서, 이 목록엔 안 들어있음
 const HOSPITAL_SUB_STEPS = [
   ['hospitalName', 'userId', 'password'],
-  ['countryCity', 'hospitalAddress', 'phone', 'website'],
+  ['hospitalAddress', 'phone', 'website'],
 ];
 
 // 전문 분야 (병원 상세 정보 화면에서 다중 선택 토글로 선택)
@@ -77,12 +76,13 @@ const Step1Info = ({ onNext }) => {
 
   // 전문 분야 (병원 상세 정보 화면에서만 노출되는 다중 선택 토글)
   const showSpecialty = isHospital && subStep === 1;
-  // 거주 국가 (환자만 입력 - AI 매칭 API가 요구하는 residence_country 필수값)
+  // 거주 국가 - 환자는 'residenceCountry'(AI 매칭 API의 residence_country 필수값),
+  // 병원은 'country' 필드에 저장. 둘 다 같은 CountrySelect 컴포넌트를 씀
   const showResidenceCountry = !isHospital;
+  const showHospitalCountry = isHospital && subStep === 1;
   const [customSpecialty, setCustomSpecialty] = useState('');
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [customOptions, setCustomOptions] = useState([]);
-  const [showCountryList, setShowCountryList] = useState(false);
   const specialtyOptions = [...SPECIALTY_OPTIONS, ...customOptions];
   const selectedSpecialties = info.department ?? [];
 
@@ -95,11 +95,9 @@ const Step1Info = ({ onNext }) => {
   const [showAddressSuggestions, setShowAddressSuggestions] = useState(false);
   // 목록에서 방금 선택해서 텍스트가 바뀐 건지(재검색 스킵), 사용자가 타이핑해서 바뀐 건지 구분용
   const justSelectedAddressRef = useRef(false);
-  // 주소/국가 드롭다운 영역을 감싸는 ref - 바깥을 클릭하면 각각의 드롭다운을 닫기 위함
+  // 주소 드롭다운 영역을 감싸는 ref - 바깥을 클릭하면 닫기 위함 (국가 선택 드롭다운은 CountrySelect 내부에서 자체 처리)
   const addressBoxRef = useRef(null);
-  const countryBoxRef = useRef(null);
   useClickOutside(addressBoxRef, () => setShowAddressSuggestions(false));
-  useClickOutside(countryBoxRef, () => setShowCountryList(false));
 
   /*
    * [어흥콘 리팩토링] 주소 입력창에 구글 Places 주소 검색 연동
@@ -184,7 +182,8 @@ const Step1Info = ({ onNext }) => {
     !passwordError &&
     isBirthValid &&
     (!showSpecialty || selectedSpecialties.length > 0) &&
-    (!showResidenceCountry || !!info.residenceCountry);
+    (!showResidenceCountry || !!info.residenceCountry) &&
+    (!showHospitalCountry || !!info.country);
 
   // 생년월일 자동 포맷 적용
   const handleChange = (name) => (e) => {
@@ -254,6 +253,10 @@ const Step1Info = ({ onNext }) => {
           </div>
         )}
 
+        {showHospitalCountry && (
+          <CountrySelect label="국가" value={info.country} onChange={(country) => setInfo({ country })} />
+        )}
+
         {visibleFields.map((field) => {
           const isBirthField = field.name === 'birth';
 
@@ -301,43 +304,14 @@ const Step1Info = ({ onNext }) => {
                  AI 매칭 API가 환자 프로필의 거주 국가를 필수로 요구해서...
                  회원가입 화면에 거주 국가 선택창을 추가했습니다
                  어차피 선택지 4개뿐이라 직접 입력 안 시키고 선택창으로 만들어봤어여
-                (병원 회원가입은 국가/도시 입력창이 이미 있어서 거기서 서버에 보내도록 했습니다)                 
+                260914 - 병원 회원가입 창에서도 도시 없애버리고 UI 재사용!
               */}
               {showResidenceCountry && field.name === 'password' && (
-                <div className="relative flex flex-col" ref={countryBoxRef}>
-                  <Input
-                    label="거주 국가"
-                    name="residenceCountry"
-                    value={info.residenceCountry}
-                    placeholder="대한민국"
-                    readOnly
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => setShowCountryList((prev) => !prev)}
-                    onFocus={() => setShowCountryList(true)}
-                    icon="/icons/arrow-down-gray.svg"
-                    iconClassName={showCountryList ? 'rotate-180' : ''}
-                    onIconClick={() => setShowCountryList((prev) => !prev)}
-                  />
-
-                  {showCountryList && (
-                    <ul className="absolute top-full z-10 mt-1 w-full overflow-hidden rounded-[0.625rem] border border-[#EDEDF1] bg-white shadow-md">
-                      {RESIDENCE_COUNTRY_OPTIONS.map((country) => (
-                        <li key={country}>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setInfo({ residenceCountry: country });
-                              setShowCountryList(false);
-                            }}
-                            className="w-full px-3.5 py-2.5 text-left font-wantedsans text-sm font-medium text-[#181818] hover:bg-[#FAFAFA]"
-                          >
-                            {country}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
+                <CountrySelect
+                  label="거주 국가"
+                  value={info.residenceCountry}
+                  onChange={(residenceCountry) => setInfo({ residenceCountry })}
+                />
               )}
             </Fragment>
           );

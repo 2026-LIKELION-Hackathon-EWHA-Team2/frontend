@@ -29,8 +29,9 @@ export const getCountryCode = (name) => COUNTRY_CODES[name] ?? name;
 export const RESIDENCE_COUNTRY_OPTIONS = Object.keys(COUNTRY_CODES);
 
 // [어흥콘 리팩토링] 국가 코드 미국, 중국 추가
-export const inferPreferredLanguage = (countryCityText = '') => {
-  const text = countryCityText.toLowerCase();
+// (병원 회원가입에서 선택한 국가명, 예: '일본'을 받아서 선호 언어를 추론함)
+export const inferPreferredLanguage = (countryText = '') => {
+  const text = countryText.toLowerCase();
   if (text.includes('일본') || text.includes('japan')) return 'ja';
   if (text.includes('한국') || text.includes('대한민국') || text.includes('korea')) return 'ko';
   if (text.includes('미국') || text.includes('usa') || text.includes('united states')) return 'en';
